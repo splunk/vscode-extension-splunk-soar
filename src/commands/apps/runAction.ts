@@ -13,7 +13,7 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
         container_id: string
 		step: number;
 		totalSteps: number;
-		asset: QuickPickItem | string;
+		asset: QuickPickItem;
 		name: string;
 		runtime: QuickPickItem;
 		parameters: object[]
@@ -45,7 +45,7 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
         let assetResponse = await client.listAppAssets(actionContext.data.app.id)
 
         const assets: QuickPickItem[] = assetResponse.data.data
-    		.map(asset => ({'label': asset["name"]}));
+    		.map((asset: any) => ({'label': asset["name"]}));
 
 		if (assets.length === 0) {
 			window.showErrorMessage("No asset configured for app.", ...["Configure in SOAR"]).then(selection => {

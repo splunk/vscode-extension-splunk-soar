@@ -134,7 +134,7 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 
             let outPath = tmpDir + "/tmpapp.tgz"
             
-            const filterFiles = (path, entry) => {
+            const filterFiles = (path: any, entry: any) => {
                 if (path.includes("venv") || path.includes("__pycache__") || path.includes(".git") || path.includes(".mypy_cache") || path.includes(".DS_Store") || path.includes("./.pytest_cache") || path.includes(".vscode")) {
                     return false
                 }
@@ -143,7 +143,7 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 
 			let base = path.basename(this.workspaceRoot) 
             tar.create({file: outPath, gzip: true, cwd: path.join(this.workspaceRoot, "../"), filter: filterFiles}, [base]).then(
-                _ => {
+				(_: any) => {
                     const appFile = fs.readFileSync(outPath, {encoding: 'base64'})
                     let client = getConfiguredClient()
                     client.installApp(appFile).then(res => {

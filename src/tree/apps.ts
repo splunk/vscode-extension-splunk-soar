@@ -27,7 +27,7 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppTree
 		if (!element) {
 			return client.listApps().then(function (res) {
 				let appEntries = res.data["data"]
-				let appTreeItems = appEntries.map(entry => (new SoarApp(entry["name"], {"app": entry}, vscode.TreeItemCollapsibleState.Collapsed)))
+				let appTreeItems = appEntries.map((entry: any) => (new SoarApp(entry["name"], {"app": entry}, vscode.TreeItemCollapsibleState.Collapsed)))
 				return appTreeItems
 			})
 		}
@@ -35,7 +35,7 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppTree
 		if (element.contextValue === "soarapp") {
 			return client.appContent(element.data["app"]["id"]).then(function (res) {
 				let appContent = res.data["data"]
-				const jsonContent = appContent.find((file) => file.metadata == "AppJSON");
+				const jsonContent = appContent.find((file: any) => file.metadata == "AppJSON");
 				let appJSON = JSON.parse(jsonContent.content)
 
 				return Promise.resolve([new SoarAssetSection("Assets", {"app_content": appContent, "app_json": appJSON, ...element.data}, vscode.TreeItemCollapsibleState.Collapsed), 
@@ -45,13 +45,13 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppTree
 		} else if (element.contextValue === "soarassetsection") {
 			return client.listAppAssets(element.data["app"]["id"]).then(function (res) {
 				let assetEntries = res.data["data"]
-				let assetTreeItems = assetEntries.map(entry => (new SoarAsset(entry["name"], {"asset": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
+				let assetTreeItems = assetEntries.map((entry: any) => (new SoarAsset(entry["name"], {"asset": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
 				return assetTreeItems
 			}).catch(function (err) {
 				console.error(err)
 			})
 		} else if (element.contextValue === "soaractionsection") {
-			let actionTreeItems = element.data["app"]["_pretty_actions"].map(entry => (new SoarAction(entry["name"], {"action": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
+			let actionTreeItems = element.data["app"]["_pretty_actions"].map((entry: any) => (new SoarAction(entry["name"], {"action": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
 			return Promise.resolve(actionTreeItems)
 		}
 
@@ -62,7 +62,7 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppTree
 export class SoarAppTreeItem extends vscode.TreeItem {
 	constructor(
 		public readonly label: string,
-		public readonly data: object,
+		public readonly data: any,
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
 		public readonly command?: vscode.Command
 	) {
@@ -76,7 +76,7 @@ export class SoarAppTreeItem extends vscode.TreeItem {
 
 export class SoarApp extends SoarAppTreeItem {
 
-	constructor(label, data, collapsibleState, command?) {
+	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)
 		this.description = data["app"]["app_version"]
 
@@ -107,7 +107,7 @@ export class SoarAsset extends SoarAppTreeItem {
 
 class SoarAssetSection extends SoarAppTreeItem {
 
-	constructor(label, data, collapsibleState, command?) {
+	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)
 		this.description = `${data["app"]["_pretty_asset_count"]}`
 	}
@@ -122,7 +122,7 @@ class SoarAssetSection extends SoarAppTreeItem {
 
 class SoarActionSection extends SoarAppTreeItem {
 
-	constructor(label, data, collapsibleState, command?) {
+	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)
 		this.description = `${data["app"]["_pretty_actions"].length}`
 	}
@@ -137,7 +137,7 @@ class SoarActionSection extends SoarAppTreeItem {
 
 export class SoarAction extends SoarAppTreeItem {
 
-	constructor(label, data, collapsibleState, command?) {
+	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)
 		this.tooltip = data["action"]["description"]
 	}

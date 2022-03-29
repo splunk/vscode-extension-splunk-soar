@@ -6,6 +6,10 @@
 	"engines": {
 		"vscode": "^1.65.0"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/splunk/vscode-extension-splunk-soar"
+	},
 	"categories": [
 		"Other"
 	],
@@ -98,6 +102,7 @@
 				"required": [
 					"flavor"
 				],
+				"when": "shellExecutionSupported",
 				"properties": {
 					"flavor": {
 						"type": "string",
