@@ -1,16 +1,19 @@
-# vscode-splunk-soar README
+# vscode-extension-splunk-soar
 
-This is the README for your extension "vscode-splunk-soar". After writing up a brief description, we recommend including the following sections.
+This repository hosts a VS Code extension for Splunk SOAR app developers. 
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+All features are targeted towards speeding up SOAR app development.
 
-For example if there is an image subfolder under your extension project workspace:
+### Running Actions
 
-\!\[feature X\]\(images/feature-x.png\)
+![Running an Action](./previews/actionrun.gif)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+### Inspecting SOAR Objects
+
+![Inspecting SOAR Objects](./previews/inspect.gif)
+
 
 ## Requirements
 
