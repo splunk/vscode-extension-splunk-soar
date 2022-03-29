@@ -122,6 +122,7 @@
 		],
 		"configuration": {
 			"title": "Splunk SOAR",
+			"order": 0,
 			"properties": {
 				"authentication.server": {
 					"type": "string",
