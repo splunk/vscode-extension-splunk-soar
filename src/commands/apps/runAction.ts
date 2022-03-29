@@ -51,8 +51,10 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 			window.showErrorMessage("No asset configured for app.", ...["Configure in SOAR"]).then(selection => {
 				const server: string = workspace.getConfiguration().get<string>("authentication.server", '')
 				
-				let assetConfigUrl = `${server}/apps/${actionContext.data.app.id}/asset/`
-				env.openExternal(Uri.parse(assetConfigUrl))
+				if (selection) {
+					let assetConfigUrl = `${server}/apps/${actionContext.data.app.id}/asset/`
+					env.openExternal(Uri.parse(assetConfigUrl))	
+				}
 			})
 			return
 		}
