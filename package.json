@@ -1,0 +1,174 @@
+{
+	"name": "vscode-splunk-soar",
+	"displayName": "vscode-splunk-soar",
+	"description": "VS Code Extension for Splunk SOAR",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.65.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:vscode-splunk-soar.version",
+		"onView:soarApps"
+	],
+	"main": "./dist/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "vscode-splunk-soar.version",
+				"title": "SOAR Version"
+			},
+			{
+				"command": "soarApps.refresh",
+				"title": "Soar Apps: Refresh",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "soarApps.runAction",
+				"title": "Soar Apps: Run Action",
+				"icon": {
+					"light": "resources/light/debug-start.svg",
+					"dark": "resources/dark/debug-start.svg"
+				}
+			},
+			{
+				"command": "soarApps.viewAsset",
+				"title": "Soar Apps: View Asset",
+				"icon": "$(eye)"
+			},
+			{
+				"command": "soarApps.viewApp",
+				"title": "Soar Apps: View App",
+				"icon": "$(eye)"
+			}
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "splunk-soar",
+					"title": "Splunk SOAR",
+					"icon": "media/dep.svg"
+				}
+			]
+		},
+		"views": {
+			"splunk-soar": [
+				{
+					"id": "soarApps",
+					"name": "SOAR Apps",
+					"icon": "media/soarcloud.png",
+					"contextualTitle": "SOAR Apps"
+				}
+			]
+		},
+		"menus": {
+			"view/title": [
+				{
+					"command": "soarApps.refresh",
+					"when": "view == soarApps",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "soarApps.runAction",
+					"when": "view == soarApps && viewItem == soaraction",
+					"group": "inline"
+				},
+				{
+					"command": "soarApps.viewAsset",
+					"when": "view == soarApps && viewItem == soarasset",
+					"group": "inline"
+				},
+				{
+					"command": "soarApps.viewApp",
+					"when": "view == soarApps && viewItem == soarapp",
+					"group": "inline"
+				}
+			]
+		},
+		"taskDefinitions": [
+			{
+				"type": "soarapp",
+				"required": [
+					"flavor"
+				],
+				"properties": {
+					"flavor": {
+						"type": "string",
+						"description": "The build flavor. Should be either '32' or '64'."
+					},
+					"flags": {
+						"type": "array",
+						"description": "Additional build flags."
+					}
+				}
+			}
+		],
+		"configuration": {
+			"title": "Splunk SOAR",
+			"properties": {
+				"authentication.server": {
+					"type": "string",
+					"default": "",
+					"description": "Server for your SOAR REST API ",
+					"order": 0
+				},
+				"authentication.sslVerify": {
+					"type": "boolean",
+					"default": true,
+					"description": "Whether or not to verify the TLS certificate",
+					"order": 1
+				},
+				"authentication.username": {
+					"type": "string",
+					"default": "",
+					"description": "Username for your SOAR instance",
+					"order": 2
+				},
+				"authentication.password": {
+					"type": "string",
+					"default": "",
+					"description": "Password for your SOAR instance",
+					"order": 3
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "yarn run package",
+		"compile": "webpack",
+		"watch": "webpack --watch",
+		"package": "webpack --mode production --devtool hidden-source-map",
+		"compile-tests": "tsc -p . --outDir out",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+		"lint": "eslint src --ext ts",
+		"test": "node ./out/test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/glob": "^7.2.0",
+		"@types/mocha": "^9.1.0",
+		"@types/node": "14.x",
+		"@types/vscode": "^1.65.0",
+		"@typescript-eslint/eslint-plugin": "^5.12.1",
+		"@typescript-eslint/parser": "^5.12.1",
+		"@vscode/test-electron": "^2.1.2",
+		"eslint": "^8.9.0",
+		"glob": "^7.2.0",
+		"mocha": "^9.2.1",
+		"ts-loader": "^9.2.6",
+		"typescript": "^4.5.5",
+		"webpack": "^5.69.1",
+		"webpack-cli": "^4.9.2"
+	},
+	"dependencies": {
+		"axios": "^0.26.1",
+		"tar": "^6.1.11"
+	}
+}
