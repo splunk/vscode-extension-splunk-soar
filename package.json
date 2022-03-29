@@ -15,6 +15,9 @@
 	],
 	"activationEvents": [
 		"onCommand:vscode-splunk-soar.version",
+		"onCommand:soarApps.viewContainer",
+		"onCommand:soarApps.viewAsset",
+		"onCommand:soarApps.runAction",
 		"onView:soarApps"
 	],
 	"main": "./dist/extension.js",
@@ -48,6 +51,11 @@
 			{
 				"command": "soarApps.viewApp",
 				"title": "Soar Apps: View App",
+				"icon": "$(eye)"
+			},
+			{
+				"command": "soarApps.viewContainer",
+				"title": "Soar Apps: View Container",
 				"icon": "$(eye)"
 			}
 		],

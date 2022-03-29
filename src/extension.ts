@@ -8,6 +8,7 @@ import { SoarAppsTreeProvider } from './tree/apps';
 import { AssetContentProvider } from './commands/assets/viewAsset'
 import { AppContentProvider } from './commands/apps/viewApp';
 import { runActionInput } from './commands/apps/runAction';
+import { ContainerContentProvider } from './commands/containers/viewContainer';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -61,6 +62,23 @@ export function activate(context: vscode.ExtensionContext) {
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
+
+
+	const containerScheme = "soarcontainer"
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(containerScheme, ContainerContentProvider));
+
+	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewContainer', async (containerId) => {
+		if (!containerId) {
+			containerId = await vscode.window.showInputBox({ placeHolder: 'id' });
+		}
+
+		if (containerId) {
+			const uri = vscode.Uri.parse('soarcontainer:' + containerId);
+			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			await vscode.window.showTextDocument(doc, { preview: false });
+		}
+	}));
+
 
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.runAction', async (data) => {
 		if (data) {
