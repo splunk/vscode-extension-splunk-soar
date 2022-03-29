@@ -10,15 +10,6 @@ import * as fs from 'fs'
 import { getConfiguredClient } from '../soar/client';
 
 interface CustomBuildTaskDefinition extends vscode.TaskDefinition {
-	/**
-	 * The build flavor. Should be either '32' or '64'.
-	 */
-	flavor: string;
-
-	/**
-	 * Additional build flags
-	 */
-	flags?: string[];
 }
 
 export class DeployTaskProvider implements vscode.TaskProvider {
@@ -39,44 +30,29 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 	}
 
 	public resolveTask(_task: vscode.Task): vscode.Task | undefined {
-		const flavor: string = _task.definition.flavor;
-		if (flavor) {
-			const definition: CustomBuildTaskDefinition = <any>_task.definition;
-			return this.getTask(definition.flavor, definition.flags ? definition.flags : [], definition);
-		}
-		return undefined;
+		const definition: CustomBuildTaskDefinition = <any>_task.definition;
+		return this.getTask(definition);
 	}
 
 	private getTasks(): vscode.Task[] {
 		if (this.tasks !== undefined) {
 			return this.tasks;
 		}
-		// In our fictional build, we have two build flavors
-		const flavors: string[] = ['32', '64'];
-		// Each flavor can have some options.
-		const flags: string[][] = [['watch', 'incremental'], ['incremental'], []];
+		this.tasks!.push(this.getTask());
 
-		this.tasks = [];
-		flavors.forEach(flavor => {
-			flags.forEach(flagGroup => {
-				this.tasks!.push(this.getTask(flavor, flagGroup));
-			});
-		});
 		return this.tasks;
 	}
 
-	private getTask(flavor: string, flags: string[], definition?: CustomBuildTaskDefinition): vscode.Task {
+	private getTask(definition?: CustomBuildTaskDefinition): vscode.Task {
 		if (definition === undefined) {
 			definition = {
 				type: DeployTaskProvider.CustomBuildScriptType,
-				flavor,
-				flags
 			};
 		}
-		return new vscode.Task(definition, vscode.TaskScope.Workspace, `${flavor} ${flags.join(' ')}`,
+		return new vscode.Task(definition, vscode.TaskScope.Workspace, `soarapp`,
             DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
 				// When the task is executed, this callback will run. Here, we setup for running the task.
-				return new CustomBuildTaskTerminal(this.workspaceRoot, flavor, flags, () => this.sharedState, (state: string) => this.sharedState = state);
+				return new CustomBuildTaskTerminal(this.workspaceRoot, () => this.sharedState, (state: string) => this.sharedState = state);
 			}));
 	}
 }
@@ -89,18 +65,10 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 
 	private fileWatcher: vscode.FileSystemWatcher | undefined;
 
-	constructor(private workspaceRoot: string, private flavor: string, private flags: string[], private getSharedState: () => string | undefined, private setSharedState: (state: string) => void) {
+	constructor(private workspaceRoot: string, private getSharedState: () => string | undefined, private setSharedState: (state: string) => void) {
 	}
 
 	open(initialDimensions: vscode.TerminalDimensions | undefined): void {
-		// At this point we can start using the terminal.
-		if (this.flags.indexOf('watch') > -1) {
-			const pattern = path.join(this.workspaceRoot, 'customBuildFile');
-			this.fileWatcher = vscode.workspace.createFileSystemWatcher(pattern);
-			this.fileWatcher.onDidChange(() => this.doBuild());
-			this.fileWatcher.onDidCreate(() => this.doBuild());
-			this.fileWatcher.onDidDelete(() => this.doBuild());
-		}
 		this.doBuild();
 	}
 
@@ -120,18 +88,6 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 
             let tmpDir = os.tmpdir()
 
-        
-
-			let isIncremental = this.flags.indexOf('incremental') > -1;
-			if (isIncremental) {
-				if (this.getSharedState()) {
-					this.writeEmitter.fire('Using last build results: ' + this.getSharedState() + '\r\n');
-				} else {
-					isIncremental = false;
-					this.writeEmitter.fire('No result from last build. Doing full build.\r\n');
-				}
-			}
-
             let outPath = tmpDir + "/tmpapp.tgz"
             
             const filterFiles = (path: any, entry: any) => {
@@ -147,7 +103,7 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
                     const appFile = fs.readFileSync(outPath, {encoding: 'base64'})
                     let client = getConfiguredClient()
                     client.installApp(appFile).then(res => {
-                        this.writeEmitter.fire("Installed App\n API Response\n")
+                        this.writeEmitter.fire("Installed App\n")
                         this.writeEmitter.fire(JSON.stringify(res.data));
 						this.closeEmitter.fire(0);
 						resolve()

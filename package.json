@@ -99,20 +99,7 @@
 		"taskDefinitions": [
 			{
 				"type": "soarapp",
-				"required": [
-					"flavor"
-				],
-				"when": "shellExecutionSupported",
-				"properties": {
-					"flavor": {
-						"type": "string",
-						"description": "The build flavor. Should be either '32' or '64'."
-					},
-					"flags": {
-						"type": "array",
-						"description": "Additional build flags."
-					}
-				}
+				"when": "shellExecutionSupported"
 			}
 		],
 		"configuration": {
