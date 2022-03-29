@@ -49,6 +49,11 @@
 				"icon": "$(eye)"
 			},
 			{
+				"command": "soarApps.viewFile",
+				"title": "Soar Apps: View File",
+				"icon": "$(eye)"
+			},
+			{
 				"command": "soarApps.viewApp",
 				"title": "Soar Apps: View App",
 				"icon": "$(eye)"
@@ -100,6 +105,11 @@
 				{
 					"command": "soarApps.viewApp",
 					"when": "view == soarApps && viewItem == soarapp",
+					"group": "inline"
+				},
+				{
+					"command": "soarApps.viewFile",
+					"when": "view == soarApps && viewItem == soarfile",
 					"group": "inline"
 				}
 			]

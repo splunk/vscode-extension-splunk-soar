@@ -39,7 +39,9 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppTree
 				let appJSON = JSON.parse(jsonContent.content)
 
 				return Promise.resolve([new SoarAssetSection("Assets", {"app_content": appContent, "app_json": appJSON, ...element.data}, vscode.TreeItemCollapsibleState.Collapsed), 
-										  new SoarActionSection("Actions",{"app_content": appContent, "app_json": appJSON, ...element.data}, vscode.TreeItemCollapsibleState.Collapsed)])
+										  new SoarActionSection("Actions",{"app_content": appContent, "app_json": appJSON, ...element.data}, vscode.TreeItemCollapsibleState.Collapsed),
+										  new SoarFilesSection("Files",{"app_content": appContent, "app_json": appJSON, ...element.data}, vscode.TreeItemCollapsibleState.Collapsed),
+										])
 			})
 
 		} else if (element.contextValue === "soarassetsection") {
@@ -52,6 +54,9 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppTree
 			})
 		} else if (element.contextValue === "soaractionsection") {
 			let actionTreeItems = element.data["app"]["_pretty_actions"].map((entry: any) => (new SoarAction(entry["name"], {"action": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
+			return Promise.resolve(actionTreeItems)
+		} else if (element.contextValue === "soarfilessection") {
+			let actionTreeItems = element.data["app_content"].map((entry: any) => (new SoarFile(entry["name"], {"file": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
 			return Promise.resolve(actionTreeItems)
 		}
 
@@ -135,6 +140,22 @@ class SoarActionSection extends SoarAppTreeItem {
 	contextValue: string = "soaractionsection"
 }
 
+class SoarFilesSection extends SoarAppTreeItem {
+
+	constructor(label: any, data: any, collapsibleState: any, command?: any) {
+		super(label, data, collapsibleState, command)
+		this.description = `${data["app_content"].length} (readonly)`
+	}
+
+	iconPath = {
+		light: path.join(__filename, '..', '..', 'resources', 'light', 'file.svg'),
+		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'file.svg')
+	};
+
+	contextValue: string = "soarfilessection"
+}
+
+
 export class SoarAction extends SoarAppTreeItem {
 
 	constructor(label: any, data: any, collapsibleState: any, command?: any) {
@@ -148,5 +169,21 @@ export class SoarAction extends SoarAppTreeItem {
 	iconPath = {
 		light: path.join(__filename, '..', '..', 'resources', 'light', 'symbol-event.svg'),
 		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'symbol-event.svg')
+	};
+}
+
+export class SoarFile extends SoarAppTreeItem {
+
+	constructor(label: any, data: any, collapsibleState: any, command?: any) {
+		super(label, data, collapsibleState, command)
+		this.tooltip = "file"
+	}
+
+	contextValue: string = 'soarfile';
+
+
+	iconPath = {
+		light: path.join(__filename, '..', '..', 'resources', 'light', 'file.svg'),
+		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'file.svg')
 	};
 }
