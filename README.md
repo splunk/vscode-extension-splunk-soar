@@ -2,9 +2,17 @@
 
 This repository hosts a VS Code extension for Splunk SOAR app developers. 
 
+
+## Quick Start
+
+- Install the extension either from the `.vsix` file or the Ext
+
+
+
 ## Features
 
 All features are targeted towards speeding up SOAR app development. Explicitly out-of-scope are features that assist with playbook development. For developing playbooks, the new Visual Playbook Editor (VPE) within SOAR is strongly recommended.
+
 
 ### App Installation
 
