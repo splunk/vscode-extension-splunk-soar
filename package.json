@@ -71,7 +71,7 @@
 				{
 					"id": "splunk-soar",
 					"title": "Splunk SOAR",
-					"icon": "media/dep.svg"
+					"icon": "media/soarcloud.png"
 				}
 			]
 		},
