@@ -2,6 +2,8 @@
 	"name": "vscode-splunk-soar",
 	"displayName": "vscode-splunk-soar",
 	"description": "VS Code Extension for Splunk SOAR",
+	"icon": "media/soarcloud.png",
+	"publisher": "Splunk",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.65.0"
