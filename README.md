@@ -36,6 +36,7 @@ Within the SOAR Apps view, there is a contextual control to run an action in the
 ## Contributing
 ### Requirements
 * `yarn` or `npm` installed
+* Open this repo in a clean VS Code workspace
 
 ### Running the Extension
 * Install the dependencies on the first run by executing in Terminal
@@ -46,6 +47,7 @@ $ yarn install
 ```
 * Run the `Run Extension (vscode-extension-splunk-soar)` target in the `Run and Debug` view. This will:
     * Start a task `npm: watch` to compile the code
+        > NOTE: click on `Debug Anyway` when prompted by a warning popup 
     * Run the extension in a new VS Code window
 
 ## Support & License
