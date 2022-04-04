@@ -25,6 +25,21 @@ Within the SOAR Apps view, there is a contextual control to run an action in the
 
 ![Running an Action](https://raw.githubusercontent.com/splunk/vscode-extension-splunk-soar/main/media/actionrun.gif)
 
+## Contributing
+### Requirements
+* `yarn` or `npm` installed
+
+### Running the Extension
+* Install the dependencies on the first run by executing in Terminal
+```bash
+$ npm install
+# or
+$ yarn install
+```
+* Run the `Run Extension (vscode-extension-splunk-soar)` target in the `Run and Debug` view. This will:
+    * Start a task `npm: watch` to compile the code
+    * Run the extension in a new VS Code window
+
 ## Support & License
 
 Please refer to [License](LICENSE) with regards to licensing. This software is released as-is. Splunk provides no warranty and no support on this software. If you have any issues with the software, please file an issue on the repository.
