@@ -20,7 +20,8 @@
 		"onCommand:soarApps.viewContainer",
 		"onCommand:soarApps.viewAsset",
 		"onCommand:soarApps.runAction",
-		"onView:soarApps"
+		"onView:soarApps",
+		"onCommand:workbench.action.tasks.runTask"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -129,8 +130,9 @@
 				"authentication.server": {
 					"type": "string",
 					"default": "",
-					"description": "Server for your SOAR REST API ",
-					"order": 0
+					"description": "SOAR Server URL",
+					"order": 0,
+					"examples": ["https://my-soar-server:8000"]
 				},
 				"authentication.sslVerify": {
 					"type": "boolean",

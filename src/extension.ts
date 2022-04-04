@@ -112,6 +112,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Tasks
 	let deployTaskProvider = vscode.tasks.registerTaskProvider(DeployTaskProvider.CustomBuildScriptType, new DeployTaskProvider(rootPath));
+	console.log(deployTaskProvider)
+
 }
 
 // this method is called when your extension is deactivated

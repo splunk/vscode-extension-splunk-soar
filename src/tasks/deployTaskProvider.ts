@@ -36,10 +36,11 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 
 	private getTasks(): vscode.Task[] {
 		if (this.tasks !== undefined) {
-			return this.tasks;
+			return this.tasks
 		}
-		this.tasks!.push(this.getTask());
 
+		this.tasks = [];
+		this.tasks!.push(this.getTask());
 		return this.tasks;
 	}
 
@@ -52,7 +53,7 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 		return new vscode.Task(definition, vscode.TaskScope.Workspace, `soarapp`,
             DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
 				// When the task is executed, this callback will run. Here, we setup for running the task.
-				return new CustomBuildTaskTerminal(this.workspaceRoot, () => this.sharedState, (state: string) => this.sharedState = state);
+				return new CustomBuildTaskTerminal(this.workspaceRoot);
 			}));
 	}
 }
@@ -65,7 +66,7 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 
 	private fileWatcher: vscode.FileSystemWatcher | undefined;
 
-	constructor(private workspaceRoot: string, private getSharedState: () => string | undefined, private setSharedState: (state: string) => void) {
+	constructor(private workspaceRoot: string) {
 	}
 
 	open(initialDimensions: vscode.TerminalDimensions | undefined): void {

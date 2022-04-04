@@ -7,6 +7,14 @@ import { getConfiguredClient } from '../../soar/client';
  * This first part uses the helper class `MultiStepInput` that wraps the API for the multi-step case.
  */
 export async function runActionInput(context: ExtensionContext, actionContext) {
+	class MyButton implements QuickInputButton {
+		constructor(public iconPath: { light: Uri; dark: Uri; }, public tooltip: string) { }
+	}
+	const skipParamButton = new MyButton({
+		dark: Uri.file(context.asAbsolutePath('resources/dark/debug-step-over.svg')),
+		light: Uri.file(context.asAbsolutePath('resources/light/debug-step-over.svg')),
+	}, 'Skip');
+
 
 	interface State {
 		title: string;
@@ -89,19 +97,61 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
     }
 
     async function pickParam(input: MultiStepInput, state, actionParamIndex){
-        let [paramName, paramInfo] = parameterList[actionParamIndex]
-        let enteredParam = await input.showInputBox({
-			title,
-			step: 2 + actionParamIndex,
-			totalSteps: totalSteps,
-			value: state.name || '',
-			prompt: `${paramName}: ${paramInfo["description"]}`,
-			shouldResume: shouldResume,
-            validate: validateNameIsUnique
-		});
+        let [paramName, paramInfo]: [string, Object] = parameterList[actionParamIndex]
+		let enteredParam;
 
-		state.parameters[0][paramName] = enteredParam
+		let showSkip = true
+		if ("required" in paramInfo && paramInfo["required"] === true) {
+			showSkip = false
+		}
 
+		if ('value_list' in paramInfo) {
+			const values: QuickPickItem[] = paramInfo["value_list"]
+    		.map((value: string) => ({'label': value}));
+			
+			enteredParam = await input.showQuickPick({
+				title,
+				step: 1,
+				totalSteps: totalSteps,
+				placeholder: `Pick a value for ${paramName}`,
+				items: values,
+				activeItem: typeof state.parameters[0][paramName] !== 'string' ? state.parameters[0][paramName] : undefined,
+				shouldResume: shouldResume,
+				buttons: showSkip ? [skipParamButton] : [] 
+			});
+	
+		} else if (paramInfo["data_type"] === "boolean") {
+			const values: QuickPickItem[] = [{'label': "true"}, {'label': "false"}]
+			enteredParam = await input.showQuickPick({
+				title,
+				step: 1,
+				totalSteps: totalSteps,
+				placeholder: `Pick a value for ${paramName}`,
+				items: values,
+				activeItem: typeof state.parameters[0][paramName] !== 'string' ? state.parameters[0][paramName] : undefined,
+				shouldResume: shouldResume,
+				buttons: showSkip ? [skipParamButton] : []
+			});
+		} else {
+
+			enteredParam = await input.showInputBox({
+				title,
+				step: 2 + actionParamIndex,
+				totalSteps: totalSteps,
+				value: state.name || '',
+				prompt: `${paramName}: ${paramInfo["description"]}`,
+				shouldResume: shouldResume,
+				validate: validateNameIsUnique,
+				buttons: showSkip ? [skipParamButton] : []
+			});
+		}
+
+		if (enteredParam instanceof MyButton) {
+			
+		} else {
+			state.parameters[0][paramName] = enteredParam
+
+		}
         if (actionParamIndex < parameterList.length - 1) {
             return (input: MultiStepInput) => pickParam(input, state, actionParamIndex + 1);
         }
