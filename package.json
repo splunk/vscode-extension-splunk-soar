@@ -25,6 +25,12 @@
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
+		"jsonValidation": [
+			{
+				"fileMatch": "*.json",
+				"url": "./schemas/splunk_phantom_app-1.0.json"
+			}
+		],
 		"commands": [
 			{
 				"command": "vscode-splunk-soar.version",

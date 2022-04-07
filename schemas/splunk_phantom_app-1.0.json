@@ -1,0 +1,356 @@
+{
+    "$schema": "https://json-schema.org/draft-04/schema",
+    "type": "object",
+    "properties": {
+        "appid": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "type": {
+            "type": "string"
+        },
+        "url": {
+            "type": "string"
+        },
+        "product_vendor": {
+            "type": "string"
+        },
+        "logo": {
+            "type": "string"
+        },
+        "logo_dark": {
+            "type": "string"
+        },
+        "consolidate_widgets": {
+            "type": "boolean"
+        },
+        "product_name": {
+            "type": "string"
+        },
+        "python_version": {
+            "type": "string"
+        },
+        "product_version_regex": {
+            "type": "string"
+        },
+        "publisher": {
+            "type": "string"
+        },
+        "license": {
+            "type": "string"
+        },
+        "app_version": {
+            "type": "string"
+        },
+        "utctime_updated": {
+            "type": "string"
+        },
+        "package_name": {
+            "type": "string"
+        },
+        "main_module": {
+            "type": "string"
+        },
+        "min_phantom_version": {
+            "type": "string"
+        },
+        "app_wizard_version": {
+            "type": "string"
+        },
+        "rest_handler": {
+            "type": "string"
+        },
+        "pip_dependencies": {
+            "type": "object",
+            "properties": {
+                "pypi": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "module": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "module"
+                        ]
+                    }
+                },
+                "wheel": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "module": {
+                                "type": "string"
+                            },
+                            "input_file": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "module",
+                            "input_file"
+                        ]
+                    }
+                }
+            },
+            "required": []
+        },
+        "pip3_dependencies": {
+            "type": "object",
+            "properties": {
+                "pypi": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "module": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "module"
+                        ]
+                    }
+                },
+                "wheel": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "module": {
+                                "type": "string"
+                            },
+                            "input_file": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "module",
+                            "input_file"
+                        ]
+                    }
+                }
+            }
+        },
+        "configuration": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "properties": {
+                    "data_type": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "value_list": {
+                        "type": "array"
+                    },
+                    "default": {
+                        "type": [
+                            "string",
+                            "number",
+                            "boolean"
+                        ]
+                    },
+                    "order": {
+                        "type": "number"
+                    },
+                    "allow_list": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "data_type"
+                ]
+            }
+        },
+        "actions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "action": {
+                        "type": "string"
+                    },
+                    "identifier": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "verbose": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "read_only": {
+                        "type": "boolean"
+                    },
+                    "undo": {
+                        "type": "string"
+                    },
+                    "lock": {
+                        "type": "object",
+                        "properties": {
+                            "enabled": {
+                                "type": "boolean"
+                            },
+                            "data_path": {
+                                "type": "string"
+                            },
+                            "timeout": {
+                                "type": "number"
+                            }
+                        },
+                        "required": [
+                            "enabled"
+                        ]
+                    },
+                    "parameters": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "object",
+                            "properties": {
+                                "data_type": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                },
+                                "primary": {
+                                    "type": "boolean"
+                                },
+                                "required": {
+                                    "type": "boolean"
+                                },
+                                "value_list": {
+                                    "type": "array"
+                                },
+                                "default": {
+                                    "type": [
+                                        "string",
+                                        "number",
+                                        "boolean"
+                                    ]
+                                },
+                                "order": {
+                                    "type": "number"
+                                },
+                                "allow_list": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "data_type"
+                            ]
+                        }
+                    },
+                    "output": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "data_path": {
+                                    "type": "string"
+                                },
+                                "data_type": {
+                                    "type": "string"
+                                },
+                                "contains": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "column_name": {
+                                    "type": "string"
+                                },
+                                "column_order": {
+                                    "type": [
+                                        "integer",
+                                        "string"
+                                    ]
+                                },
+                                "example_values": {
+                                    "type": "array"
+                                },
+                                "map_info": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "data_path",
+                                "data_type"
+                            ]
+                        }
+                    },
+                    "versions": {
+                        "type": "string"
+                    },
+                    "render": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string"
+                            },
+                            "width": {
+                                "type": "number"
+                            },
+                            "height": {
+                                "type": "number"
+                            },
+                            "view": {
+                                "type": "string"
+                            },
+                            "title": {
+                                "type": "string"
+                            },
+                            "menu_name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "type"
+                        ]
+                    }
+                },
+                "required": [
+                    "action",
+                    "description",
+                    "identifier",
+                    "output",
+                    "parameters",
+                    "read_only",
+                    "type",
+                    "versions"
+                ]
+            }
+        }
+    },
+    "required": [
+        "actions",
+        "app_version",
+        "appid",
+        "configuration",
+        "description",
+        "license",
+        "main_module",
+        "name",
+        "package_name",
+        "product_name",
+        "product_vendor",
+        "product_version_regex",
+        "publisher",
+        "type"
+    ]
+}
