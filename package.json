@@ -46,15 +46,13 @@
 			},
 			{
 				"command": "vscode-splunk-soar.openWebApps",
-				"title": "SOAR: Open Web UI - Apps"
+				"title": "SOAR: Open Web UI - Apps",
+				"icon": "$(link-external)"
 			},
 			{
 				"command": "soarApps.refresh",
 				"title": "SOAR: Refresh",
-				"icon": {
-					"light": "resources/light/refresh.svg",
-					"dark": "resources/dark/refresh.svg"
-				}
+				"icon": "$(refresh)"
 			},
 			{
 				"command": "soarApps.runAction",
@@ -113,6 +111,11 @@
 			"view/title": [
 				{
 					"command": "soarApps.refresh",
+					"when": "view == soarApps",
+					"group": "navigation"
+				},
+				{
+					"command": "vscode-splunk-soar.openWebApps",
 					"when": "view == soarApps",
 					"group": "navigation"
 				}
