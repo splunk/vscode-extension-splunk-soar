@@ -99,14 +99,17 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
             }
 
 			let base = path.basename(this.workspaceRoot) 
-			this.writeEmitter.fire(`Packaging app located in: ${base}`)
+			this.writeEmitter.fire(`Packaging app located in: ${base}\r\n`)
+
 
             tar.create({file: outPath, gzip: true, cwd: path.join(this.workspaceRoot, "../"), filter: filterFiles}, [base]).then(
 				(_: any) => {
+					this.writeEmitter.fire(`File packaged in ${outPath}\n\r`)
+
                     const appFile = fs.readFileSync(outPath, {encoding: 'base64'})
                     let client = getConfiguredClient()
                     client.installApp(appFile).then(res => {
-                        this.writeEmitter.fire("Installed App\n")
+                        this.writeEmitter.fire("Installed App\n\r")
                         this.writeEmitter.fire(JSON.stringify(res.data));
 						this.closeEmitter.fire(0);
 						resolve()

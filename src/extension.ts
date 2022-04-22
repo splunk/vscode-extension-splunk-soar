@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 
 import { version } from './commands/version'
+import { openWeb, openWebApps } from './commands/web'
 import { DeployTaskProvider } from './tasks/deployTaskProvider';
 import { SoarAppsTreeProvider } from './tree/apps';
 import { AssetContentProvider } from './commands/assets/viewAsset'
@@ -10,6 +11,7 @@ import { AppContentProvider } from './commands/apps/viewApp';
 import { runActionInput } from './commands/apps/runAction';
 import { ContainerContentProvider } from './commands/containers/viewContainer';
 import {FileContainerContentProvider} from './commands/apps/viewFile'
+import { viewAppDocs } from './commands/apps/viewAppDocs';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 
@@ -23,6 +25,12 @@ export function activate(context: vscode.ExtensionContext) {
 	//	Top-Level Commands
 	let disposableVersion = vscode.commands.registerCommand('vscode-splunk-soar.version', () => { version() });
 	context.subscriptions.push(disposableVersion);
+
+	let disposableOpenWeb = vscode.commands.registerCommand('vscode-splunk-soar.openWeb', () => { openWeb() });
+	context.subscriptions.push(disposableOpenWeb);
+
+	let disposableOpenWebApps = vscode.commands.registerCommand('vscode-splunk-soar.openWebApps', () => { openWebApps() });
+	context.subscriptions.push(disposableOpenWebApps);
 
 	// Tree
 	const soarAppsTreeProvider = new SoarAppsTreeProvider(rootPath)
@@ -105,6 +113,13 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}))
 
+	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewAppDocs', async (data) => {
+		if (data) {
+			viewAppDocs(context, data).catch(console.error)
+		} else {
+			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
+		}
+	}))
 
 	if (!rootPath) {
 		return

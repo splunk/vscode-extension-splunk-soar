@@ -7,7 +7,7 @@ export function version() {
     client.version().then(
         function(response) {
             let {version} = response.data
-            vscode.window.showInformationMessage(`Connected with SOAR Version: ${version}`)
+            vscode.window.showInformationMessage(`Connected with SOAR Version: ${version} at ${client.server}`)
         }
     )
 }

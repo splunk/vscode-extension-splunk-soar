@@ -1,6 +1,5 @@
 import { AxiosInstance, AxiosResponse } from "axios";
 import * as https from 'https'; 
-import { getHeapStatistics } from "v8";
 import * as vscode from 'vscode';
 const axios = require('axios').default;
 
