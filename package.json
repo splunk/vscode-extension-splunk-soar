@@ -43,12 +43,13 @@
 			},
 			{
 				"command": "vscode-splunk-soar.openWeb",
-				"title": "SOAR: Open Web UI"
+				"title": "SOAR: Open Web UI",
+				"icon": "$(globe)"
 			},
 			{
 				"command": "vscode-splunk-soar.openWebApps",
 				"title": "SOAR: Open Web UI - Apps",
-				"icon": "$(link-external)"
+				"icon": "$(globe)"
 			},
 			{
 				"command": "soarApps.refresh",
@@ -98,7 +99,17 @@
 				"title": "SOAR: View Action Run",
 				"icon": "$(eye)"
 			},
+			{
+				"command": "soarApps.viewActionRunWeb",
+				"title": "SOAR: View Action Run Web",
+				"icon": "$(globe)"
+			},
 
+			{
+				"command": "soarApps.viewPlaybookWeb",
+				"title": "SOAR: View Playbook Web",
+				"icon": "$(globe)"
+			},
 			{
 				"command": "soarActionRuns.repeatActionRun",
 				"title": "SOAR: Repeat Action Run",
@@ -155,9 +166,21 @@
 					"group": "inline"
 				},
 				{
+					"command": "soarApps.viewActionRun",
+					"when": "view == soarActionRuns && viewItem == soaractionrun"
+				},
+				{
 					"command": "soarActionRuns.repeatActionRun",
 					"when": "view == soarActionRuns && viewItem == soaractionrun",
 					"group": "inline"
+				},
+				{
+					"command": "soarActionRuns.repeatActionRun",
+					"when": "view == soarActionRuns && viewItem == soaractionrun"
+				},
+				{
+					"command": "soarApps.viewActionRunWeb",
+					"when": "view == soarActionRuns && viewItem == soaractionrun"
 				},
 				{
 					"command": "soarApps.runAction",

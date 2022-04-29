@@ -3,7 +3,7 @@
 import * as vscode from 'vscode';
 
 import { version } from './commands/version'
-import { openWeb, openWebApps } from './commands/web'
+import { openWeb, openWebActionRunResult, openWebApps, openWebPlaybook } from './commands/web'
 import { DeployTaskProvider } from './tasks/deployTaskProvider';
 import { SoarAppsTreeProvider } from './tree/apps';
 import { SoarActionRunTreeProvider } from './tree/actionRun'
@@ -134,6 +134,25 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
 		}
 	}))
+
+	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewActionRunWeb', async (actionRunContext) => {
+		if (actionRunContext) {
+			let containerId = actionRunContext.data["actionRun"]["container"]
+			let actionRunId = actionRunContext.data["actionRun"]["id"]
+			openWebActionRunResult(containerId, actionRunId)
+		} else {
+			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
+		}
+	}))
+
+	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewPlaybookWeb', async (playbookId) => {
+		if (playbookId) {
+			openWebPlaybook(playbookId)
+		} else {
+			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
+		}
+	}))
+
 
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.runAction', async (data) => {
 		if (data) {

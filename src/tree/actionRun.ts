@@ -35,7 +35,7 @@ export class SoarActionRunTreeProvider implements vscode.TreeDataProvider<Action
 
 			return actionRunFunc().then(function (res) {
 				let appEntries = res.data["data"]
-				let appTreeItems = appEntries.map((entry: any) => (new ActionRun(entry["name"], { "actionRun": entry }, vscode.TreeItemCollapsibleState.Collapsed)))
+				let appTreeItems = appEntries.map((entry: any) => (new ActionRun(entry["name"], { "actionRun": entry }, vscode.TreeItemCollapsibleState.None)))
 				return appTreeItems
 			}).catch(function(err) {
 				console.error(err)
@@ -117,6 +117,9 @@ export class ActionRun extends ActionRunTreeItem {
 	generateLabel = function(data: any): vscode.MarkdownString {
 		let label = new vscode.MarkdownString(`## ${data["actionRun"]["action"]} \n`);
 		let actionRunId = data["actionRun"]["id"]
+		let actionRunMessage = data["actionRun"]["message"]
+
+		label.appendMarkdown(`*${actionRunMessage}*\n\n`)
 
 		label.appendMarkdown(`**Action Run ID**: ${actionRunId} \n`)
 		label.appendMarkdown(`[Inspect](command:soarApps.viewActionRun?${actionRunId}) \n`)
@@ -135,7 +138,10 @@ export class ActionRun extends ActionRunTreeItem {
 		if (data["actionRun"]["playbook_run"] !== null) {
 			label.appendMarkdown(`### Playbook \n`)
 
-			label.appendMarkdown(`**Playbook Run ID:**</b> ${data["actionRun"]["playbook_run"].toString()}`)
+			label.appendMarkdown(`**Playbook Run ID:**</b> ${data["actionRun"]["playbook_run"].toString()}\n\n`)
+			label.appendMarkdown(`**Playbook:**</b> ${data["actionRun"]["_pretty_playbook"]}\n\n`)
+			label.appendMarkdown(`[Open in Playbook Editor](command:soarApps.viewPlaybookWeb?${data["actionRun"]["playbook"]}) \n\n`)
+
 		}
 
 		return label

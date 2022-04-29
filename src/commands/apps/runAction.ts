@@ -119,6 +119,8 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 				shouldResume: shouldResume,
 				buttons: showSkip ? [skipParamButton] : [] 
 			});
+
+			enteredParam = enteredParam.label
 	
 		} else if (paramInfo["data_type"] === "boolean") {
 			const values: QuickPickItem[] = [{'label': "true"}, {'label': "false"}]
@@ -132,6 +134,8 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 				shouldResume: shouldResume,
 				buttons: showSkip ? [skipParamButton] : []
 			});
+
+			enteredParam = enteredParam.label
 		} else {
 
 			enteredParam = await input.showInputBox({
