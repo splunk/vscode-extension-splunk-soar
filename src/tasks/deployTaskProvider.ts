@@ -81,10 +81,11 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 	}
 
 	private async doBuild(): Promise<void> {
-		return new Promise<void>((resolve) => {
+		return new Promise<void>(async (resolve) => {
+			let client = getConfiguredClient()
 
             // tar working directory to temporary directory, get base64 repr, post to api, wait for response.
-
+			let packageDispose = vscode.window.setStatusBarMessage("$(loading~spin) Packaging App...")
 			this.writeEmitter.fire('Starting build...\r\n');
 
             let tmpDir = os.tmpdir()
@@ -101,23 +102,25 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 			let base = path.basename(this.workspaceRoot) 
 			this.writeEmitter.fire(`Packaging app located in: ${base}\r\n`)
 
+			let result = await tar.create({file: outPath, gzip: true, cwd: path.join(this.workspaceRoot, "../"), filter: filterFiles}, [base])
+			packageDispose.dispose()
 
-            tar.create({file: outPath, gzip: true, cwd: path.join(this.workspaceRoot, "../"), filter: filterFiles}, [base]).then(
-				(_: any) => {
-					this.writeEmitter.fire(`File packaged in ${outPath}\n\r`)
+			let uploadDispose = vscode.window.setStatusBarMessage("$(loading~spin) Uploading App...", 10000)
 
-                    const appFile = fs.readFileSync(outPath, {encoding: 'base64'})
-                    let client = getConfiguredClient()
-                    client.installApp(appFile).then(res => {
-                        this.writeEmitter.fire("Installed App\n\r")
-                        this.writeEmitter.fire(JSON.stringify(res.data));
-						this.closeEmitter.fire(0);
-						resolve()
-                    }).catch(function(err) {
-                        console.log(err)
-                    })
-                }
-            )
+			try {
+				const appFile = fs.readFileSync(outPath, {encoding: 'base64'})
+				let res = await client.installApp(appFile)
+				uploadDispose.dispose()
+				vscode.window.setStatusBarMessage("$(pass-filled) Successfully Uploaded App", 3000)
+				this.writeEmitter.fire(JSON.stringify(res.data));
+				this.closeEmitter.fire(0);
+				resolve()
+
+			} catch(err) {
+				this.writeEmitter.fire(JSON.stringify(err.response.data));
+				this.closeEmitter.fire(0);
+				resolve()
+			}
 
 		});
 	}
