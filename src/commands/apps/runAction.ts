@@ -1,4 +1,4 @@
-import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri, ProgressLocation, env, workspace } from 'vscode';
+import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri, ProgressLocation, env, workspace, commands } from 'vscode';
 import { getConfiguredClient } from '../../soar/client';
 
 /**
@@ -217,7 +217,7 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 		soarOutput.clear()
 		soarOutput.append(JSON.stringify(appRunResult.data, null, 4))
 		soarOutput.show()
-
+		commands.executeCommand('soarActionRuns.refresh');
 	})
 }
 

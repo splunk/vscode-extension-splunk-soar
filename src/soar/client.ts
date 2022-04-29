@@ -67,6 +67,17 @@ export class SoarClient {
         return await this.httpClient.get(`app/${appId}`, {params: {"pretty": true}})
     }
 
+
+    triggerActionTargets = async (actionName:string, container_id: string,  targets) => {
+        return await this.httpClient.post(`action_run`, 
+        {
+            "action": actionName,
+            "container_id": parseInt(container_id),
+            "name": actionName,
+            "targets": targets
+        })
+    }
+
     triggerAction = async (actionName:string, container_id: string, assetName: string, appId: string, parameters) => {
         return await this.httpClient.post(`action_run`, 
         {

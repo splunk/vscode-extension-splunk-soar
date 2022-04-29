@@ -97,6 +97,12 @@
 				"command": "soarApps.viewActionRun",
 				"title": "SOAR: View Action Run",
 				"icon": "$(eye)"
+			},
+
+			{
+				"command": "soarActionRuns.repeatActionRun",
+				"title": "SOAR: Repeat Action Run",
+				"icon": "$(debug-restart)"
 			}
 		],
 		"viewsContainers": {
@@ -145,6 +151,11 @@
 			"view/item/context": [
 				{
 					"command": "soarApps.viewActionRun",
+					"when": "view == soarActionRuns && viewItem == soaractionrun",
+					"group": "inline"
+				},
+				{
+					"command": "soarActionRuns.repeatActionRun",
 					"when": "view == soarActionRuns && viewItem == soaractionrun",
 					"group": "inline"
 				},

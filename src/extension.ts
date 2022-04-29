@@ -14,6 +14,7 @@ import { ContainerContentProvider } from './commands/containers/viewContainer';
 import {FileContainerContentProvider} from './commands/apps/viewFile'
 import { viewAppDocs } from './commands/apps/viewAppDocs';
 import { ActionRunContentProvider } from './commands/actionRuns/viewActionRun';
+import { repeatActionRun } from './commands/actionRuns/repeatActionRun';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 
@@ -126,6 +127,13 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}));
 
+	context.subscriptions.push(vscode.commands.registerCommand('soarActionRuns.repeatActionRun', async (data) => {
+		if (data) {
+			repeatActionRun(context, data).catch(console.error)
+		} else {
+			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
+		}
+	}))
 
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.runAction', async (data) => {
 		if (data) {

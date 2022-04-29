@@ -93,7 +93,13 @@ export class ActionRun extends ActionRunTreeItem {
 				light: path.join(__filename, '..', '..', 'resources', 'light', 'error.svg'),
 				dark: path.join(__filename, '..', '..', 'resources', 'dark', 'error.svg')
 			};
+		} else if (data["actionRun"]["status"] == "running") {
+			this.iconPath = {
+				light: path.join(__filename, '..', '..', 'resources', 'light', 'gear.svg'),
+				dark: path.join(__filename, '..', '..', 'resources', 'dark', 'gear.svg')
+			};
 		}
+		
 		this.tooltip = this.generateLabel(data)
 		this.tooltip.isTrusted = true
 		this.tooltip.supportHtml = true		
