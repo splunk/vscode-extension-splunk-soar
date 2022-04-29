@@ -5,19 +5,18 @@ import * as vscode from 'vscode';
 import { version } from './commands/version'
 import { openWeb, openWebActionRunResult, openWebApps, openWebPlaybook } from './commands/web'
 import { DeployTaskProvider } from './tasks/deployTaskProvider';
-import { SoarAppsTreeProvider } from './tree/apps';
-import { SoarActionRunTreeProvider } from './tree/actionRun'
-import { AssetContentProvider } from './commands/assets/viewAsset'
-import { AppContentProvider } from './commands/apps/viewApp';
-import { runActionInput } from './commands/apps/runAction';
-import { ContainerContentProvider } from './commands/containers/viewContainer';
-import {FileContainerContentProvider} from './commands/apps/viewFile'
-import { viewAppDocs } from './commands/apps/viewAppDocs';
-import { ActionRunContentProvider } from './commands/actionRuns/viewActionRun';
-import { repeatActionRun } from './commands/actionRuns/repeatActionRun';
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+import { SoarAppsTreeProvider } from './views/apps';
+import { SoarActionRunTreeProvider } from './views/actionRun'
 
+import { AppContentProvider } from './inspect/appContentProvider';
+import { AppFileContentProvider } from './inspect/appFileContentProvider';
+import { ContainerContentProvider } from './inspect/containerContentProvider';
+import { AssetContentProvider } from './inspect/assetContentProvider';
+import {ActionRunContentProvider} from './inspect/actionRunContentProvider'
+
+import { runActionInput } from './commands/apps/runAction';
+import { viewAppDocs } from './commands/apps/viewAppDocs';
+import { repeatActionRun } from './commands/actionRuns/repeatActionRun';
 
 let deployTaskProvider: vscode.Disposable | undefined;
 
@@ -26,23 +25,23 @@ export function activate(context: vscode.ExtensionContext) {
 		? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
 
 	//	Top-Level Commands
-	let disposableVersion = vscode.commands.registerCommand('vscode-splunk-soar.version', () => { version() });
+	let disposableVersion = vscode.commands.registerCommand('splunkSoar.version', () => { version() });
 	context.subscriptions.push(disposableVersion);
 
-	let disposableOpenWeb = vscode.commands.registerCommand('vscode-splunk-soar.openWeb', () => { openWeb() });
+	let disposableOpenWeb = vscode.commands.registerCommand('splunkSoar.openWeb', () => { openWeb() });
 	context.subscriptions.push(disposableOpenWeb);
 
-	let disposableOpenWebApps = vscode.commands.registerCommand('vscode-splunk-soar.openWebApps', () => { openWebApps() });
+	let disposableOpenWebApps = vscode.commands.registerCommand('splunkSoar.openWebApps', () => { openWebApps() });
 	context.subscriptions.push(disposableOpenWebApps);
 
 	// Tree
 	const soarAppsTreeProvider = new SoarAppsTreeProvider(rootPath)
 	vscode.window.registerTreeDataProvider('soarApps', soarAppsTreeProvider)
-	vscode.commands.registerCommand('soarApps.refresh', () => soarAppsTreeProvider.refresh());
+	vscode.commands.registerCommand('splunkSoar.apps.refresh', () => soarAppsTreeProvider.refresh());
 
 	const soarActionRunsTreeProvider = new SoarActionRunTreeProvider(rootPath)
 	vscode.window.registerTreeDataProvider('soarActionRuns', soarActionRunsTreeProvider)
-	vscode.commands.registerCommand('soarActionRuns.refresh', () => soarActionRunsTreeProvider.refresh());
+	vscode.commands.registerCommand('splunkSoar.actionRuns.refresh', () => soarActionRunsTreeProvider.refresh());
 
 	const assetScheme = "soarasset"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(assetScheme, AssetContentProvider));
@@ -112,7 +111,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 
 	const fileScheme = "soarfile"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(fileScheme, FileContainerContentProvider));
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(fileScheme, AppFileContentProvider));
 
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewFile', async (soarFileItem) => {
 		if (!soarFileItem) {

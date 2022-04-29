@@ -50,6 +50,7 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 				type: DeployTaskProvider.CustomBuildScriptType,
 			};
 		}
+
 		return new vscode.Task(definition, vscode.TaskScope.Workspace, `soarapp`,
             DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
 				// When the task is executed, this callback will run. Here, we setup for running the task.

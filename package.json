@@ -16,8 +16,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:vscode-splunk-soar.version",
-		"onCommand:vscode-splunk-soar.openWeb",
+		"onCommand:splunk-soar.version",
+		"onCommand:splunk-soar.openWeb",
 		"onCommand:soarApps.viewContainer",
 		"onCommand:soarApps.viewAsset",
 		"onCommand:soarApps.runAction",
@@ -38,26 +38,26 @@
 		],
 		"commands": [
 			{
-				"command": "vscode-splunk-soar.version",
+				"command": "splunkSoar.version",
 				"title": "SOAR: Version"
 			},
 			{
-				"command": "vscode-splunk-soar.openWeb",
+				"command": "splunkSoar.openWeb",
 				"title": "SOAR: Open Web UI",
 				"icon": "$(globe)"
 			},
 			{
-				"command": "vscode-splunk-soar.openWebApps",
+				"command": "splunkSoar.openWebApps",
 				"title": "SOAR: Open Web UI - Apps",
 				"icon": "$(globe)"
 			},
 			{
-				"command": "soarApps.refresh",
+				"command": "splunkSoar.apps.refresh",
 				"title": "SOAR: Apps Refresh",
 				"icon": "$(refresh)"
 			},
 			{
-				"command": "soarActionRuns.refresh",
+				"command": "splunkSoar.actionRuns.refresh",
 				"title": "SOAR: Action Runs Refresh",
 				"icon": "$(refresh)"
 			},
@@ -144,17 +144,17 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "soarApps.refresh",
+					"command": "splunkSoar.apps.refresh",
 					"when": "view == soarApps",
 					"group": "navigation"
 				},
 				{
-					"command": "soarActionRuns.refresh",
+					"command": "splunkSoar.actionRuns.refresh",
 					"when": "view == soarActionRuns",
 					"group": "navigation"
 				},
 				{
-					"command": "vscode-splunk-soar.openWebApps",
+					"command": "splunkSoar.openWebApps",
 					"when": "view == soarApps",
 					"group": "navigation"
 				}

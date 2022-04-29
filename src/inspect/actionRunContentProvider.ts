@@ -1,6 +1,6 @@
 import { strictEqual } from 'assert';
 import * as vscode from 'vscode'
-import { getConfiguredClient } from '../../soar/client';
+import { getConfiguredClient } from '../soar/client';
 
 export const ActionRunContentProvider = new class implements vscode.TextDocumentContentProvider {
     onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>();
