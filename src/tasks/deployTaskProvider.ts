@@ -10,6 +10,7 @@ import * as fs from 'fs'
 import { getConfiguredClient } from '../soar/client';
 
 interface CustomBuildTaskDefinition extends vscode.TaskDefinition {
+	cwd?: string
 }
 
 export class DeployTaskProvider implements vscode.TaskProvider {
@@ -31,7 +32,7 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 
 	public resolveTask(_task: vscode.Task): vscode.Task | undefined {
 		const definition: CustomBuildTaskDefinition = <any>_task.definition;
-		return this.getTask(definition);
+		return this.getTask(definition.cwd ? definition.cwd : this.workspaceRoot , definition);
 	}
 
 	private getTasks(): vscode.Task[] {
@@ -44,17 +45,19 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 		return this.tasks;
 	}
 
-	private getTask(definition?: CustomBuildTaskDefinition): vscode.Task {
+	private getTask(cwd?: string, definition?: CustomBuildTaskDefinition): vscode.Task {
+
 		if (definition === undefined) {
 			definition = {
 				type: DeployTaskProvider.CustomBuildScriptType,
 			};
 		}
 
+
 		return new vscode.Task(definition, vscode.TaskScope.Workspace, `soarapp`,
             DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
 				// When the task is executed, this callback will run. Here, we setup for running the task.
-				return new CustomBuildTaskTerminal(this.workspaceRoot);
+				return new CustomBuildTaskTerminal(this.workspaceRoot, definition.cwd ? definition.cwd : '.');
 			}));
 	}
 }
@@ -67,7 +70,10 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 
 	private fileWatcher: vscode.FileSystemWatcher | undefined;
 
-	constructor(private workspaceRoot: string) {
+	private cwd: string
+
+	constructor(private workspaceRoot: string, cwd: string) {
+		this.cwd = cwd
 	}
 
 	open(initialDimensions: vscode.TerminalDimensions | undefined): void {
@@ -89,6 +95,8 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 			let packageDispose = vscode.window.setStatusBarMessage("$(loading~spin) Packaging App...")
 			this.writeEmitter.fire('Starting build...\r\n');
 
+			let appPath = path.join(this.workspaceRoot, this.cwd)
+
             let tmpDir = os.tmpdir()
 
             let outPath = tmpDir + "/tmpapp.tgz"
@@ -100,10 +108,10 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
                 return true
             }
 
-			let base = path.basename(this.workspaceRoot) 
+			let base = path.basename(appPath) 
 			this.writeEmitter.fire(`Packaging app located in: ${base}\r\n`)
 
-			let result = await tar.create({file: outPath, gzip: true, cwd: path.join(this.workspaceRoot, "../"), filter: filterFiles}, [base])
+			let result = await tar.create({file: outPath, gzip: true, cwd: path.join(appPath, "../"), filter: filterFiles}, [base])
 			packageDispose.dispose()
 
 			let uploadDispose = vscode.window.setStatusBarMessage("$(loading~spin) Uploading App...", 10000)

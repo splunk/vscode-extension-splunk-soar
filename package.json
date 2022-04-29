@@ -212,7 +212,13 @@
 		"taskDefinitions": [
 			{
 				"type": "soarapp",
-				"when": "shellExecutionSupported"
+				"when": "shellExecutionSupported",
+				"properties": {
+					"cwd": {
+						"type": "string",
+						"description": "App Directory"
+					}
+				}		
 			}
 		],
 		"configuration": {
