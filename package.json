@@ -22,6 +22,7 @@
 		"onCommand:soarApps.viewAsset",
 		"onCommand:soarApps.runAction",
 		"onView:soarApps",
+		"onView:soarActionRuns",
 		"onCommand:workbench.action.tasks.runTask"
 	],
 	"main": "./dist/extension.js",
@@ -51,7 +52,12 @@
 			},
 			{
 				"command": "soarApps.refresh",
-				"title": "SOAR: Refresh",
+				"title": "SOAR: Apps Refresh",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "soarActionRuns.refresh",
+				"title": "SOAR: Action Runs Refresh",
 				"icon": "$(refresh)"
 			},
 			{
@@ -86,6 +92,11 @@
 				"command": "soarApps.viewContainer",
 				"title": "SOAR: View Container",
 				"icon": "$(eye)"
+			},
+			{
+				"command": "soarApps.viewActionRun",
+				"title": "SOAR: View Action Run",
+				"icon": "$(eye)"
 			}
 		],
 		"viewsContainers": {
@@ -104,6 +115,12 @@
 					"name": "SOAR Apps",
 					"icon": "media/soarcloud.png",
 					"contextualTitle": "SOAR Apps"
+				},
+				{
+					"id": "soarActionRuns",
+					"name": "SOAR Action Runs",
+					"icon": "media/soarcloud.png",
+					"contextualTitle": "SOAR Action Runs"
 				}
 			]
 		},
@@ -115,12 +132,22 @@
 					"group": "navigation"
 				},
 				{
+					"command": "soarActionRuns.refresh",
+					"when": "view == soarActionRuns",
+					"group": "navigation"
+				},
+				{
 					"command": "vscode-splunk-soar.openWebApps",
 					"when": "view == soarApps",
 					"group": "navigation"
 				}
 			],
 			"view/item/context": [
+				{
+					"command": "soarApps.viewActionRun",
+					"when": "view == soarActionRuns && viewItem == soaractionrun",
+					"group": "inline"
+				},
 				{
 					"command": "soarApps.runAction",
 					"when": "view == soarApps && viewItem == soaraction",
@@ -184,6 +211,12 @@
 					"default": "",
 					"description": "Password for your SOAR instance",
 					"order": 3
+				},
+				"actionRuns.showOwnOnly": {
+					"type": "boolean",
+					"default": false,
+					"description": "Filter the Action Runs view to show only runs from the configured user",
+					"order": 4
 				}
 			}
 		}

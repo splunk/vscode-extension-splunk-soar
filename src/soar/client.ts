@@ -1,5 +1,6 @@
 import { AxiosInstance, AxiosResponse } from "axios";
 import * as https from 'https'; 
+import { setFlagsFromString } from "v8";
 import * as vscode from 'vscode';
 const axios = require('axios').default;
 
@@ -40,6 +41,14 @@ export class SoarClient {
 
     listAppAssets = async (appId: string) => {
         return await this.httpClient.get("asset", {params: {"pretty": true, "page_size": 0, "_filter_app": `"${appId}"`}})
+    }
+
+    listActionRuns = async() => {
+        return await this.httpClient.get("action_run", {params: {"pretty": true, "page_size": 0, "sort": "create_time", "order": "desc"}})
+    }
+
+    listUserActionRuns = async() => {
+        return await this.httpClient.get("action_run", {params: {"pretty": true, "page_size": 0, "sort": "create_time", "order": "desc", "_filter_owner__username": `'${this.username}'`}})
     }
 
     appContent = async (appId: string) => {

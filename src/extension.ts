@@ -6,12 +6,14 @@ import { version } from './commands/version'
 import { openWeb, openWebApps } from './commands/web'
 import { DeployTaskProvider } from './tasks/deployTaskProvider';
 import { SoarAppsTreeProvider } from './tree/apps';
+import { SoarActionRunTreeProvider } from './tree/actionRun'
 import { AssetContentProvider } from './commands/assets/viewAsset'
 import { AppContentProvider } from './commands/apps/viewApp';
 import { runActionInput } from './commands/apps/runAction';
 import { ContainerContentProvider } from './commands/containers/viewContainer';
 import {FileContainerContentProvider} from './commands/apps/viewFile'
 import { viewAppDocs } from './commands/apps/viewAppDocs';
+import { ActionRunContentProvider } from './commands/actionRuns/viewActionRun';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 
@@ -36,6 +38,10 @@ export function activate(context: vscode.ExtensionContext) {
 	const soarAppsTreeProvider = new SoarAppsTreeProvider(rootPath)
 	vscode.window.registerTreeDataProvider('soarApps', soarAppsTreeProvider)
 	vscode.commands.registerCommand('soarApps.refresh', () => soarAppsTreeProvider.refresh());
+
+	const soarActionRunsTreeProvider = new SoarActionRunTreeProvider(rootPath)
+	vscode.window.registerTreeDataProvider('soarActionRuns', soarActionRunsTreeProvider)
+	vscode.commands.registerCommand('soarActionRuns.refresh', () => soarActionRunsTreeProvider.refresh());
 
 	const assetScheme = "soarasset"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(assetScheme, AssetContentProvider));
@@ -71,7 +77,6 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}));
 
-
 	const containerScheme = "soarcontainer"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(containerScheme, ContainerContentProvider));
 
@@ -82,6 +87,23 @@ export function activate(context: vscode.ExtensionContext) {
 
 		if (containerId) {
 			const uri = vscode.Uri.parse('soarcontainer:' + containerId);
+			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			await vscode.window.showTextDocument(doc, { preview: false });
+		}
+	}));
+
+	const actionRunScheme = "soaractionrun"
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(actionRunScheme, ActionRunContentProvider));
+
+	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewActionRun', async (actionRunId) => {
+		if (!actionRunId) {
+			actionRunId = await vscode.window.showInputBox({ placeHolder: 'id' });
+		} else if (actionRunId.hasOwnProperty("data")) {
+			actionRunId = String(actionRunId.data["actionRun"]["id"])
+		}
+
+		if (actionRunId) {
+			const uri = vscode.Uri.parse('soaractionrun:' + actionRunId);
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
