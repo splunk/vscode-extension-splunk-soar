@@ -133,25 +133,28 @@ export class AppWizardPanel {
         </head>
         <body id="webview-body">
         <header>
-          <h1>App Wizard</h1>
+          <h1>SOAR App Wizard</h1>
           </header>
           <section id="notes-form">
-            <vscode-text-field id="name" value="title" placeholder="Enter a name">App Name</vscode-text-field>
-            <vscode-text-area id="description"value="content" placeholder="Write your heart out, Shakespeare!" resize="vertical" rows=5>App Description</vscode-text-area>
+            <p>Bootstrap a new SOAR App and save it to a local directory.</p>
 
-            <vscode-text-field id="vendor" value="title" placeholder="Enter a name">Product Vendor</vscode-text-field>
-            <vscode-text-field id="productName value="title" placeholder="Enter a name">Product Name</vscode-text-field>
+            <vscode-text-field id="name" placeholder="Required">App Name</vscode-text-field>
+            <vscode-text-area id="description" placeholder="Required" resize="vertical" rows=5>App Description</vscode-text-area>
 
+            <vscode-text-field id="vendor" placeholder="Required">Product Vendor</vscode-text-field>
+            <vscode-text-field id="productName" placeholder="Required">Product Name</vscode-text-field>
+            <vscode-text-field id="publisher" placeholder="Required">App Publisher</vscode-text-field>
 
-            <vscode-text-field id="title" value="title" placeholder="Enter a name">App Publisher</vscode-text-field>
-
-            <vscode-dropdown position="below">
+            <div>
+            <label class="label">App Type</label>
+            <vscode-dropdown position="below" style="margin-left: 10px">
               <vscode-option>information</vscode-option>
               <vscode-option>ticketing</vscode-option>
               <vscode-option>endpoint</vscode-option>
             </vscode-dropdown>
+            </div>
         
-
+            <!--
             <div class="tags-container">
             <div>
             Light Mode Logo
@@ -162,9 +165,9 @@ export class AppWizardPanel {
             Dark Mode Logo
             <input type="file" id="myFile" name="filename">
             </div>
-            </div>
+            </div>-->
 
-            <vscode-button id="submit-button">Continue</vscode-button>
+            <vscode-button id="submit-button">Create</vscode-button>
           </section>
         </body>
       </html>
