@@ -275,6 +275,12 @@
 					"default": false,
 					"description": "Filter the Action Runs view to show only runs from the configured user",
 					"order": 4
+				},
+				"codeLensEnabled": {
+					"type": "boolean",
+					"default": true,
+					"description": "Show inline actions above action handlers",
+					"order": 5
 				}
 			}
 		}

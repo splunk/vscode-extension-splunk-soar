@@ -6,6 +6,12 @@ import { getConfiguredClient } from '../soar/client';
 export class RunActionLensProvider implements CodeLensProvider {
     async provideCodeLenses(document: TextDocument): Promise<CodeLens[]> {
       let client = getConfiguredClient()
+      const config = workspace.getConfiguration()
+      const codeLensEnabled: boolean = config.get<boolean>("codeLensEnabled", true)
+      
+      if (!codeLensEnabled) {
+        return []
+      }
       
       let fileName = path.parse(document.fileName).base.replace("_connector.py", "")
       let metadataUri = document.uri.with({path: path.join(document.uri.path, '..', fileName + ".json")})
