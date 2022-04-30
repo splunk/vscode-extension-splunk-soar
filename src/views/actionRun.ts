@@ -41,7 +41,7 @@ export class SoarActionRunTreeProvider implements vscode.TreeDataProvider<Action
 				console.error(err)
 			})
 		}
-		else if (element.contextValue === "soaractionrun") {
+		else if (element.contextValue.startsWith("soaractionrun")) {
 			let newEntries = [new KeyValueItem("Message", element.data["actionRun"]["message"], vscode.TreeItemCollapsibleState.None),
 			]
 
@@ -102,7 +102,8 @@ export class ActionRun extends ActionRunTreeItem {
 		
 		this.tooltip = this.generateLabel(data)
 		this.tooltip.isTrusted = true
-		this.tooltip.supportHtml = true		
+		this.tooltip.supportHtml = true
+		this.contextValue = `soaractionrun:${data["actionRun"]["status"]}`
 
 	}
 

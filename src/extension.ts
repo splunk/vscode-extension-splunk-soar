@@ -18,6 +18,7 @@ import { runActionInput } from './commands/apps/runAction';
 import { viewAppDocs } from './commands/apps/viewAppDocs';
 import { repeatActionRun } from './commands/actionRuns/repeatActionRun';
 import { installBundle } from './commands/apps/installBundle';
+import { getConfiguredClient } from './soar/client';
 
 let deployTaskProvider: vscode.Disposable | undefined;
 
@@ -143,6 +144,20 @@ export function activate(context: vscode.ExtensionContext) {
 			let containerId = actionRunContext.data["actionRun"]["container"]
 			let actionRunId = actionRunContext.data["actionRun"]["id"]
 			openWebActionRunResult(containerId, actionRunId)
+		} else {
+			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
+		}
+	}))
+
+	context.subscriptions.push(vscode.commands.registerCommand('soarApps.cancelActionRun', async (actionRunContext) => {
+		let client = getConfiguredClient()
+		if (actionRunContext) {
+			let actionRunId = actionRunContext.data["actionRun"]["id"]
+			try {
+				await client.cancelActionRun(actionRunId)
+			} catch(err) {
+				vscode.window.showErrorMessage(err.response.data.message)
+			}
 		} else {
 			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
 		}

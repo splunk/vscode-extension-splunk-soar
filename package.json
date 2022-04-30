@@ -105,6 +105,11 @@
 				"icon": "$(eye)"
 			},
 			{
+				"command": "soarApps.cancelActionRun",
+				"title": "SOAR: Cancel Action Run",
+				"icon": "$(primitive-square)"
+			},
+			{
 				"command": "soarApps.viewActionRunWeb",
 				"title": "SOAR: View Action Run Web",
 				"icon": "$(globe)"
@@ -167,25 +172,30 @@
 			"view/item/context": [
 				{
 					"command": "soarApps.viewActionRun",
-					"when": "view == soarActionRuns && viewItem == soaractionrun",
+					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:(running|failed|success)/",
+					"group": "inline"
+				},
+				{
+					"command": "soarApps.cancelActionRun",
+					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:(running)/",
 					"group": "inline"
 				},
 				{
 					"command": "soarApps.viewActionRun",
-					"when": "view == soarActionRuns && viewItem == soaractionrun"
+					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:(running|failed|success)/"
 				},
 				{
 					"command": "soarActionRuns.repeatActionRun",
-					"when": "view == soarActionRuns && viewItem == soaractionrun",
+					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:(failed|success)/",
 					"group": "inline"
 				},
 				{
 					"command": "soarActionRuns.repeatActionRun",
-					"when": "view == soarActionRuns && viewItem == soaractionrun"
+					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:(failed|success)/"
 				},
 				{
 					"command": "soarApps.viewActionRunWeb",
-					"when": "view == soarActionRuns && viewItem == soaractionrun"
+					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:(failed|success)/"
 				},
 				{
 					"command": "soarApps.runAction",

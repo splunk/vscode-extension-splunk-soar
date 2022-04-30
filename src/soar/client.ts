@@ -94,6 +94,10 @@ export class SoarClient {
         })
     }
 
+    cancelActionRun = async (actionRunId: string) => {
+        return await this.httpClient.post(`action_run/${actionRunId}`, {"cancel": true})
+    }
+
     getActionRun = async (actionRunId: string) => {
         return await this.httpClient.get(`action_run/${actionRunId}`)
     }
