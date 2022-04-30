@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import * as path from 'path';
 
 import { version } from './commands/version'
 import { openWeb, openWebActionRunResult, openWebApps, openWebPlaybook } from './commands/web'
@@ -19,6 +20,7 @@ import { viewAppDocs } from './commands/apps/viewAppDocs';
 import { repeatActionRun } from './commands/actionRuns/repeatActionRun';
 import { installBundle } from './commands/apps/installBundle';
 import { getConfiguredClient } from './soar/client';
+import {AppWizardPanel} from './webviews/appWizard'
 
 let deployTaskProvider: vscode.Disposable | undefined;
 
@@ -190,6 +192,14 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}))
 
+
+	const showAppWizardCommand = vscode.commands.registerCommand("soarApps.showAppWizard", async () => {
+		AppWizardPanel.render(context.extensionUri);
+	  });
+	
+	  // Add command to the extension context
+	context.subscriptions.push(showAppWizardCommand);
+
 	if (!rootPath) {
 		return
 	}
@@ -199,6 +209,7 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log(deployTaskProvider)
 
 }
+
 
 // this method is called when your extension is deactivated
 export function deactivate() {

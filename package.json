@@ -39,6 +39,10 @@
 		],
 		"commands": [
 			{
+				"command": "soarApps.showAppWizard",
+				"title": "SOAR: Show App Wizard"
+			},
+			{
 				"command": "splunkSoar.version",
 				"title": "SOAR: Version"
 			},
@@ -114,7 +118,6 @@
 				"title": "SOAR: View Action Run Web",
 				"icon": "$(globe)"
 			},
-
 			{
 				"command": "soarApps.viewPlaybookWeb",
 				"title": "SOAR: View Playbook Web",
@@ -233,7 +236,7 @@
 						"type": "string",
 						"description": "App Directory"
 					}
-				}		
+				}
 			}
 		],
 		"configuration": {
@@ -304,7 +307,9 @@
 		"webpack-cli": "^4.9.2"
 	},
 	"dependencies": {
+		"@vscode/webview-ui-toolkit": "^1.0.0",
 		"axios": "^0.26.1",
+		"ejs": "^3.1.7",
 		"tar": "^6.1.11"
 	}
 }
