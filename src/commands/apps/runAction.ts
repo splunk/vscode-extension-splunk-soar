@@ -200,9 +200,14 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 		progress.report({ increment: 10, message: `${message}: Action Run ID: ${action_run_id}`});
 		
 		let actionRunResult = await client.getActionRun(action_run_id)
-		
-		while (actionRunResult.data.status === "running") {
+		await commands.executeCommand('splunkSoar.actionRuns.refresh');
+					
+		let maxTries = 30
+		let actualTries = 0
+
+		while (actionRunResult.data.status === "running" && actualTries < maxTries) {
 			progress.report({increment: 25, message: "Still running..."})
+			actualTries += 1
 			await wait()
 			actionRunResult = await client.getActionRun(action_run_id)
 		}
@@ -221,7 +226,7 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 		soarOutput.clear()
 		soarOutput.append(JSON.stringify(appRunResult.data, null, 4))
 		soarOutput.show()
-		commands.executeCommand('soarActionRuns.refresh');
+		await commands.executeCommand('splunkSoar.actionRuns.refresh');
 	})
 }
 
