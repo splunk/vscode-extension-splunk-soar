@@ -9,18 +9,8 @@ window.addEventListener("load", main);
 function setVSCodeMessageListener() {
   window.addEventListener("message", (event) => {
     const command = event.data.command;
-    const noteData = JSON.parse(event.data.payload);
-
-    switch (command) {
-      case "receiveDataInWebview":
-        openedNote = noteData;
-        renderTags(openedNote.tags);
-        break;
-    }
   });
 }
-
-
 
 function createApp() {
   const titleInputValue = document.getElementById("name").value;
