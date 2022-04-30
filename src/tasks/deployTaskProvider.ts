@@ -114,7 +114,7 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 			let result = await tar.create({file: outPath, gzip: true, cwd: path.join(appPath, "../"), filter: filterFiles}, [base])
 			packageDispose.dispose()
 
-			let uploadDispose = vscode.window.setStatusBarMessage("$(loading~spin) Uploading App...", 10000)
+			let uploadDispose = vscode.window.setStatusBarMessage("$(loading~spin) Uploading App...")
 
 			try {
 				const appFile = fs.readFileSync(outPath, {encoding: 'base64'})
@@ -126,6 +126,7 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 				resolve()
 
 			} catch(err) {
+				vscode.window.setStatusBarMessage("$(error) Error uploading app", 3000)
 				this.writeEmitter.fire(JSON.stringify(err.response.data));
 				this.closeEmitter.fire(0);
 				resolve()

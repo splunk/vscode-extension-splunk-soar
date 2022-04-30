@@ -3,7 +3,6 @@ import { getConfiguredClient } from '../../soar/client';
 
 function wait(ms = 1000) {
 	return new Promise(resolve => {
-	  console.log(`waiting ${ms} ms...`);
 	  setTimeout(resolve, ms);
 	});
 }
@@ -28,10 +27,16 @@ export async function repeatActionRun(context: ExtensionContext, actionRunContex
 			progress.report({ increment: 10, message: `${message}: Action Run ID: ${action_run_id}`});
 			
 			let actionRunResult = await client.getActionRun(action_run_id)
+			await commands.executeCommand('splunkSoar.actionRuns.refresh');
 			
-			while (actionRunResult.data.status === "running") {
+			let maxTries = 30
+			let actualTries = 0
+
+			while (actionRunResult.data.status === "running" && actualTries < maxTries) {
 				progress.report({increment: 25, message: "Still running..."})
+				actualTries += 1
 				await wait()
+				console.log(`Try: ${actualTries}`);
 				actionRunResult = await client.getActionRun(action_run_id)
 			}
 	
@@ -49,7 +54,7 @@ export async function repeatActionRun(context: ExtensionContext, actionRunContex
 			soarOutput.clear()
 			soarOutput.append(JSON.stringify(appRunResult.data, null, 4))
 			soarOutput.show()
-			commands.executeCommand('soarActionRuns.refresh');
+			await commands.executeCommand('splunkSoar.actionRuns.refresh');
 		})
 	}).catch(err => {
 		console.log(err)

@@ -16,7 +16,8 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:splunk-soar.version",
+		"onCommand:splunkSoar.version",
+		"onCommand:soarApps.installBundle",
 		"onCommand:splunk-soar.openWeb",
 		"onCommand:soarApps.viewContainer",
 		"onCommand:soarApps.viewAsset",
@@ -55,6 +56,10 @@
 				"command": "splunkSoar.apps.refresh",
 				"title": "SOAR: Apps Refresh",
 				"icon": "$(refresh)"
+			},
+			{
+				"command": "soarApps.installBundle",
+				"title": "SOAR: Install App Bundle"
 			},
 			{
 				"command": "splunkSoar.actionRuns.refresh",

@@ -17,6 +17,7 @@ import {ActionRunContentProvider} from './inspect/actionRunContentProvider'
 import { runActionInput } from './commands/apps/runAction';
 import { viewAppDocs } from './commands/apps/viewAppDocs';
 import { repeatActionRun } from './commands/actionRuns/repeatActionRun';
+import { installBundle } from './commands/apps/installBundle';
 
 let deployTaskProvider: vscode.Disposable | undefined;
 
@@ -33,6 +34,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let disposableOpenWebApps = vscode.commands.registerCommand('splunkSoar.openWebApps', () => { openWebApps() });
 	context.subscriptions.push(disposableOpenWebApps);
+
+	let disposableBundle = vscode.commands.registerCommand('soarApps.installBundle', () => { installBundle() });
+	context.subscriptions.push(disposableVersion);
 
 	// Tree
 	const soarAppsTreeProvider = new SoarAppsTreeProvider(rootPath)
@@ -143,6 +147,8 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
 		}
 	}))
+
+
 
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewPlaybookWeb', async (playbookId) => {
 		if (playbookId) {
