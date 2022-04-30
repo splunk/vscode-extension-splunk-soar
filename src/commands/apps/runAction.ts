@@ -35,7 +35,7 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 		return state as State;
 	}
 
-	const title = `Run Action: ${actionContext.data.action["name"]}`;
+	const title = `Run Action: ${JSON.stringify(actionContext.data.action["name"])}`;
 
     let actionName = actionContext.data.action["name"]
     const actionDefinition = actionContext.data.app_json.actions.find((action) => action.action == actionName);

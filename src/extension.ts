@@ -21,6 +21,7 @@ import { repeatActionRun } from './commands/actionRuns/repeatActionRun';
 import { installBundle } from './commands/apps/installBundle';
 import { getConfiguredClient } from './soar/client';
 import {AppWizardPanel} from './webviews/appWizard'
+import { RunActionLensProvider, runActionLensSelector } from './codelens/runActionLensProvider';
 
 let deployTaskProvider: vscode.Disposable | undefined;
 
@@ -175,7 +176,6 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}))
 
-
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.runAction', async (data) => {
 		if (data) {
 			runActionInput(context, data).catch(console.error)
@@ -200,6 +200,13 @@ export function activate(context: vscode.ExtensionContext) {
 	  // Add command to the extension context
 	context.subscriptions.push(showAppWizardCommand);
 
+	let codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(
+		runActionLensSelector,
+		new RunActionLensProvider()
+	  )
+	  
+	  context.subscriptions.push(codeLensProviderDisposable)
+	  
 	if (!rootPath) {
 		return
 	}
