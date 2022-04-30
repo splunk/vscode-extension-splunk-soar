@@ -3,6 +3,7 @@ import * as ejs from 'ejs'
 const fsPromises = fs.promises;
 import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn, commands } from "vscode";
 import path = require('path');
+import { randomUUID } from 'crypto';
 
 /**
  * This class manages the state and behavior of HelloWorld webview panels.
@@ -209,7 +210,9 @@ export class AppWizardPanel {
 
               templateFiles.forEach(file => {
                 let currFile = fs.readFileSync(path.join(templatePath.fsPath, file), 'utf-8')
+                message.app.appid = randomUUID()
                 var outStr = ejs.render(currFile, message)
+
                 fs.writeFileSync(path.join(outAppFolderPath, file.substring(0, file.indexOf('.ejs'))), outStr)
               })
 

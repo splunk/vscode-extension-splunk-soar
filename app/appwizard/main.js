@@ -28,9 +28,8 @@ function createApp() {
 
   const app = {
     name: titleInputValue,
-    descriptionInputValue: descriptionInputValue
+    description: descriptionInputValue
   }
-  console.log(app)
 
   vscode.postMessage({ command: "createApp", app: app });
   

@@ -5,7 +5,6 @@ import { getConfiguredClient } from '../soar/client';
 
 export class RunActionLensProvider implements CodeLensProvider {
     async provideCodeLenses(document: TextDocument): Promise<CodeLens[]> {
-      let topOfDocument = new Range(0, 0, 0, 0)
       let client = getConfiguredClient()
       
       let fileName = path.parse(document.fileName).base.replace("_connector.py", "")
