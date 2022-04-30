@@ -211,9 +211,18 @@ export class AppWizardPanel {
               templateFiles.forEach(file => {
                 let currFile = fs.readFileSync(path.join(templatePath.fsPath, file), 'utf-8')
                 message.app.appid = randomUUID()
+                var outFilename = file.substring(0, file.indexOf('.ejs'))
                 var outStr = ejs.render(currFile, message)
 
-                fs.writeFileSync(path.join(outAppFolderPath, file.substring(0, file.indexOf('.ejs'))), outStr)
+                if (outFilename == "connector.py") {
+                  outFilename = `${message.app.name}_connector.py`
+                } else if (outFilename == "connector.json"){
+                  outFilename = `${message.app.name}.json`
+                } else if (outFilename == "consts.py"){
+                  outFilename = `${message.app.name}_consts.py`
+                }
+
+                fs.writeFileSync(path.join(outAppFolderPath, outFilename), outStr)
               })
 
               window.showInformationMessage(`App created in ${outAppFolderPath}`, ...["Open Folder"]).then(selection => {
