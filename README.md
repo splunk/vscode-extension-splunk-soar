@@ -57,7 +57,7 @@ By providing a [Tree View](https://code.visualstudio.com/api/extension-guides/tr
 ## Running Actions
 
 <p align="center">
-  <img src="media/appinstall.gif" alt="Running an action" />
+  <img src="media/actionrun.gif" alt="Running an action" />
 </p>
 
 Within the SOAR Apps view, there is a contextual control to run an action in the connected SOAR instance from within VS Code. An interactive dialog allows the user to provide the actions parameters as well as the desired execution context (asset, container). After triggering the execution, the extension will poll for the action to complete and pipe the generated result back into the VS Code Output terminal.
