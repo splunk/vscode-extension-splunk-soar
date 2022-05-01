@@ -51,7 +51,7 @@ Using the [TaskProvider API](https://code.visualstudio.com/api/extension-guides/
   <img src="media/inspect.gif" alt="Inspect" />
 </p>
 
-By providing a [Tree View](https://code.visualstudio.com/api/extension-guides/tree-view), the extension allows to browse apps and assets configured on the connected SOAR instance. Using [Virtual Documents](https://code.visualstudio.com/api/extension-guides/virtual-documents), users are able to review SOAR objects in JSON format on-the-fly. Note that these views are read-only.
+By providing a [Tree View](https://code.visualstudio.com/api/extension-guides/tree-view), the extension allows to browse apps and assets configured on the connected SOAR instance. Using [Virtual Documents](https://code.visualstudio.com/api/extension-guides/virtual-documents), users are able to review SOAR objects in JSON format on-the-fly. Note that these views are read-only.[](media/appinstall.gif)
 
 
 ## Running Actions
@@ -62,13 +62,26 @@ By providing a [Tree View](https://code.visualstudio.com/api/extension-guides/tr
 
 Within the SOAR Apps view, there is a contextual control to run an action in the connected SOAR instance from within VS Code. An interactive dialog allows the user to provide the actions parameters as well as the desired execution context (asset, container). After triggering the execution, the extension will poll for the action to complete and pipe the generated result back into the VS Code Output terminal.
 
+# Extension Settings
 
-## Contributing
-### Requirements
+|  Name | Description  |
+|---|---|
+|  `authentication.server` |  URL (including protocol and port) pointing to the SOAR instance |
+| `authentication.sslVerify`  |  Specifies whether or not to validate the SOAR server TLS certificate |
+|  `authentication.username` | Username to connect to the SOAR instance  |
+|  `authentication.password` | Password to connect to the SOAR instance  |
+| `actionRuns.showOwnOnly`  |  Specifies whether to filter the Action Run view to only show actions executed by the configured user  |
+| `codeLensEnabled`  | Specifies whether or not to show place inline CodeLens hints to quickly run actions on top of action handlers |
+|   |   |
+
+
+
+# Contributing
+## Requirements
 * `yarn` or `npm` installed
 * Open this repo in a clean VS Code workspace
 
-### Running the Extension
+## Running the Extension
 * Install the dependencies on the first run by executing in Terminal
 ```bash
 $ npm install
@@ -80,6 +93,6 @@ $ yarn install
         > NOTE: click on `Debug Anyway` when prompted by a warning popup 
     * Run the extension in a new VS Code window
 
-## Support & License
+# Support & License
 
 Please refer to [License](LICENSE) with regards to licensing. This software is released as-is. Splunk provides no warranty and no support on this software. If you have any issues with the software, please file an issue on the repository.
