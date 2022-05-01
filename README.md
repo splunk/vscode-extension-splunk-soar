@@ -27,7 +27,7 @@ Alternatively, download the VSIX file from the [Releases page](https://github.co
 
 # Features
 
-## App Wizard [#](#app-wizard - 'App Wizard')
+## App Wizard
 
 <p align="center">
   <img src="media/appwizard.png" alt="App Wizard" />
@@ -37,28 +37,31 @@ The App Wizard allows to quickly scaffold a new SOAR App, similar to the App Wiz
 
 ## App Installation
 
-![App Installation](https://raw.githubusercontent.com/splunk/vscode-extension-splunk-soar/main/media/appinstall.gif)
+<p align="center">
+  <img src="media/appinstall.gif" alt="App Wizard" />
+</p>
 
 Using the [TaskProvider API](https://code.visualstudio.com/api/extension-guides/task-provider) the extension provides a Task that allows to install a local app to the configured SOAR instance via REST API. This procedure works for both on-prem and cloud SOAR. The task will transparently create a tar bundle of the app code for and upload it  to the instance.
 
 
+
+## Inspecting SOAR Objects
+
 <p align="center">
-  <img src="media/appinstall.gif" alt="App Installation" />
+  <img src="media/inspect.gif" alt="Inspect" />
 </p>
-
-
-### Inspecting SOAR Objects
 
 By providing a [Tree View](https://code.visualstudio.com/api/extension-guides/tree-view), the extension allows to browse apps and assets configured on the connected SOAR instance. Using [Virtual Documents](https://code.visualstudio.com/api/extension-guides/virtual-documents), users are able to review SOAR objects in JSON format on-the-fly. Note that these views are read-only.
 
-![Inspecting SOAR Objects](https://raw.githubusercontent.com/splunk/vscode-extension-splunk-soar/main/media/inspect.gif)
 
+## Running Actions
 
-### Running Actions
+<p align="center">
+  <img src="media/appinstall.gif" alt="Running an action" />
+</p>
 
 Within the SOAR Apps view, there is a contextual control to run an action in the connected SOAR instance from within VS Code. An interactive dialog allows the user to provide the actions parameters as well as the desired execution context (asset, container). After triggering the execution, the extension will poll for the action to complete and pipe the generated result back into the VS Code Output terminal.
 
-![Running an Action](https://raw.githubusercontent.com/splunk/vscode-extension-splunk-soar/main/media/actionrun.gif)
 
 ## Contributing
 ### Requirements
