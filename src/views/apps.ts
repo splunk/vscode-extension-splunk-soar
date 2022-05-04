@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { getConfiguredClient } from '../soar/client';
+import {partition} from '../utils'
 
 export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppTreeItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<SoarAppTreeItem | undefined | void> = new vscode.EventEmitter<SoarAppTreeItem | undefined | void>();
@@ -27,7 +28,10 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppTree
 		if (!element) {
 			return client.listApps().then(function (res) {
 				let appEntries = res.data["data"]
-				let appTreeItems = appEntries.map((entry: any) => (new SoarApp(entry["name"], {"app": entry}, vscode.TreeItemCollapsibleState.Collapsed)))
+				const [configured, unconfigured] = partition(appEntries, (app) => app["_pretty_asset_count"] > 0)
+
+
+				let appTreeItems = configured.concat(unconfigured).map((entry: any) => (new SoarApp(entry["name"], {"app": entry}, vscode.TreeItemCollapsibleState.Collapsed)))
 				return appTreeItems
 			})
 		}
