@@ -180,6 +180,12 @@
 				}
 			]
 		},
+		"viewsWelcome": [
+			{
+				"view": "soarEnvironments",
+				"contents": "[Connect Environment](command:splunkSoar.environments.connect)"
+			  }		  
+		],
 		"menus": {
 			"view/title": [
 				{
