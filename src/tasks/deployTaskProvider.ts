@@ -7,7 +7,7 @@ import * as vscode from 'vscode';
 import * as os from 'os'
 import * as tar from 'tar'
 import * as fs from 'fs'
-import { getConfiguredClient } from '../soar/client';
+import { getClientForActiveEnvironment } from '../soar/client';
 
 interface CustomBuildTaskDefinition extends vscode.TaskDefinition {
 	cwd?: string
@@ -24,7 +24,9 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 	// Since our build has this shared state, the CustomExecution is used below.
 	private sharedState: string | undefined;
 
-	constructor(private workspaceRoot: string) { }
+	constructor(private workspaceRoot: string, private context: vscode.ExtensionContext) { 
+		this.context = context
+	}
 
 	public async provideTasks(): Promise<vscode.Task[]> {
 		return this.getTasks();
@@ -57,7 +59,7 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 		return new vscode.Task(definition, vscode.TaskScope.Workspace, `soarapp`,
             DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
 				// When the task is executed, this callback will run. Here, we setup for running the task.
-				return new CustomBuildTaskTerminal(this.workspaceRoot, definition.cwd ? definition.cwd : '.');
+				return new CustomBuildTaskTerminal(this.workspaceRoot, definition.cwd ? definition.cwd : '.', this.context);
 			}));
 	}
 }
@@ -72,8 +74,9 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 
 	private cwd: string
 
-	constructor(private workspaceRoot: string, cwd: string) {
+	constructor(private workspaceRoot: string, cwd: string, private context: vscode.ExtensionContext) {
 		this.cwd = cwd
+		this.context = context
 	}
 
 	open(initialDimensions: vscode.TerminalDimensions | undefined): void {
@@ -89,7 +92,7 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 
 	private async doBuild(): Promise<void> {
 		return new Promise<void>(async (resolve) => {
-			let client = getConfiguredClient()
+			let client = await getClientForActiveEnvironment(this.context)
 
             // tar working directory to temporary directory, get base64 repr, post to api, wait for response.
 			let packageDispose = vscode.window.setStatusBarMessage("$(loading~spin) Packaging App...")
@@ -121,6 +124,8 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 				let res = await client.installApp(appFile)
 				uploadDispose.dispose()
 				vscode.window.setStatusBarMessage("$(pass-filled) Successfully Uploaded App", 3000)
+				await vscode.commands.executeCommand('splunkSoar.apps.refresh');
+
 				this.writeEmitter.fire(JSON.stringify(res.data));
 				this.closeEmitter.fire(0);
 				resolve()

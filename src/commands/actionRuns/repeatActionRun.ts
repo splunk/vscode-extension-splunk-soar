@@ -1,5 +1,5 @@
 import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri, ProgressLocation, env, workspace, commands } from 'vscode';
-import { getConfiguredClient } from '../../soar/client';
+import { getClientForActiveEnvironment } from '../../soar/client';
 
 function wait(ms = 1000) {
 	return new Promise(resolve => {
@@ -8,7 +8,7 @@ function wait(ms = 1000) {
 }
 
 export async function repeatActionRun(context: ExtensionContext, actionRunContext) {
-    let client = getConfiguredClient()
+    let client = await getClientForActiveEnvironment(context)
 	let actionRunId = actionRunContext.data["actionRun"]["id"]
 
 	client.getActionRun(actionRunId).then(function(actionRun) {

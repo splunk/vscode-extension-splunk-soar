@@ -1,7 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import * as path from 'path';
 
 import { version } from './commands/version'
 import { openWeb, openWebActionRunResult, openWebApps, openWebPlaybook } from './commands/web'
@@ -18,10 +17,12 @@ import {ActionRunContentProvider} from './inspect/actionRunContentProvider'
 import { runActionInput } from './commands/apps/runAction';
 import { viewAppDocs } from './commands/apps/viewAppDocs';
 import { repeatActionRun } from './commands/actionRuns/repeatActionRun';
-import { installBundle } from './commands/apps/installBundle';
-import { getConfiguredClient } from './soar/client';
+import { getClientForActiveEnvironment } from './soar/client';
 import {AppWizardPanel} from './webviews/appWizard'
 import { RunActionLensProvider, runActionLensSelector } from './codelens/runActionLensProvider';
+import { SoarEnvironmentsTreeProvider } from './views/environments';
+import { activateEnvironment, connectEnvironment, disconnectEnvironment } from './config/environment';
+import { installBundle } from './commands/apps/installBundle';
 
 let deployTaskProvider: vscode.Disposable | undefined;
 
@@ -29,30 +30,44 @@ export function activate(context: vscode.ExtensionContext) {
 	const rootPath = (vscode.workspace.workspaceFolders && (vscode.workspace.workspaceFolders.length > 0))
 		? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
 
+	// Tree
+	const soarEnvironmentsTreeProvider = new SoarEnvironmentsTreeProvider(context)
+	vscode.window.registerTreeDataProvider('soarEnvironments', soarEnvironmentsTreeProvider)
+	vscode.commands.registerCommand('splunkSoar.environments.refresh', () => soarEnvironmentsTreeProvider.refresh());
+
 	//	Top-Level Commands
-	let disposableVersion = vscode.commands.registerCommand('splunkSoar.version', () => { version() });
+	let disposableVersion = vscode.commands.registerCommand('splunkSoar.version', async () => { version(context) });
 	context.subscriptions.push(disposableVersion);
 
-	let disposableOpenWeb = vscode.commands.registerCommand('splunkSoar.openWeb', () => { openWeb() });
+	let disposableOpenWeb = vscode.commands.registerCommand('splunkSoar.openWeb', async () => { openWeb(context) });
 	context.subscriptions.push(disposableOpenWeb);
 
-	let disposableOpenWebApps = vscode.commands.registerCommand('splunkSoar.openWebApps', () => { openWebApps() });
+	let disposableOpenWebApps = vscode.commands.registerCommand('splunkSoar.openWebApps', async () => { openWebApps(context) });
 	context.subscriptions.push(disposableOpenWebApps);
 
-	let disposableBundle = vscode.commands.registerCommand('soarApps.installBundle', () => { installBundle() });
-	context.subscriptions.push(disposableVersion);
+	let disposableInstallBundle = vscode.commands.registerCommand('soarApps.installBundle', () => { installBundle(context) });
+	context.subscriptions.push(disposableInstallBundle);
 
-	// Tree
-	const soarAppsTreeProvider = new SoarAppsTreeProvider(rootPath)
+	let disposableConnectEnvironment = vscode.commands.registerCommand('splunkSoar.environments.connect', () => { connectEnvironment(context) });
+	context.subscriptions.push(disposableConnectEnvironment);
+
+	let disposableDisconnectEnvironment = vscode.commands.registerCommand('splunkSoar.environments.disconnect', (actionContext) => { disconnectEnvironment(context, actionContext) });
+	context.subscriptions.push(disposableDisconnectEnvironment);
+
+	let activateEnvironmentDisposable = vscode.commands.registerCommand('splunkSoar.environments.activate', (actionContext) => { activateEnvironment(context, actionContext) });
+	context.subscriptions.push(activateEnvironmentDisposable);
+
+	const soarAppsTreeProvider = new SoarAppsTreeProvider(context)
 	vscode.window.registerTreeDataProvider('soarApps', soarAppsTreeProvider)
 	vscode.commands.registerCommand('splunkSoar.apps.refresh', () => soarAppsTreeProvider.refresh());
 
-	const soarActionRunsTreeProvider = new SoarActionRunTreeProvider(rootPath)
+	const soarActionRunsTreeProvider = new SoarActionRunTreeProvider(context)
 	vscode.window.registerTreeDataProvider('soarActionRuns', soarActionRunsTreeProvider)
 	vscode.commands.registerCommand('splunkSoar.actionRuns.refresh', () => soarActionRunsTreeProvider.refresh());
 
+
 	const assetScheme = "soarasset"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(assetScheme, AssetContentProvider));
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(assetScheme, new AssetContentProvider(context)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewAsset', async (assetId) => {
 		if (!assetId) {
@@ -69,7 +84,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 
 	const appScheme = "soarapp"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(appScheme, AppContentProvider));
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(appScheme, new AppContentProvider(context)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewApp', async (appId) => {
 		if (!appId) {
@@ -86,7 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 
 	const containerScheme = "soarcontainer"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(containerScheme, ContainerContentProvider));
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(containerScheme, new ContainerContentProvider(context)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewContainer', async (containerId) => {
 		if (!containerId) {
@@ -101,7 +116,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}));
 
 	const actionRunScheme = "soaractionrun"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(actionRunScheme, ActionRunContentProvider));
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(actionRunScheme, new ActionRunContentProvider(context)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewActionRun', async (actionRunId) => {
 		if (!actionRunId) {
@@ -146,14 +161,14 @@ export function activate(context: vscode.ExtensionContext) {
 		if (actionRunContext) {
 			let containerId = actionRunContext.data["actionRun"]["container"]
 			let actionRunId = actionRunContext.data["actionRun"]["id"]
-			openWebActionRunResult(containerId, actionRunId)
+			openWebActionRunResult(context, containerId, actionRunId)
 		} else {
 			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
 		}
 	}))
 
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.cancelActionRun', async (actionRunContext) => {
-		let client = getConfiguredClient()
+		let client = await getClientForActiveEnvironment(context)
 		if (actionRunContext) {
 			let actionRunId = actionRunContext.data["actionRun"]["id"]
 			try {
@@ -170,7 +185,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewPlaybookWeb', async (playbookId) => {
 		if (playbookId) {
-			openWebPlaybook(playbookId)
+			openWebPlaybook(context, playbookId)
 		} else {
 			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
 		}
@@ -202,7 +217,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let codeLensProviderDisposable = vscode.languages.registerCodeLensProvider(
 		runActionLensSelector,
-		new RunActionLensProvider()
+		new RunActionLensProvider(context)
 	  )
 	  
 	  context.subscriptions.push(codeLensProviderDisposable)
@@ -212,7 +227,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	// Tasks
-	let deployTaskProvider = vscode.tasks.registerTaskProvider(DeployTaskProvider.CustomBuildScriptType, new DeployTaskProvider(rootPath));
+	let deployTaskProvider = vscode.tasks.registerTaskProvider(DeployTaskProvider.CustomBuildScriptType, new DeployTaskProvider(rootPath, context));
 	console.log(deployTaskProvider)
 
 }

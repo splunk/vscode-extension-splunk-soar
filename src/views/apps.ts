@@ -1,13 +1,13 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { getConfiguredClient } from '../soar/client';
+import { getClientForActiveEnvironment } from '../soar/client';
 import {partition} from '../utils'
 
 export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppTreeItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<SoarAppTreeItem | undefined | void> = new vscode.EventEmitter<SoarAppTreeItem | undefined | void>();
 	readonly onDidChangeTreeData: vscode.Event<SoarAppTreeItem | undefined | void> = this._onDidChangeTreeData.event;
 
-	constructor(private workspaceRoot: string | undefined) {
+	constructor(private context: vscode.ExtensionContext) {
 	}
 
 	refresh() {
@@ -22,8 +22,8 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppTree
 		return element
 	}
 
-	getChildren(element?: SoarAppTreeItem): Thenable<SoarAppTreeItem[]> {
-		let client = getConfiguredClient()
+	async getChildren(element?: SoarAppTreeItem): Promise<SoarAppTreeItem[]> {
+		let client = await getClientForActiveEnvironment(this.context)
 
 		if (!element) {
 			return client.listApps().then(function (res) {

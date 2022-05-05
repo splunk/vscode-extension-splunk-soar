@@ -1,12 +1,15 @@
 import * as vscode from 'vscode'
-import { getConfiguredClient } from '../soar/client';
+import { getClientForActiveEnvironment } from '../soar/client';
 
-export const ContainerContentProvider = new class implements vscode.TextDocumentContentProvider {
+export class ContainerContentProvider implements vscode.TextDocumentContentProvider {
     onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>();
     onDidChange = this.onDidChangeEmitter.event;
 
-    provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): vscode.ProviderResult<string> {
-        let client = getConfiguredClient()
+    constructor(private context: vscode.ExtensionContext) {
+	}
+
+    async provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): vscode.ProviderResult<string> {
+        let client = await getClientForActiveEnvironment(this.context)
         return client.getContainer(uri.path).then(function(res) {
             let outJSON = JSON.stringify(res.data, null, '\t')
             return outJSON

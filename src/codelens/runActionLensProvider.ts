@@ -1,11 +1,13 @@
 import path = require('path');
-import { cachedDataVersionTag } from 'v8';
-import {CodeLensProvider, TextDocument, CodeLens, Command, Range, DocumentSelector, Position, workspace} from 'vscode'
-import { getConfiguredClient } from '../soar/client';
+import {CodeLensProvider, TextDocument, CodeLens, Command, Range, DocumentSelector, Position, workspace, ExtensionContext} from 'vscode'
+import { getClientForActiveEnvironment } from '../soar/client';
 
 export class RunActionLensProvider implements CodeLensProvider {
+
+    constructor(private context: ExtensionContext) { }
+
     async provideCodeLenses(document: TextDocument): Promise<CodeLens[]> {
-      let client = getConfiguredClient()
+      let client = await getClientForActiveEnvironment(this.context)
       const config = workspace.getConfiguration()
       const codeLensEnabled: boolean = config.get<boolean>("codeLensEnabled", true)
       

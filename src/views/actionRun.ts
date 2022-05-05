@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { getConfiguredClient } from '../soar/client';
+import { getClientForActiveEnvironment } from '../soar/client';
 
 export class SoarActionRunTreeProvider implements vscode.TreeDataProvider<ActionRunTreeItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<ActionRunTreeItem | undefined | void> = new vscode.EventEmitter<ActionRunTreeItem | undefined | void>();
@@ -10,7 +10,7 @@ export class SoarActionRunTreeProvider implements vscode.TreeDataProvider<Action
 		"ownActionRunsOnly": false
 	}
 
-	constructor(private workspaceRoot: string | undefined) {
+	constructor(private context: vscode.ExtensionContext | undefined) {
 	}
 
 	refresh() {
@@ -21,8 +21,8 @@ export class SoarActionRunTreeProvider implements vscode.TreeDataProvider<Action
 		return element
 	}
 
-	getChildren(element?: ActionRunTreeItem): Thenable<ActionRunTreeItem[]> {
-		let client = getConfiguredClient()
+	async getChildren(element?: ActionRunTreeItem): Promise<ActionRunTreeItem[]> {
+		let client = await getClientForActiveEnvironment(this.context)
 
 		const config = vscode.workspace.getConfiguration()
 		const ownOnly: boolean = config.get<boolean>("actionRuns.showOwnOnly", false)

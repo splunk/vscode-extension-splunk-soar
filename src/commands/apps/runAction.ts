@@ -1,5 +1,5 @@
-import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri, ProgressLocation, env, workspace, commands } from 'vscode';
-import { getConfiguredClient } from '../../soar/client';
+import { QuickPickItem, window, Disposable, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri, ProgressLocation, env, workspace, commands } from 'vscode';
+import { getClientForActiveEnvironment } from '../../soar/client';
 
 /**
  * A multi-step input using window.createQuickPick() and window.createInputBox().
@@ -49,7 +49,7 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 
 	async function pickAsset(input: MultiStepInput, state: Partial<State>) {
 
-        let client = getConfiguredClient()
+        let client = await getClientForActiveEnvironment(context)
         let assetResponse = await client.listAppAssets(actionContext.data.app.id)
 
         const assets: QuickPickItem[] = assetResponse.data.data
@@ -174,7 +174,7 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 	}
 
 	async function validateContainerExists(containerId: string) {
-		let client = getConfiguredClient()
+		let client = await getClientForActiveEnvironment(context)
 
 		try {
 			await client.getContainer(containerId)
@@ -187,7 +187,7 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 	const state = await collectInputs();
     console.log(state)
 
-	let client = getConfiguredClient()
+	let client = await getClientForActiveEnvironment(context)
 
 	window.withProgress({
 		location: ProgressLocation.Notification,

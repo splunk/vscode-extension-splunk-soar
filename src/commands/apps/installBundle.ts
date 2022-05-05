@@ -1,9 +1,9 @@
 import * as vscode from 'vscode'
 import * as fs from 'fs'
-import { getConfiguredClient, SoarClient } from '../../soar/client';
+import { getClientForActiveEnvironment, SoarClient } from '../../soar/client';
 
-export async function installBundle() {
-    let client: SoarClient = getConfiguredClient()
+export async function installBundle(context) {
+    let client: SoarClient = await getClientForActiveEnvironment(context)
 
     let options: vscode.OpenDialogOptions = {
         canSelectMany: false,

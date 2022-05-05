@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import { getConfiguredClient, SoarClient } from "../soar/client";
+import { getClientForActiveEnvironment, SoarClient } from "../soar/client";
 
-export function version() {
-    let client: SoarClient = getConfiguredClient()
+export async function version(context) {
+    let client: SoarClient = await getClientForActiveEnvironment(context)
 
     client.version().then(
         function(response) {

@@ -1,7 +1,8 @@
 import { AxiosInstance, AxiosResponse } from "axios";
 import * as https from 'https'; 
-import { setFlagsFromString } from "v8";
 import * as vscode from 'vscode';
+import { getActiveEnvironment } from "../config/environment";
+import { SoarAction } from "../views/apps";
 const axios = require('axios').default;
 
 export class SoarClient {
@@ -119,12 +120,9 @@ export class SoarClient {
     }
 }
 
-export function getConfiguredClient(): SoarClient  {
-    const config = vscode.workspace.getConfiguration()
-	const server: string = config.get<string>("authentication.server", '')
-	const username: string = config.get<string>("authentication.username", '')
-	const password: string = config.get<string>("authentication.password", '')
-	const sslVerify: boolean = config.get<boolean>("authentication.sslVerify", true)
+export async function getClientForActiveEnvironment(context: vscode.ExtensionContext): Promise<SoarClient> {
 
-    return new SoarClient(server, username, password, sslVerify);
+    let {url, username, sslVerify, password} = await getActiveEnvironment(context)
+
+    return new SoarClient(url, username, password, sslVerify)
 }

@@ -71,6 +71,11 @@
 				"icon": "$(refresh)"
 			},
 			{
+				"command": "splunkSoar.environments.refresh",
+				"title": "SOAR: Environments Refresh",
+				"icon": "$(refresh)"
+			},
+			{
 				"command": "soarApps.runAction",
 				"title": "SOAR: Run Action",
 				"icon": {
@@ -127,6 +132,21 @@
 				"command": "soarActionRuns.repeatActionRun",
 				"title": "SOAR: Repeat Action Run",
 				"icon": "$(debug-restart)"
+			},
+			{
+				"command": "splunkSoar.environments.connect",
+				"title": "SOAR: Connect Environment",
+				"icon": "$(plug)"
+			},
+			{
+				"command": "splunkSoar.environments.activate",
+				"title": "SOAR: Activate Environment",
+				"icon": "$(plug)"
+			},
+			{
+				"command": "splunkSoar.environments.disconnect",
+				"title": "SOAR: Disconnect Environment",
+				"icon": "$(debug-disconnect)"
 			}
 		],
 		"viewsContainers": {
@@ -140,6 +160,12 @@
 		},
 		"views": {
 			"splunk-soar": [
+				{
+					"id": "soarEnvironments",
+					"name": "SOAR Environments",
+					"icon": "media/soarcloud.png",
+					"contextualTitle": "SOAR Environments"
+				},
 				{
 					"id": "soarApps",
 					"name": "SOAR Apps",
@@ -164,6 +190,16 @@
 				{
 					"command": "splunkSoar.actionRuns.refresh",
 					"when": "view == soarActionRuns",
+					"group": "navigation"
+				},
+				{
+					"command": "splunkSoar.environments.refresh",
+					"when": "view == soarEnvironments",
+					"group": "navigation"
+				},
+				{
+					"command": "splunkSoar.environments.connect",
+					"when": "view == soarEnvironments",
 					"group": "navigation"
 				},
 				{
@@ -206,6 +242,16 @@
 					"group": "inline"
 				},
 				{
+					"command": "splunkSoar.environments.disconnect",
+					"when": "view == soarEnvironments && viewItem == soarenvironment",
+					"group": "inline"
+				},
+				{
+					"command": "splunkSoar.environments.activate",
+					"when": "view == soarEnvironments && viewItem == soarenvironment",
+					"group": "inline"
+				},
+				{
 					"command": "soarApps.viewAsset",
 					"when": "view == soarApps && viewItem == soarasset",
 					"group": "inline"
@@ -243,33 +289,6 @@
 			"title": "Splunk SOAR",
 			"order": 0,
 			"properties": {
-				"authentication.server": {
-					"type": "string",
-					"default": "",
-					"description": "SOAR Server URL",
-					"order": 0,
-					"examples": [
-						"https://my-soar-server:8000"
-					]
-				},
-				"authentication.sslVerify": {
-					"type": "boolean",
-					"default": true,
-					"description": "Whether or not to verify the TLS certificate",
-					"order": 1
-				},
-				"authentication.username": {
-					"type": "string",
-					"default": "",
-					"description": "Username for your SOAR instance",
-					"order": 2
-				},
-				"authentication.password": {
-					"type": "string",
-					"default": "",
-					"description": "Password for your SOAR instance",
-					"order": 3
-				},
 				"actionRuns.showOwnOnly": {
 					"type": "boolean",
 					"default": false,
