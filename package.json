@@ -184,7 +184,15 @@
 			{
 				"view": "soarEnvironments",
 				"contents": "[Connect Environment](command:splunkSoar.environments.connect)"
-			  }		  
+			},
+			{
+				"view": "soarApps",
+				"contents": "[Connect Environment](command:splunkSoar.environments.connect)"
+			  },  
+			{
+				"view": "soarActionRuns",
+				"contents": "[Connect Environment](command:splunkSoar.environments.connect)"
+			}			  
 		],
 		"menus": {
 			"view/title": [
