@@ -10,7 +10,7 @@ export class SoarActionRunTreeProvider implements vscode.TreeDataProvider<Action
 		"ownActionRunsOnly": false
 	}
 
-	constructor(private context: vscode.ExtensionContext | undefined) {
+	constructor(private context: vscode.ExtensionContext) {
 	}
 
 	refresh() {

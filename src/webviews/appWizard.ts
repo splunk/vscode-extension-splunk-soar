@@ -181,7 +181,7 @@ export class AppWizardPanel {
    * @param webview A reference to the extension webview
    * @param context A reference to the extension context
    */
-  private _setWebviewMessageListener(webview: Webview, extensionUri) {
+  private _setWebviewMessageListener(webview: Webview, extensionUri: Uri) {
     webview.onDidReceiveMessage(
       async (message: any) => {
         const command = message.command;
@@ -197,6 +197,11 @@ export class AppWizardPanel {
                 canSelectFiles: false,
                 canSelectFolders: true
               })
+
+              if (!targetFolder) {
+                return
+              }
+
               let targetFolderPath = targetFolder[0].fsPath
               let outAppFolderPath = path.join(targetFolderPath, message.app.name)
 

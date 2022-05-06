@@ -2,7 +2,7 @@ import * as vscode from 'vscode'
 import * as fs from 'fs'
 import { getClientForActiveEnvironment, SoarClient } from '../../soar/client';
 
-export async function installBundle(context) {
+export async function installBundle(context: vscode.ExtensionContext) {
     let client: SoarClient = await getClientForActiveEnvironment(context)
 
     let options: vscode.OpenDialogOptions = {
@@ -25,7 +25,7 @@ export async function installBundle(context) {
         uploadDispose.dispose()
         vscode.window.setStatusBarMessage("$(pass-filled) Successfully installed App", 3000)
 
-    } catch(err) {
+    } catch(err: any) {
         vscode.window.setStatusBarMessage("$(error) Error uploading App", 3000)
         vscode.window.showErrorMessage(JSON.stringify(err.response.data.message))
         console.log(err)

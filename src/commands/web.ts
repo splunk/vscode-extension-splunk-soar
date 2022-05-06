@@ -1,23 +1,22 @@
 import * as vscode from 'vscode';
 import { getClientForActiveEnvironment, SoarClient } from "../soar/client";
 
-export async function openWeb(context) {
+export async function openWeb(context: vscode.ExtensionContext) {
     let client: SoarClient = await getClientForActiveEnvironment(context)
     vscode.env.openExternal(vscode.Uri.parse(client.server))	
 }
 
-export async function openWebApps(context) {
+export async function openWebApps(context: vscode.ExtensionContext) {
     let client: SoarClient = await getClientForActiveEnvironment(context)
     vscode.env.openExternal(vscode.Uri.parse(`${client.server}/apps`))	
 }
 
-export async function openWebActionRunResult(context, containerId, actionRunId) {
+export async function openWebActionRunResult(context: vscode.ExtensionContext, containerId: string, actionRunId: string) {
     let client: SoarClient = await getClientForActiveEnvironment(context)
     vscode.env.openExternal(vscode.Uri.parse(`${client.server}/mission/${containerId}/analyst/action_run/${actionRunId}/`))	
 }
 
-
-export async function openWebPlaybook(context, playbookId) {
+export async function openWebPlaybook(context: vscode.ExtensionContext, playbookId: string) {
     let client: SoarClient = await getClientForActiveEnvironment(context)
     vscode.env.openExternal(vscode.Uri.parse(`${client.server}/playbook/${playbookId}`))	
 }

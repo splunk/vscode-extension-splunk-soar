@@ -1,7 +1,8 @@
 import * as vscode from 'vscode'
 import { getClientForActiveEnvironment, SoarClient } from '../../soar/client';
+import { IActionContext } from './runAction';
 
-export async function viewAppDocs(context, appContext) {
+export async function viewAppDocs(context: vscode.ExtensionContext, appContext: IActionContext) {
     let client: SoarClient = await getClientForActiveEnvironment(context)
 
     let directory = appContext["data"]["app"]["directory"]

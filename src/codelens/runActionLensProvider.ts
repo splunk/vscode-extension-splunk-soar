@@ -1,6 +1,7 @@
 import path = require('path');
 import {CodeLensProvider, TextDocument, CodeLens, Command, Range, DocumentSelector, Position, workspace, ExtensionContext} from 'vscode'
 import { getClientForActiveEnvironment } from '../soar/client';
+import {IActionContext, IActionDefinition} from '../commands/apps/runAction'
 
 export class RunActionLensProvider implements CodeLensProvider {
 
@@ -23,7 +24,7 @@ export class RunActionLensProvider implements CodeLensProvider {
       let appRes = await client.getAppByAppid(metadataJSON["appid"])
       let appData = appRes.data.data[0]
 
-      let actionsIdentifiers = metadataJSON["actions"].map(action => action.identifier)
+      let actionsIdentifiers = metadataJSON["actions"].map((action: IActionDefinition) => action.identifier)
 
       let codeLenses = [];
       const regex = new RegExp(/(def _handle_(.+)\()/g);
@@ -38,7 +39,7 @@ export class RunActionLensProvider implements CodeLensProvider {
           if (!actionsIdentifiers.includes(foundIdentifier)) {
             continue
           }
-          const actionDefinition = metadataJSON.actions.find((action) => action.identifier == foundIdentifier);
+          const actionDefinition = metadataJSON.actions.find((action: IActionDefinition) => action.identifier == foundIdentifier);
           
           let actionContext = {
             "data": {

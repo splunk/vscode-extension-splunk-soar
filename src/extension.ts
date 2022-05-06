@@ -173,7 +173,7 @@ export function activate(context: vscode.ExtensionContext) {
 			let actionRunId = actionRunContext.data["actionRun"]["id"]
 			try {
 				await client.cancelActionRun(actionRunId)
-			} catch(err) {
+			} catch(err: any) {
 				vscode.window.showErrorMessage(err.response.data.message)
 			}
 		} else {

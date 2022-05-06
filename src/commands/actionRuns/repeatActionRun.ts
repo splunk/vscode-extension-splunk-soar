@@ -7,7 +7,19 @@ function wait(ms = 1000) {
 	});
 }
 
-export async function repeatActionRun(context: ExtensionContext, actionRunContext) {
+
+interface IActionRun {
+	id: string
+}
+
+
+export interface IActionRunContext {
+	data: {
+		actionRun: IActionRun,
+	}
+}
+
+export async function repeatActionRun(context: ExtensionContext, actionRunContext: IActionRunContext) {
     let client = await getClientForActiveEnvironment(context)
 	let actionRunId = actionRunContext.data["actionRun"]["id"]
 

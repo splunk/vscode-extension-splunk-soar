@@ -8,7 +8,7 @@ export class ContainerContentProvider implements vscode.TextDocumentContentProvi
     constructor(private context: vscode.ExtensionContext) {
 	}
 
-    async provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): vscode.ProviderResult<string> {
+    async provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): Promise<string> {
         let client = await getClientForActiveEnvironment(this.context)
         return client.getContainer(uri.path).then(function(res) {
             let outJSON = JSON.stringify(res.data, null, '\t')

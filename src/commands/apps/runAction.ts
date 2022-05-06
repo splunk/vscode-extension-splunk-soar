@@ -1,12 +1,46 @@
-import { QuickPickItem, window, Disposable, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri, ProgressLocation, env, workspace, commands } from 'vscode';
+import { QuickPickItem, window, Disposable, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri, ProgressLocation, env, workspace, commands, ImplementationProvider } from 'vscode';
 import { getClientForActiveEnvironment } from '../../soar/client';
+
+interface IAction {
+	name: string
+}
+
+export interface IActionDefinition {
+	parameters: Object,
+	action: string,
+	identifier: string
+}
+
+export interface IApp {
+	id: string,
+	directory: string,
+	_pretty_asset_count: number
+}
+
+export interface IActionContext {
+	data: {
+		key: string,
+		app: IApp,
+		action: IAction
+		app_json: {
+			actions: IActionDefinition[]
+		}
+	}
+}
+
+interface IParamInfo {
+	required: boolean,
+	value_list: string[],
+	data_type: string,
+	description: string,
+}
 
 /**
  * A multi-step input using window.createQuickPick() and window.createInputBox().
  * 
  * This first part uses the helper class `MultiStepInput` that wraps the API for the multi-step case.
  */
-export async function runActionInput(context: ExtensionContext, actionContext) {
+export async function runActionInput(context: ExtensionContext, actionContext: IActionContext) {
 	class MyButton implements QuickInputButton {
 		constructor(public iconPath: { light: Uri; dark: Uri; }, public tooltip: string) { }
 	}
@@ -24,7 +58,7 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 		asset: QuickPickItem;
 		name: string;
 		runtime: QuickPickItem;
-		parameters: object[]
+		parameters: any[]
 	}
 
 	async function collectInputs() {
@@ -39,6 +73,10 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 
     let actionName = actionContext.data.action["name"]
     const actionDefinition = actionContext.data.app_json.actions.find((action) => action.action == actionName);
+	if (actionDefinition == undefined) {
+		window.showErrorMessage("Run Action failed: Could not find action definition in app metadata")
+		return
+	}
     const actionParameters = actionDefinition.parameters
     const parameterList = Object.entries(actionParameters).filter(actionParam => {
 		let actionParamData = actionParam[1]
@@ -80,7 +118,7 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 		return (input: MultiStepInput) => pickContainer(input, state);
 	}
 
-    async function pickContainer(input: MultiStepInput, state){
+    async function pickContainer(input: MultiStepInput, state: Partial<State>){
         state.container_id = await input.showInputBox({
 			title,
 			step: 2,
@@ -96,9 +134,13 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
         }
     }
 
-    async function pickParam(input: MultiStepInput, state, actionParamIndex){
-        let [paramName, paramInfo]: [string, Object] = parameterList[actionParamIndex]
+    async function pickParam(input: MultiStepInput, state: Partial<State>, actionParamIndex: number){
+        let [paramName, paramInfo]: [string, IParamInfo] = parameterList[actionParamIndex]
 		let enteredParam;
+
+		if (state.parameters == undefined){
+			state.parameters = [{}]
+		}
 
 		let showSkip = true
 		if ("required" in paramInfo && paramInfo["required"] === true) {
@@ -120,7 +162,11 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 				buttons: showSkip ? [skipParamButton] : [] 
 			});
 
-			enteredParam = enteredParam.label
+			if (enteredParam instanceof MyButton) {
+				enteredParam = undefined
+			} else {
+				enteredParam = enteredParam.label
+			}
 	
 		} else if (paramInfo["data_type"] === "boolean") {
 			const values: QuickPickItem[] = [{'label': "true"}, {'label': "false"}]
@@ -135,7 +181,11 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 				buttons: showSkip ? [skipParamButton] : []
 			});
 
-			enteredParam = enteredParam.label
+			if (enteredParam instanceof MyButton) {
+				enteredParam = undefined
+			} else {
+				enteredParam = enteredParam.label
+			}
 		} else {
 
 			enteredParam = await input.showInputBox({
@@ -148,14 +198,16 @@ export async function runActionInput(context: ExtensionContext, actionContext) {
 				validate: validateNameIsUnique,
 				buttons: showSkip ? [skipParamButton] : []
 			});
+
+			if (enteredParam instanceof MyButton) {
+				enteredParam = undefined
+			}
 		}
 
-		if (enteredParam instanceof MyButton) {
-			
-		} else {
+		if (enteredParam !== undefined) {
 			state.parameters[0][paramName] = enteredParam
-
 		}
+
         if (actionParamIndex < parameterList.length - 1) {
             return (input: MultiStepInput) => pickParam(input, state, actionParamIndex + 1);
         }
@@ -366,7 +418,7 @@ export class MultiStepInput {
 				input.step = step;
 				input.totalSteps = totalSteps;
 				input.value = value || '';
-				input.password = isPassword
+				input.password = isPassword!
 				input.prompt = prompt;
 				input.buttons = [
 					...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),

@@ -2,16 +2,24 @@ import * as vscode from 'vscode'
 import { addOrReplace, removeIfExists } from '../utils'
 export const ENV_KEY = "splunkSOAR.environments"
 export const ACTIVE_ENV_KEY = "splunkSOAR.activeEnvironment"
-import {MultiStepInput} from '../commands/apps/runAction'
+import {IActionContext, MultiStepInput} from '../commands/apps/runAction'
 
-function deriveEnvKey(url, username) {
+function deriveEnvKey(url: string, username: string) {
     return `${username}@${url}`
 }
 
-interface ConnectEnvironment {
+interface BaseConnectEnvironment {
     url: string,
-    sslVerify: boolean
-    username: string,
+    sslVerify: boolean,
+    username: string
+}
+
+interface ConnectEnvironment extends BaseConnectEnvironment {
+    password: string
+}
+
+interface ConfiguredConnectEnvironment extends BaseConnectEnvironment {
+    key: string,
     password: string
 }
 
@@ -31,7 +39,7 @@ async function connectEnvironmentWizard() {
     return state as ConnectEnvironment
 }
 
-async function connectUrlInput(input: MultiStepInput, state){
+async function connectUrlInput(input: MultiStepInput, state: Partial<ConnectEnvironment>){
     state.url = await input.showInputBox({
         title: wizardTitle,
         step: 1,
@@ -44,21 +52,20 @@ async function connectUrlInput(input: MultiStepInput, state){
 
     return (input: MultiStepInput) => connectSslVerifyInput(input, state);
 }
-async function connectSslVerifyInput(input: MultiStepInput, state){
+async function connectSslVerifyInput(input: MultiStepInput, state: Partial<ConnectEnvironment>){
     let sslPick = await input.showQuickPick({
         title: wizardTitle,
         step: 2,
         totalSteps: totalSteps,
         placeholder: 'Verify TLS?',
         items: [{"label": "Yes"}, {"label": "No"}],
-        activeItem: typeof state.sslVerify !== 'string' ? state.sslVerify : undefined,
         shouldResume: shouldResume
     });
     state.sslVerify = sslPick.label === "Yes"
     return (input: MultiStepInput) => conectUsernameInput(input, state);
 }
 
-async function conectUsernameInput(input: MultiStepInput, state){
+async function conectUsernameInput(input: MultiStepInput, state: Partial<ConnectEnvironment>){
     state.username = await input.showInputBox({
         title: wizardTitle,
         step: 3,
@@ -72,7 +79,7 @@ async function conectUsernameInput(input: MultiStepInput, state){
     return (input: MultiStepInput) => connectPasswordInput(input, state);
 }
 
-async function connectPasswordInput(input: MultiStepInput, state){
+async function connectPasswordInput(input: MultiStepInput, state: Partial<ConnectEnvironment>){
     state.password = await input.showInputBox({
         title: wizardTitle,
         step: 4,
@@ -124,7 +131,7 @@ export async function connectEnvironment(context: vscode.ExtensionContext) {
     await vscode.commands.executeCommand('splunkSoar.environments.refresh');
 }
 
-export async function disconnectEnvironment(context, actionContext) {
+export async function disconnectEnvironment(context: vscode.ExtensionContext, actionContext: IActionContext) {
     console.log("disconnecting")
     let key = actionContext.data["key"]
 
@@ -142,7 +149,7 @@ export async function disconnectEnvironment(context, actionContext) {
     await vscode.commands.executeCommand('splunkSoar.apps.refresh');
 }
 
-export async function activateEnvironment(context: vscode.ExtensionContext, actionContext) {
+export async function activateEnvironment(context: vscode.ExtensionContext, actionContext: IActionContext) {
     let key = actionContext.data["key"]
 
     context.globalState.update(ACTIVE_ENV_KEY, key)
@@ -152,14 +159,19 @@ export async function activateEnvironment(context: vscode.ExtensionContext, acti
 }
 
 export function getActiveEnvironment(context: vscode.ExtensionContext) {
-    let activeKey: string = context.globalState.get(ACTIVE_ENV_KEY)
+    let activeKey: string = context.globalState.get(ACTIVE_ENV_KEY)!
     return getEnvironment(context, activeKey)
 }
 
 export async function getEnvironment(context: vscode.ExtensionContext, envKey: string) {
-    let currentEnvironments = context.globalState.get(ENV_KEY) || []
+    let currentEnvironments: ConfiguredConnectEnvironment[] = context.globalState.get(ENV_KEY) || []
     let password = await context.secrets.get(envKey)
-    let env = currentEnvironments.find(env => env.key == envKey)
+
+    if (password == undefined) {
+        throw new Error(`Could not retrieve password for environment ${envKey}`)
+    }
+
+    let env = currentEnvironments.find(env => env.key == envKey)!
 
     return {...env, "password": password}
 }

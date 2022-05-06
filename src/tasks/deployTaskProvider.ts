@@ -59,7 +59,8 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 		return new vscode.Task(definition, vscode.TaskScope.Workspace, `soarapp`,
             DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
 				// When the task is executed, this callback will run. Here, we setup for running the task.
-				return new CustomBuildTaskTerminal(this.workspaceRoot, definition.cwd ? definition.cwd : '.', this.context);
+
+				return new CustomBuildTaskTerminal(this.workspaceRoot, definition?.cwd ? definition.cwd : '.', this.context);
 			}));
 	}
 }
@@ -130,7 +131,7 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 				this.closeEmitter.fire(0);
 				resolve()
 
-			} catch(err) {
+			} catch(err: any) {
 				vscode.window.setStatusBarMessage("$(error) Error uploading app", 3000)
 				this.writeEmitter.fire(JSON.stringify(err.response.data));
 				this.closeEmitter.fire(0);

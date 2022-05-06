@@ -73,7 +73,7 @@ export class SoarClient {
     }
 
 
-    triggerActionTargets = async (actionName:string, container_id: string,  targets) => {
+    triggerActionTargets = async (actionName:string, container_id: string,  targets: any) => {
         return await this.httpClient.post(`action_run`, 
         {
             "action": actionName,
@@ -83,7 +83,7 @@ export class SoarClient {
         })
     }
 
-    triggerAction = async (actionName:string, container_id: string, assetName: string, appId: string, parameters) => {
+    triggerAction = async (actionName:string, container_id: string, assetName: string, appId: string, parameters: any) => {
         return await this.httpClient.post(`action_run`, 
         {
             "action": actionName,
