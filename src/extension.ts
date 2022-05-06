@@ -3,7 +3,7 @@
 import * as vscode from 'vscode';
 
 import { version } from './commands/version'
-import { openWeb, openWebActionRunResult, openWebApps, openWebPlaybook } from './commands/web'
+import { openAppDevDocs, openRepoDocs, openRepoIssues, openSoarAppDevDocs, openWeb, openWebActionRunResult, openWebApps, openWebPlaybook } from './commands/web'
 import { DeployTaskProvider } from './tasks/deployTaskProvider';
 import { SoarAppsTreeProvider } from './views/apps';
 import { SoarActionRunTreeProvider } from './views/actionRun'
@@ -23,6 +23,8 @@ import { RunActionLensProvider, runActionLensSelector } from './codelens/runActi
 import { SoarEnvironmentsTreeProvider } from './views/environments';
 import { activateEnvironment, connectEnvironment, disconnectEnvironment } from './config/environment';
 import { installBundle } from './commands/apps/installBundle';
+import { SoarPlaybookTreeProvider } from './views/playbooks';
+import { SoarHelpTreeProvider } from './views/help';
 
 let deployTaskProvider: vscode.Disposable | undefined;
 
@@ -57,6 +59,16 @@ export function activate(context: vscode.ExtensionContext) {
 	let activateEnvironmentDisposable = vscode.commands.registerCommand('splunkSoar.environments.activate', (actionContext) => { activateEnvironment(context, actionContext) });
 	context.subscriptions.push(activateEnvironmentDisposable);
 
+	let disposableReportIssue = vscode.commands.registerCommand('splunkSoar.reportIssue', async () => { openRepoIssues() });
+	context.subscriptions.push(disposableReportIssue);
+
+	let disposableExtensionDocs = vscode.commands.registerCommand('splunkSoar.openExtensionDocs', async () => { openRepoDocs() });
+	context.subscriptions.push(disposableExtensionDocs);
+
+	let disposableAppDevDocs = vscode.commands.registerCommand('splunkSoar.openAppDevDocs', async () => { openAppDevDocs() });
+	context.subscriptions.push(disposableAppDevDocs);
+
+
 	const soarAppsTreeProvider = new SoarAppsTreeProvider(context)
 	vscode.window.registerTreeDataProvider('soarApps', soarAppsTreeProvider)
 	vscode.commands.registerCommand('splunkSoar.apps.refresh', () => soarAppsTreeProvider.refresh());
@@ -65,6 +77,12 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.window.registerTreeDataProvider('soarActionRuns', soarActionRunsTreeProvider)
 	vscode.commands.registerCommand('splunkSoar.actionRuns.refresh', () => soarActionRunsTreeProvider.refresh());
 
+	const playbooksTreeProvider = new SoarPlaybookTreeProvider(context)
+	vscode.window.registerTreeDataProvider('soarPlaybooks', playbooksTreeProvider)
+	vscode.commands.registerCommand('splunkSoar.playbooks.refresh', () => playbooksTreeProvider.refresh());
+
+	const helpTreeProvider = new SoarHelpTreeProvider(context)
+	vscode.window.registerTreeDataProvider('soarHelp', helpTreeProvider)
 
 	const assetScheme = "soarasset"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(assetScheme, new AssetContentProvider(context)));

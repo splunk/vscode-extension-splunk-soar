@@ -52,6 +52,21 @@
 				"icon": "$(globe)"
 			},
 			{
+				"command": "splunkSoar.reportIssue",
+				"title": "SOAR: Report an Issue",
+				"icon": "$(globe)"
+			},
+			{
+				"command": "splunkSoar.openExtensionDocs",
+				"title": "SOAR: Open Extension Documentation",
+				"icon": "$(globe)"
+			},
+			{
+				"command": "splunkSoar.openAppDevDocs",
+				"title": "SOAR: Open SOAR App Development Documentation",
+				"icon": "$(globe)"
+			},
+			{
 				"command": "splunkSoar.openWebApps",
 				"title": "SOAR: Open Web UI - Apps",
 				"icon": "$(globe)"
@@ -73,6 +88,11 @@
 			{
 				"command": "splunkSoar.environments.refresh",
 				"title": "SOAR: Environments Refresh",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "splunkSoar.playbooks.refresh",
+				"title": "SOAR: Playbooks Refresh",
 				"icon": "$(refresh)"
 			},
 			{
@@ -162,21 +182,28 @@
 			"splunk-soar": [
 				{
 					"id": "soarEnvironments",
-					"name": "SOAR Environments",
-					"icon": "media/soarcloud.png",
-					"contextualTitle": "SOAR Environments"
+					"name": "Environments",
+					"icon": "media/soarcloud.png"
 				},
 				{
 					"id": "soarApps",
-					"name": "SOAR Apps",
-					"icon": "media/soarcloud.png",
-					"contextualTitle": "SOAR Apps"
+					"name": "Apps",
+					"icon": "media/soarcloud.png"
 				},
 				{
 					"id": "soarActionRuns",
-					"name": "SOAR Action Runs",
-					"icon": "media/soarcloud.png",
-					"contextualTitle": "SOAR Action Runs"
+					"name": "Action Runs",
+					"icon": "media/soarcloud.png"
+				},
+				{
+					"id": "soarPlaybooks",
+					"name": "Playbooks",
+					"icon": "media/soarcloud.png"
+				},
+				{
+					"id": "soarHelp",
+					"name": "Help and Feedback",
+					"icon": "media/soarcloud.png"
 				}
 			]
 		},
@@ -192,6 +219,10 @@
 			{
 				"view": "soarActionRuns",
 				"contents": "[Connect Environment](command:splunkSoar.environments.connect)"
+			},
+			{
+				"view": "soarPlaybooks",
+				"contents": "[Connect Environment](command:splunkSoar.environments.connect)"
 			}
 		],
 		"menus": {
@@ -204,6 +235,11 @@
 				{
 					"command": "splunkSoar.actionRuns.refresh",
 					"when": "view == soarActionRuns",
+					"group": "navigation"
+				},
+				{
+					"command": "splunkSoar.playbooks.refresh",
+					"when": "view == soarPlaybooks",
 					"group": "navigation"
 				},
 				{
@@ -309,11 +345,17 @@
 					"description": "Filter the Action Runs view to show only runs from the configured user",
 					"order": 4
 				},
+				"playbooks.showOwnOnly": {
+					"type": "boolean",
+					"default": false,
+					"description": "Filter the Playbooks view to show only playbooks that have been last edited by the configured user",
+					"order": 5
+				},
 				"codeLensEnabled": {
 					"type": "boolean",
 					"default": true,
 					"description": "Show inline actions above action handlers",
-					"order": 5
+					"order": 6
 				}
 			}
 		}

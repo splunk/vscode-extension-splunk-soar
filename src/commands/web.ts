@@ -20,3 +20,15 @@ export async function openWebPlaybook(context: vscode.ExtensionContext, playbook
     let client: SoarClient = await getClientForActiveEnvironment(context)
     vscode.env.openExternal(vscode.Uri.parse(`${client.server}/playbook/${playbookId}`))	
 }
+
+export async function openRepoIssues() {
+    vscode.env.openExternal(vscode.Uri.parse("https://github.com/splunk/vscode-extension-splunk-soar/issues"))
+}
+
+export async function openAppDevDocs() {
+    vscode.env.openExternal(vscode.Uri.parse("https://docs.splunk.com/Documentation/SOAR/current/DevelopApps/Overview"))
+}
+
+export async function openRepoDocs() {
+    vscode.env.openExternal(vscode.Uri.parse("https://github.com/splunk/vscode-extension-splunk-soar/wiki"))
+}

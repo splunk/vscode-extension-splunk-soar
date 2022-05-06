@@ -72,6 +72,13 @@ export class SoarClient {
     return await this.httpClient.get(`app`, {params: {"pretty": true, "_filter_appid": `"${appId}"`}})
     }
 
+    listPlaybooks = async () => {
+        return await this.httpClient.get("playbook", {params: {"page_size": 500, "pretty": true, "sort": "name"}})
+    }
+
+    listUserPlaybooks = async () => {
+        return await this.httpClient.get("playbook", {params: {"pretty": true, "page_size": 0, "sort": "create_time", "order": "desc", "_filter_latest_editor__username": `'${this.username}'`}})
+    }
 
     triggerActionTargets = async (actionName:string, container_id: string,  targets: any) => {
         return await this.httpClient.post(`action_run`, 
