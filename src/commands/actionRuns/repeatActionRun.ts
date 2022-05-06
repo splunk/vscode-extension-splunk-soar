@@ -41,7 +41,9 @@ export async function repeatActionRun(context: ExtensionContext, actionRunContex
 			let actionRunResult = await client.getActionRun(action_run_id)
 			await commands.executeCommand('splunkSoar.actionRuns.refresh');
 			
-			let maxTries = 30
+			const config = workspace.getConfiguration()
+
+			let maxTries: number = config.get<number>("runAction.timeout", 30)
 			let actualTries = 0
 
 			while (actionRunResult.data.status === "running" && actualTries < maxTries) {
@@ -50,6 +52,9 @@ export async function repeatActionRun(context: ExtensionContext, actionRunContex
 				await wait()
 				console.log(`Try: ${actualTries}`);
 				actionRunResult = await client.getActionRun(action_run_id)
+			}
+			if (actionRunResult.data.status === "running") {
+				window.showErrorMessage("Action execution timed out, action still running. Will retrieve last known status.")
 			}
 	
 			progress.report({increment: 50, message: `${actionRunResult.data.message}`})

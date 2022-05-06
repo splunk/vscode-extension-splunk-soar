@@ -1,3 +1,4 @@
+import { vsCodeBadge } from '@vscode/webview-ui-toolkit';
 import { QuickPickItem, window, Disposable, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri, ProgressLocation, env, workspace, commands, ImplementationProvider } from 'vscode';
 import { getClientForActiveEnvironment } from '../../soar/client';
 
@@ -254,8 +255,11 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 		let actionRunResult = await client.getActionRun(action_run_id)
 		await commands.executeCommand('splunkSoar.actionRuns.refresh');
 					
-		let maxTries = 30
+		const config = workspace.getConfiguration()
+
+		let maxTries: number = config.get<number>("runAction.timeout", 30)
 		let actualTries = 0
+
 
 		while (actionRunResult.data.status === "running" && actualTries < maxTries) {
 			progress.report({increment: 25, message: "Still running..."})
@@ -264,7 +268,13 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 			actionRunResult = await client.getActionRun(action_run_id)
 		}
 
+
 		progress.report({increment: 50, message: `${actionRunResult.data.message}`})
+
+
+		if (actionRunResult.data.status === "running") {
+			window.showErrorMessage("Action execution timed out, action still running. Will retrieve last known status.")
+		}
 
 		let appRunsResult = await client.getActionRunAppRuns(action_run_id)
 		

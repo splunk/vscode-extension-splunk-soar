@@ -339,6 +339,11 @@
 			"title": "Splunk SOAR",
 			"order": 0,
 			"properties": {
+				"runAction.timeout": {
+					"type": "integer",
+					"default": 30,
+					"description": "Timeout for action executions in seconds"
+				},
 				"actionRuns.showOwnOnly": {
 					"type": "boolean",
 					"default": false,
