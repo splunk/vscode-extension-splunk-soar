@@ -36,7 +36,7 @@ export class SoarPlaybookTreeProvider implements vscode.TreeDataProvider<Playboo
 
 			return playbooksFunc().then(function (res) {
 				let playbookEntries = res.data["data"]
-				let playbookTreeItems = playbookEntries.map((entry: any) => (new PlaybookTreeItem(entry["name"], { "playbook": entry }, vscode.TreeItemCollapsibleState.None)))
+				let playbookTreeItems = playbookEntries.map((entry: any) => (new PlaybookTreeItem(`${entry['name']}`, { "playbook": entry }, vscode.TreeItemCollapsibleState.None)))
 				return playbookTreeItems
 
 			}).catch(function(err) {

@@ -3,6 +3,7 @@ import { addOrReplace, removeIfExists } from '../utils'
 export const ENV_KEY = "splunkSOAR.environments"
 export const ACTIVE_ENV_KEY = "splunkSOAR.activeEnvironment"
 import {IActionContext, MultiStepInput} from '../commands/apps/runAction'
+import { refreshViews } from '../views/views'
 
 function deriveEnvKey(url: string, username: string) {
     return `${username}@${url}`
@@ -121,9 +122,7 @@ export async function connectEnvironment(context: vscode.ExtensionContext) {
     
     if (newEnvironments.length === 1) {
         context.globalState.update(ACTIVE_ENV_KEY, envKey)
-        await vscode.commands.executeCommand('splunkSoar.environments.refresh');
-        await vscode.commands.executeCommand('splunkSoar.apps.refresh');
-        await vscode.commands.executeCommand('splunkSoar.actionRuns.refresh');    
+        await refreshViews()
     }
 
     context.globalState.update(ENV_KEY, newEnvironments)
@@ -144,18 +143,14 @@ export async function disconnectEnvironment(context: vscode.ExtensionContext, ac
     let newEnvironments = removeIfExists(currentEnvironments, "key", key)
 
     context.globalState.update(ENV_KEY, newEnvironments)
-    await vscode.commands.executeCommand('splunkSoar.environments.refresh');
-    await vscode.commands.executeCommand('splunkSoar.actionRuns.refresh');
-    await vscode.commands.executeCommand('splunkSoar.apps.refresh');
+    await refreshViews()
 }
 
 export async function activateEnvironment(context: vscode.ExtensionContext, actionContext: IActionContext) {
     let key = actionContext.data["key"]
 
     context.globalState.update(ACTIVE_ENV_KEY, key)
-    await vscode.commands.executeCommand('splunkSoar.environments.refresh');
-    await vscode.commands.executeCommand('splunkSoar.apps.refresh');
-    await vscode.commands.executeCommand('splunkSoar.actionRuns.refresh');
+    await refreshViews()
 }
 
 export function getActiveEnvironment(context: vscode.ExtensionContext) {

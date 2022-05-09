@@ -1,9 +1,10 @@
-import { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosInstance } from "axios";
 import * as https from 'https'; 
 import * as vscode from 'vscode';
 import { getActiveEnvironment } from "../config/environment";
-import { SoarAction } from "../views/apps";
 const axios = require('axios').default;
+
+import * as models from './models'
 
 export class SoarClient {
     server: string
@@ -33,11 +34,11 @@ export class SoarClient {
     }
 
     version = async () => {
-        return await this.httpClient.get("version")
+        return await this.httpClient.get<models.SoarVersion>("version")
     }
 
     listApps = async () => {
-        return await this.httpClient.get("app", {params: {"page_size": 500, "pretty": true, "sort": "name"}})
+        return await this.httpClient.get<models.SoarCollection<models.SoarApp>>("app", {params: {"page_size": 500, "pretty": true, "sort": "name"}})
     }
 
     listAppAssets = async (appId: string) => {

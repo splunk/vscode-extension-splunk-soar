@@ -2,11 +2,11 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { getClientForActiveEnvironment } from '../soar/client';
 import {partition} from '../utils'
-import { IApp } from '../commands/apps/runAction';
+import { SoarApp } from '../soar/models';
 
-export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppTreeItem> {
-	private _onDidChangeTreeData: vscode.EventEmitter<SoarAppTreeItem | undefined | void> = new vscode.EventEmitter<SoarAppTreeItem | undefined | void>();
-	readonly onDidChangeTreeData: vscode.Event<SoarAppTreeItem | undefined | void> = this._onDidChangeTreeData.event;
+export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppsTreeItem> {
+	private _onDidChangeTreeData: vscode.EventEmitter<SoarAppsTreeItem | undefined | void> = new vscode.EventEmitter<SoarAppsTreeItem | undefined | void>();
+	readonly onDidChangeTreeData: vscode.Event<SoarAppsTreeItem | undefined | void> = this._onDidChangeTreeData.event;
 
 	constructor(private context: vscode.ExtensionContext) {
 	}
@@ -15,24 +15,20 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppTree
 		this._onDidChangeTreeData.fire();
 	}
 
-	runAction() {
-
-	}
-
-	getTreeItem(element: SoarAppTreeItem): vscode.TreeItem {
+	getTreeItem(element: SoarAppsTreeItem): vscode.TreeItem {
 		return element
 	}
 
-	async getChildren(element?: SoarAppTreeItem): Promise<SoarAppTreeItem[]> {
+	async getChildren(element?: SoarAppsTreeItem): Promise<SoarAppsTreeItem[]> {
 		let client = await getClientForActiveEnvironment(this.context)
 
 		if (!element) {
 			return client.listApps().then(function (res) {
 				let appEntries = res.data["data"]
-				const [configured, unconfigured] = partition(appEntries, (app: IApp) => app["_pretty_asset_count"] > 0)
+				const [configured, unconfigured] = partition(appEntries, (app: SoarApp) => app["_pretty_asset_count"] > 0)
 
 
-				let appTreeItems = configured.concat(unconfigured).map((entry: any) => (new SoarApp(entry["name"], {"app": entry}, vscode.TreeItemCollapsibleState.Collapsed)))
+				let appTreeItems = configured.concat(unconfigured).map((entry: any) => (new SoarAppItem(entry["name"], {"app": entry}, vscode.TreeItemCollapsibleState.Collapsed)))
 				return appTreeItems
 			})
 		}
@@ -52,16 +48,16 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppTree
 		} else if (element.contextValue === "soarassetsection") {
 			return client.listAppAssets(element.data["app"]["id"]).then(function (res) {
 				let assetEntries = res.data["data"]
-				let assetTreeItems = assetEntries.map((entry: any) => (new SoarAsset(entry["name"], {"asset": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
+				let assetTreeItems = assetEntries.map((entry: any) => (new SoarAssetItem(entry["name"], {"asset": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
 				return assetTreeItems
 			}).catch(function (err) {
 				console.error(err)
 			})
 		} else if (element.contextValue === "soaractionsection") {
-			let actionTreeItems = element.data["app"]["_pretty_actions"].map((entry: any) => (new SoarAction(entry["name"], {"action": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
+			let actionTreeItems = element.data["app"]["_pretty_actions"].map((entry: any) => (new SoarActionItem(entry["name"], {"action": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
 			return Promise.resolve(actionTreeItems)
 		} else if (element.contextValue === "soarfilessection") {
-			let actionTreeItems = element.data["app_content"].map((entry: any) => (new SoarFile(entry["name"], {"file": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
+			let actionTreeItems = element.data["app_content"].map((entry: any) => (new SoarFileItem(entry["name"], {"file": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
 			return Promise.resolve(actionTreeItems)
 		}
 
@@ -69,7 +65,7 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppTree
 	}
 }
 
-export class SoarAppTreeItem extends vscode.TreeItem {
+export class SoarAppsTreeItem extends vscode.TreeItem {
 	constructor(
 		public readonly label: string,
 		public readonly data: any,
@@ -84,7 +80,7 @@ export class SoarAppTreeItem extends vscode.TreeItem {
 }
 
 
-export class SoarApp extends SoarAppTreeItem {
+export class SoarAppItem extends SoarAppsTreeItem {
 
 	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)
@@ -106,7 +102,7 @@ export class SoarApp extends SoarAppTreeItem {
 	};
 }
 
-export class SoarAsset extends SoarAppTreeItem {
+export class SoarAssetItem extends SoarAppsTreeItem {
 	contextValue: string = 'soarasset';
 
 	iconPath = {
@@ -115,7 +111,7 @@ export class SoarAsset extends SoarAppTreeItem {
 	};
 }
 
-class SoarAssetSection extends SoarAppTreeItem {
+class SoarAssetSection extends SoarAppsTreeItem {
 
 	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)
@@ -130,7 +126,7 @@ class SoarAssetSection extends SoarAppTreeItem {
 	contextValue: string = "soarassetsection"
 }
 
-class SoarActionSection extends SoarAppTreeItem {
+class SoarActionSection extends SoarAppsTreeItem {
 
 	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)
@@ -145,7 +141,7 @@ class SoarActionSection extends SoarAppTreeItem {
 	contextValue: string = "soaractionsection"
 }
 
-class SoarFilesSection extends SoarAppTreeItem {
+class SoarFilesSection extends SoarAppsTreeItem {
 
 	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)
@@ -161,7 +157,7 @@ class SoarFilesSection extends SoarAppTreeItem {
 }
 
 
-export class SoarAction extends SoarAppTreeItem {
+export class SoarActionItem extends SoarAppsTreeItem {
 
 	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)
@@ -177,7 +173,7 @@ export class SoarAction extends SoarAppTreeItem {
 	};
 }
 
-export class SoarFile extends SoarAppTreeItem {
+export class SoarFileItem extends SoarAppsTreeItem {
 
 	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)

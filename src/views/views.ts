@@ -27,3 +27,11 @@ export function registerTreeViews(context: vscode.ExtensionContext) {
     vscode.window.registerTreeDataProvider('soarHelp', helpTreeProvider)
 
 }
+
+
+export async function refreshViews() {
+	await vscode.commands.executeCommand('splunkSoar.environments.refresh');
+    await vscode.commands.executeCommand('splunkSoar.apps.refresh');
+    await vscode.commands.executeCommand('splunkSoar.actionRuns.refresh');
+    await vscode.commands.executeCommand('splunkSoar.playbooks.refresh');
+}

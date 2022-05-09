@@ -19,6 +19,9 @@ export interface IActionRunContext {
 	}
 }
 
+type ActionRunStatus = "running" | "success" | "failed"
+
+
 export async function repeatActionRun(context: ExtensionContext, actionRunContext: IActionRunContext) {
     let client = await getClientForActiveEnvironment(context)
 	let actionRunId = actionRunContext.data["actionRun"]["id"]

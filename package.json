@@ -6,7 +6,7 @@
 	"publisher": "Splunk",
 	"version": "0.0.2",
 	"engines": {
-		"vscode": "^1.65.0"
+		"vscode": "^1.67.0"
 	},
 	"repository": {
 		"type": "git",
@@ -210,19 +210,7 @@
 		"viewsWelcome": [
 			{
 				"view": "soarEnvironments",
-				"contents": "[Connect Environment](command:splunkSoar.environments.connect)"
-			},
-			{
-				"view": "soarApps",
-				"contents": "[Connect Environment](command:splunkSoar.environments.connect)"
-			},
-			{
-				"view": "soarActionRuns",
-				"contents": "[Connect Environment](command:splunkSoar.environments.connect)"
-			},
-			{
-				"view": "soarPlaybooks",
-				"contents": "[Connect Environment](command:splunkSoar.environments.connect)"
+				"contents": "You have not connected any environments yet. \n [Connect Environment](command:splunkSoar.environments.connect)"
 			}
 		],
 		"menus": {
@@ -382,7 +370,7 @@
 		"@types/mocha": "^9.1.0",
 		"@types/node": "14.x",
 		"@types/tar": "^6.1.1",
-		"@types/vscode": "^1.65.0",
+		"@types/vscode": "^1.67.0",
 		"@typescript-eslint/eslint-plugin": "^5.12.1",
 		"@typescript-eslint/parser": "^5.12.1",
 		"@vscode/test-electron": "^2.1.2",
