@@ -61,6 +61,10 @@ export class SoarClient {
         return await this.httpClient.post("app", {"app": appContent})
     }
 
+    downloadApp = async(appId: string) => {
+        return await this.httpClient.post(`app_download/${appId}`,null , {'responseType': "stream"})
+    }
+
     getAsset = async (assetId: string) => {
         return await this.httpClient.get(`asset/${assetId}`)
     }

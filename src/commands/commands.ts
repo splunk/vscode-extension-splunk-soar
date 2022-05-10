@@ -3,6 +3,7 @@ import { activateEnvironment, connectEnvironment, disconnectEnvironment } from '
 import { AppWizardPanel } from '../webviews/appWizard';
 import { cancelActionRun } from './actionRuns/cancelActionRun';
 import { repeatActionRun } from './actionRuns/repeatActionRun';
+import { downloadBundle } from './apps/downloadBundle';
 import { installBundle } from './apps/installBundle';
 import { runActionInput } from './apps/runAction';
 import { viewAppDocs } from './apps/viewAppDocs';
@@ -71,6 +72,11 @@ export function registerCommands(context: vscode.ExtensionContext) {
 			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
 		}
 	}))
+
+
+	let disposableDownloadBundle = vscode.commands.registerCommand('soarApps.downloadBundle', (appContext) => { downloadBundle(context, appContext) });
+	context.subscriptions.push(disposableDownloadBundle);
+
 
     context.subscriptions.push(vscode.commands.registerCommand('soarApps.runAction', async (data) => {
 		if (data) {

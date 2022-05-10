@@ -124,6 +124,11 @@
 				"icon": "$(eye)"
 			},
 			{
+				"command": "soarApps.downloadBundle",
+				"title": "SOAR: Download App",
+				"icon": "$(cloud-download)"
+			},
+			{
 				"command": "soarApps.viewContainer",
 				"title": "SOAR: View Container",
 				"icon": "$(eye)"
@@ -301,6 +306,11 @@
 				},
 				{
 					"command": "soarApps.viewAppDocs",
+					"when": "view == soarApps && viewItem == soarapp",
+					"group": "inline"
+				},
+				{
+					"command": "soarApps.downloadBundle",
 					"when": "view == soarApps && viewItem == soarapp",
 					"group": "inline"
 				},
