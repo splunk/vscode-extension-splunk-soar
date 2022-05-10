@@ -27,7 +27,7 @@ export async function downloadBundle(context: vscode.ExtensionContext, appContex
         let res = await client.downloadApp(appContext.data.app.id)
         await pipeline(res.data, fs.createWriteStream(fileUri[0].fsPath + "/" + appContext.data.app.directory + ".tgz"))
     } catch (err) {
-
+        vscode.window.showErrorMessage(`Could not download App bundle: ${err}`)
     }
 
 }
