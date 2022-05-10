@@ -4,6 +4,7 @@ export const ENV_KEY = "splunkSOAR.environments"
 export const ACTIVE_ENV_KEY = "splunkSOAR.activeEnvironment"
 import {IActionContext, MultiStepInput} from '../commands/apps/runAction'
 import { refreshViews } from '../views/views'
+import { listenerCount } from 'process'
 
 function deriveEnvKey(url: string, username: string) {
     return `${username}@${url}`
@@ -48,7 +49,7 @@ async function connectUrlInput(input: MultiStepInput, state: Partial<ConnectEnvi
         value: state.url || '',
         prompt: `SOAR Environment URL`,
         shouldResume: shouldResume,
-        validate: validateNameIsUnique
+        validate: validateNoTrailingSlash
     });
 
     return (input: MultiStepInput) => connectSslVerifyInput(input, state);
@@ -101,6 +102,14 @@ async function validateNameIsUnique(name: string) {
     return name === 'vscode' ? 'Name not unique' : undefined;
 }
 
+async function validateNoTrailingSlash(url: string) {
+    if (url.endsWith("/")) {
+        return "Please remove the trailing slash"
+    } else if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        return "Please ensure that the URL starts with http:// or https://"
+    }
+    return 
+}
 
 
 
@@ -128,6 +137,7 @@ export async function connectEnvironment(context: vscode.ExtensionContext) {
     context.globalState.update(ENV_KEY, newEnvironments)
     context.secrets.store(envKey, state.password)
     await vscode.commands.executeCommand('splunkSoar.environments.refresh');
+    await vscode.commands.executeCommand('splunkSoar.version');
 }
 
 export async function disconnectEnvironment(context: vscode.ExtensionContext, actionContext: IActionContext) {
@@ -141,6 +151,11 @@ export async function disconnectEnvironment(context: vscode.ExtensionContext, ac
 
     let currentEnvironments = context.globalState.get(ENV_KEY) || []
     let newEnvironments = removeIfExists(currentEnvironments, "key", key)
+
+    if (key == context.globalState.get(ACTIVE_ENV_KEY)) {
+        vscode.window.showInformationMessage("Active environment got disconnected. Please ensure an another environment is activated to use the SOAR extension.")
+        context.globalState.update(ACTIVE_ENV_KEY, undefined)
+    }
 
     context.globalState.update(ENV_KEY, newEnvironments)
     await refreshViews()
@@ -160,6 +175,11 @@ export function getActiveEnvironment(context: vscode.ExtensionContext) {
 
 export async function getEnvironment(context: vscode.ExtensionContext, envKey: string) {
     let currentEnvironments: ConfiguredConnectEnvironment[] = context.globalState.get(ENV_KEY) || []
+
+    if (currentEnvironments.length == 0) {
+        throw new Error(`No environments configured.`)
+    }
+
     let password = await context.secrets.get(envKey)
 
     if (password == undefined) {

@@ -20,8 +20,13 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppsTre
 	}
 
 	async getChildren(element?: SoarAppsTreeItem): Promise<SoarAppsTreeItem[]> {
-		let client = await getClientForActiveEnvironment(this.context)
-
+		let client;
+		try {
+			client = await getClientForActiveEnvironment(this.context)
+		} catch(error) {
+			console.error("Could not retrieve client")
+			return Promise.resolve([])
+		}
 		if (!element) {
 			return client.listApps().then(function (res) {
 				let appEntries = res.data["data"]
