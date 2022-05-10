@@ -4,7 +4,7 @@
 	"description": "VS Code Extension for Splunk SOAR",
 	"icon": "media/soarcloud.png",
 	"publisher": "Splunk",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"engines": {
 		"vscode": "^1.67.0"
 	},
@@ -282,6 +282,11 @@
 				{
 					"command": "soarApps.runAction",
 					"when": "view == soarApps && viewItem == soaraction",
+					"group": "inline"
+				},
+				{
+					"command": "soarApps.viewPlaybookWeb",
+					"when": "view == soarPlaybooks && viewItem == soarplaybook",
 					"group": "inline"
 				},
 				{

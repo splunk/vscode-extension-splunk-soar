@@ -18,7 +18,7 @@ export async function openWebActionRunResult(context: vscode.ExtensionContext, c
 
 export async function openWebPlaybook(context: vscode.ExtensionContext, playbookId: string) {
     let client: SoarClient = await getClientForActiveEnvironment(context)
-    vscode.env.openExternal(vscode.Uri.parse(`${client.server}/playbook/${playbookId}`))	
+    vscode.env.openExternal(vscode.Uri.parse(`${client.server}playbook/${playbookId}`))	
 }
 
 export async function openRepoIssues() {

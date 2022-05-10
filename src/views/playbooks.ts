@@ -63,6 +63,6 @@ export class PlaybookTreeItem extends vscode.TreeItem {
     
 	}
     iconPath = new vscode.ThemeIcon("file-code")
-	contextValue = 'soarplaybooktreeitem';
+	contextValue = 'soarplaybook';
 	
 }

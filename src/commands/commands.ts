@@ -67,7 +67,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewPlaybookWeb', async (playbookId) => {
 		if (playbookId) {
-			openWebPlaybook(context, playbookId)
+			openWebPlaybook(context, playbookId.data.playbook.id)
 		} else {
 			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
 		}
