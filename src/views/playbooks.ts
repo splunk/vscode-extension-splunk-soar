@@ -21,7 +21,12 @@ export class SoarPlaybookTreeProvider implements vscode.TreeDataProvider<Playboo
 	}
 
 	async getChildren(element?: PlaybookTreeItem): Promise<PlaybookTreeItem[]> {
-		let client = await getClientForActiveEnvironment(this.context)
+		let client;
+		try {
+			client = await getClientForActiveEnvironment(this.context)
+		} catch(error) {
+			return Promise.resolve([])
+		}
 
 		const config = vscode.workspace.getConfiguration()
 		const ownOnly: boolean = config.get<boolean>("playbooks.showOwnOnly", false)

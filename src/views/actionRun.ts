@@ -22,7 +22,12 @@ export class SoarActionRunTreeProvider implements vscode.TreeDataProvider<Action
 	}
 
 	async getChildren(element?: ActionRunTreeItem): Promise<ActionRunTreeItem[]> {
-		let client = await getClientForActiveEnvironment(this.context)
+		let client;
+		try {
+			client = await getClientForActiveEnvironment(this.context)
+		} catch(error) {
+			return Promise.resolve([])
+		}
 
 		const config = vscode.workspace.getConfiguration()
 		const ownOnly: boolean = config.get<boolean>("actionRuns.showOwnOnly", false)

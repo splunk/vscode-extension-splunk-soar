@@ -24,7 +24,6 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppsTre
 		try {
 			client = await getClientForActiveEnvironment(this.context)
 		} catch(error) {
-			console.error("Could not retrieve client")
 			return Promise.resolve([])
 		}
 		if (!element) {
