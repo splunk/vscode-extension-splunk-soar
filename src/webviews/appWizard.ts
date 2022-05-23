@@ -106,13 +106,8 @@ export class AppWizardPanel {
    * rendered within the webview panel
    */
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {
-    const toolkitUri = getUri(webview, extensionUri, [
-      "node_modules",
-      "@vscode",
-      "webview-ui-toolkit",
-      "dist",
-      "toolkit.js",
-    ]);
+    const toolkitUri = getUri(webview, extensionUri, ["app", "appwizard", "toolkit.js"]);
+
     const mainUri = getUri(webview, extensionUri, ["app", "appwizard", "main.js"]);
     const styleUri = getUri(webview, extensionUri, ["app", "appwizard", "styles.css"]);
 

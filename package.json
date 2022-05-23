@@ -4,7 +4,7 @@
 	"description": "VS Code Extension for Splunk SOAR",
 	"icon": "media/soarcloud.png",
 	"publisher": "Splunk",
-	"version": "0.0.4",
+	"version": "0.0.5",
 	"engines": {
 		"vscode": "^1.67.0"
 	},
