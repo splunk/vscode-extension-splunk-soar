@@ -63,9 +63,12 @@ export class PlaybookTreeItem extends vscode.TreeItem {
 	) {
 		super(label, collapsibleState);
 		this.data = data
-        this.description = JSON.stringify(data.playbook.id)
+        this.description = `${JSON.stringify(data.playbook.id)} · version ${data.playbook.version}`
+		if (data.playbook.active) {
+			this.description += " · " + "active"
+			this.iconPath = new vscode.ThemeIcon("file-code", new vscode.ThemeColor("terminal.ansiGreen"))
+		}
 
-    
 	}
     iconPath = new vscode.ThemeIcon("file-code")
 	contextValue = 'soarplaybook';

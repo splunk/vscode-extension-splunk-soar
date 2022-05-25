@@ -119,6 +119,7 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 			packageDispose.dispose()
 
 			let uploadDispose = vscode.window.setStatusBarMessage("$(loading~spin) Uploading App...")
+			this.writeEmitter.fire(outPath);
 
 			try {
 				const appFile = fs.readFileSync(outPath, {encoding: 'base64'})
@@ -133,7 +134,8 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 
 			} catch(err: any) {
 				vscode.window.setStatusBarMessage("$(error) Error uploading app", 3000)
-				this.writeEmitter.fire(JSON.stringify(err.response.data));
+				vscode.window.showErrorMessage(JSON.stringify(err))
+				this.writeEmitter.fire(JSON.stringify(err));
 				this.closeEmitter.fire(0);
 				resolve()
 			}

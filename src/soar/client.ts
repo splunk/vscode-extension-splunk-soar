@@ -12,6 +12,7 @@ export class SoarClient {
     password: string
     sslVerify: boolean
     httpClient: AxiosInstance
+    fileClient: AxiosInstance
 
     constructor(server: string, username: string, password: string, sslVerify: boolean) {
         this.server = server
@@ -19,9 +20,17 @@ export class SoarClient {
         this.password = password
         this.sslVerify = sslVerify
 
-        this.httpClient = axios.create({
+        const axiosConfig = {
             baseURL: `${server}/rest/`,
-            auth: {username: username, password: password}
+            auth: {username: username, password: password},
+        }
+
+        this.httpClient = axios.create(axiosConfig)
+
+        this.fileClient = axios.create({
+            timeout: 100000,
+            maxBodyLength: 200000000,
+            ...axiosConfig
         })
         
         if (!sslVerify) {
@@ -49,8 +58,16 @@ export class SoarClient {
         return await this.httpClient.get("action_run", {params: {"pretty": true, "page_size": 0, "sort": "create_time", "order": "desc"}})
     }
 
+    listPlaybookRuns = async() => {
+        return await this.httpClient.get("playbook_run", {params: {"pretty": true, "page_size": 0, "sort": "start_time", "order": "desc"}})
+    }
+
     listUserActionRuns = async() => {
         return await this.httpClient.get("action_run", {params: {"pretty": true, "page_size": 0, "sort": "create_time", "order": "desc", "_filter_owner__username": `'${this.username}'`}})
+    }
+
+    listUserPlaybookRuns = async() => {
+        return await this.httpClient.get("playbook_run", {params: {"pretty": true, "page_size": 0, "sort": "start_time", "order": "desc", "_filter_owner__username": `'${this.username}'`}})
     }
 
     appContent = async (appId: string) => {
@@ -58,7 +75,7 @@ export class SoarClient {
     }
 
     installApp = async(appContent: string) => {
-        return await this.httpClient.post("app", {"app": appContent})
+        return await this.fileClient.post("app", {"app": appContent})
     }
 
     downloadApp = async(appId: string) => {
@@ -75,6 +92,10 @@ export class SoarClient {
 
     getAppByAppid = async (appId: string) => {
     return await this.httpClient.get(`app`, {params: {"pretty": true, "_filter_appid": `"${appId}"`}})
+    }
+
+    getPlaybook = async (playbookId: string) => {
+        return await this.httpClient.get(`playbook/${playbookId}`, {params: {"pretty": true}})
     }
 
     listPlaybooks = async () => {

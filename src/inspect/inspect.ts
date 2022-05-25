@@ -4,6 +4,7 @@ import { AppContentProvider } from './appContentProvider';
 import { AppFileContentProvider } from './appFileContentProvider';
 import { AssetContentProvider } from './assetContentProvider';
 import { ContainerContentProvider } from './containerContentProvider';
+import { PlaybookContentProvider } from './playbookContentProvider';
 
 export function registerInspectProviders(context: vscode.ExtensionContext) {
 
@@ -18,7 +19,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 
 		if (assetId) {
-			const uri = vscode.Uri.parse('soarasset:' + assetId);
+			const uri = vscode.Uri.parse('soarasset:' + assetId + ".json");
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
@@ -35,7 +36,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 
 		if (appId) {
-			const uri = vscode.Uri.parse('soarapp:' + appId);
+			const uri = vscode.Uri.parse('soarapp:' + appId + ".json");
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
@@ -50,7 +51,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 
 		if (containerId) {
-			const uri = vscode.Uri.parse('soarcontainer:' + containerId);
+			const uri = vscode.Uri.parse('soarcontainer:' + containerId + ".json");
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
@@ -67,7 +68,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 
 		if (actionRunId) {
-			const uri = vscode.Uri.parse('soaractionrun:' + actionRunId);
+			const uri = vscode.Uri.parse('soaractionrun:' + actionRunId + ".json");
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
@@ -89,5 +90,23 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
+
+	const playbookScheme = "soarplaybook"
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(playbookScheme, new PlaybookContentProvider(context)));
+
+	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewPlaybook', async (playbookId) => {
+		if (!playbookId) {
+			playbookId = await vscode.window.showInputBox({ placeHolder: 'id' });
+		} else if (playbookId.hasOwnProperty("data")) {
+			playbookId = String(playbookId.data["playbook"]["id"])
+		}
+
+		if (playbookId) {
+			const uri = vscode.Uri.parse('soarplaybook:' + playbookId + ".json");
+			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			await vscode.window.showTextDocument(doc, { preview: false });
+		}
+	}));
+
 
 }

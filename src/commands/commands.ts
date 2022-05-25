@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { activateEnvironment, connectEnvironment, disconnectEnvironment } from '../config/environment';
+import { activateEnvironment, connectEnvironment, disconnectEnvironment, openEnvironmentWeb } from '../config/environment';
 import { AppWizardPanel } from '../webviews/appWizard';
 import { cancelActionRun } from './actionRuns/cancelActionRun';
 import { repeatActionRun } from './actionRuns/repeatActionRun';
@@ -33,6 +33,10 @@ export function registerCommands(context: vscode.ExtensionContext) {
 
 	let activateEnvironmentDisposable = vscode.commands.registerCommand('splunkSoar.environments.activate', (actionContext) => { activateEnvironment(context, actionContext) });
 	context.subscriptions.push(activateEnvironmentDisposable);
+
+	let openEnvironmentWebDisposable = vscode.commands.registerCommand('splunkSoar.environments.openWeb', (environmentContext) => { openEnvironmentWeb(context, environmentContext) });
+	context.subscriptions.push(openEnvironmentWebDisposable);
+
 
 	let disposableReportIssue = vscode.commands.registerCommand('splunkSoar.reportIssue', async () => { openRepoIssues() });
 	context.subscriptions.push(disposableReportIssue);

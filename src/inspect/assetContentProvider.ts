@@ -10,7 +10,7 @@ export class AssetContentProvider implements vscode.TextDocumentContentProvider 
 
     async provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): Promise<string|null> {
         let client = await getClientForActiveEnvironment(this.context)
-        return client.getAsset(uri.path).then(function(res) {
+        return client.getAsset(uri.path.replace(".json", "")).then(function(res) {
             let outJSON = JSON.stringify(res.data, null, '\t')
             return outJSON
         }).catch(function(err) {

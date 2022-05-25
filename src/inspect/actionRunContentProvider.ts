@@ -10,7 +10,7 @@ export class ActionRunContentProvider implements vscode.TextDocumentContentProvi
     
     async provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): Promise<string> {
         let client = await getClientForActiveEnvironment(this.context)
-        return client.getActionRun(uri.path).then(function(res) {
+        return client.getActionRun(uri.path.replace(".json", "")).then(function(res) {
             let outJSON = JSON.stringify(res.data, null, '\t')
             return outJSON
         }).catch(function(err) {

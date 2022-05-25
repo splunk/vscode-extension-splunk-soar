@@ -4,7 +4,7 @@ export const ENV_KEY = "splunkSOAR.environments"
 export const ACTIVE_ENV_KEY = "splunkSOAR.activeEnvironment"
 import {IActionContext, MultiStepInput} from '../commands/apps/runAction'
 import { refreshViews } from '../views/views'
-import { listenerCount } from 'process'
+import { SoarInstancesTreeItem } from '../views/environments'
 
 function deriveEnvKey(url: string, username: string) {
     return `${username}@${url}`
@@ -21,8 +21,7 @@ interface ConnectEnvironment extends BaseConnectEnvironment {
 }
 
 interface ConfiguredConnectEnvironment extends BaseConnectEnvironment {
-    key: string,
-    password: string
+    key: string
 }
 
 const wizardTitle = "Connect a SOAR Environment"
@@ -189,4 +188,9 @@ export async function getEnvironment(context: vscode.ExtensionContext, envKey: s
     let env = currentEnvironments.find(env => env.key == envKey)!
 
     return {...env, "password": password}
+}
+
+export async function openEnvironmentWeb(context: vscode.ExtensionContext, environmentContext: SoarInstancesTreeItem) {
+    let env: ConfiguredConnectEnvironment = environmentContext.data
+    vscode.env.openExternal(vscode.Uri.parse(env.url))
 }

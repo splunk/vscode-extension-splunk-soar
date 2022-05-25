@@ -1,8 +1,7 @@
-import { strictEqual } from 'assert';
 import * as vscode from 'vscode'
-import { getClientForActiveEnvironment } from '../../soar/client';
+import { getClientForActiveEnvironment } from '../soar/client';
 
-export class ContainerContentProvider implements vscode.TextDocumentContentProvider {
+export class PlaybookContentProvider implements vscode.TextDocumentContentProvider {
     onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>();
     onDidChange = this.onDidChangeEmitter.event;
 
@@ -11,7 +10,7 @@ export class ContainerContentProvider implements vscode.TextDocumentContentProvi
 
     async provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): Promise<string> {
         let client = await getClientForActiveEnvironment(this.context)
-        return client.getContainer(uri.path).then(function(res) {
+        return client.getPlaybook(uri.path.replace(".json", "")).then(function(res) {
             let outJSON = JSON.stringify(res.data, null, '\t')
             return outJSON
         }).catch(function(err) {

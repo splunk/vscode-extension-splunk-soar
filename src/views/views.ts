@@ -3,6 +3,7 @@ import { SoarActionRunTreeProvider } from './actionRun';
 import { SoarAppsTreeProvider } from './apps';
 import { SoarEnvironmentsTreeProvider } from './environments';
 import { SoarHelpTreeProvider } from './help';
+import { SoarPlaybookRunTreeProvider } from './playbookRun';
 import { SoarPlaybookTreeProvider } from './playbooks';
 
 export function registerTreeViews(context: vscode.ExtensionContext) {
@@ -18,6 +19,10 @@ export function registerTreeViews(context: vscode.ExtensionContext) {
 	const soarActionRunsTreeProvider = new SoarActionRunTreeProvider(context)
 	vscode.window.registerTreeDataProvider('soarActionRuns', soarActionRunsTreeProvider)
 	vscode.commands.registerCommand('splunkSoar.actionRuns.refresh', () => soarActionRunsTreeProvider.refresh());
+
+	const soarPlaybookRunsTreeProvider = new SoarPlaybookRunTreeProvider(context)
+	vscode.window.registerTreeDataProvider('soarPlaybookRuns', soarPlaybookRunsTreeProvider)
+	vscode.commands.registerCommand('splunkSoar.playbookRuns.refresh', () => soarPlaybookRunsTreeProvider.refresh());
 
 	const playbooksTreeProvider = new SoarPlaybookTreeProvider(context)
 	vscode.window.registerTreeDataProvider('soarPlaybooks', playbooksTreeProvider)

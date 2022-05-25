@@ -85,34 +85,27 @@ export class SoarAppsTreeItem extends vscode.TreeItem {
 
 
 export class SoarAppItem extends SoarAppsTreeItem {
+	iconPath = new vscode.ThemeIcon("package")
 
 	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)
 		this.description = data["app"]["app_version"]
+		if (data["app"]["draft_mode"]) {
+			this.description += " • draft"
+		}
 
 		if (data["app"]["_pretty_asset_count"] > 0) {
-			this.iconPath = {
-				light: path.join(__filename, '..', '..', 'resources', 'light', 'symbol-field-configured.svg'),
-				dark: path.join(__filename, '..', '..', 'resources', 'dark', 'symbol-field-configured.svg')
-			};
+			this.iconPath = new vscode.ThemeIcon("package", new vscode.ThemeColor("terminal.ansiGreen"))
 		}
 	}
 
 	contextValue: string = 'soarapp';
-
-	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'symbol-field.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'symbol-field.svg')
-	};
 }
 
 export class SoarAssetItem extends SoarAppsTreeItem {
 	contextValue: string = 'soarasset';
 
-	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'symbol-method.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'symbol-method.svg')
-	};
+	iconPath = new vscode.ThemeIcon("gear")
 }
 
 class SoarAssetSection extends SoarAppsTreeItem {
@@ -122,10 +115,7 @@ class SoarAssetSection extends SoarAppsTreeItem {
 		this.description = `${data["app"]["_pretty_asset_count"]}`
 	}
 
-	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'symbol-method.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'symbol-method.svg')
-	};
+	iconPath = new vscode.ThemeIcon("gear")
 
 	contextValue: string = "soarassetsection"
 }
@@ -136,11 +126,7 @@ class SoarActionSection extends SoarAppsTreeItem {
 		super(label, data, collapsibleState, command)
 		this.description = `${data["app"]["_pretty_actions"].length}`
 	}
-
-	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'symbol-event.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'symbol-event.svg')
-	};
+	iconPath = new vscode.ThemeIcon("zap")
 
 	contextValue: string = "soaractionsection"
 }
@@ -152,10 +138,7 @@ class SoarFilesSection extends SoarAppsTreeItem {
 		this.description = `${data["app_content"].length} (readonly)`
 	}
 
-	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'file.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'file.svg')
-	};
+	iconPath = new vscode.ThemeIcon("file")
 
 	contextValue: string = "soarfilessection"
 }
@@ -170,11 +153,8 @@ export class SoarActionItem extends SoarAppsTreeItem {
 
 	contextValue: string = 'soaraction';
 
+	iconPath = new vscode.ThemeIcon("zap")
 
-	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'symbol-event.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'symbol-event.svg')
-	};
 }
 
 export class SoarFileItem extends SoarAppsTreeItem {
@@ -187,8 +167,5 @@ export class SoarFileItem extends SoarAppsTreeItem {
 	contextValue: string = 'soarfile';
 
 
-	iconPath = {
-		light: path.join(__filename, '..', '..', 'resources', 'light', 'file.svg'),
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'file.svg')
-	};
+	iconPath = new vscode.ThemeIcon("file")
 }
