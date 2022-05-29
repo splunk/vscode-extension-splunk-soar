@@ -108,6 +108,7 @@ export class ActionRun extends ActionRunTreeItem {
 		this.tooltip = this.generateLabel(data)
 		this.tooltip.isTrusted = true
 		this.tooltip.supportHtml = true
+		this.tooltip.supportThemeIcons = true
 		this.contextValue = `soaractionrun:${data["actionRun"]["status"]}`
 
 	}
@@ -121,33 +122,33 @@ export class ActionRun extends ActionRunTreeItem {
 
 
 	generateLabel = function(data: any): vscode.MarkdownString {
-		let label = new vscode.MarkdownString(`## ${data["actionRun"]["action"]} \n`);
+		let label = new vscode.MarkdownString(`### ${data["actionRun"]["action"]} \n`);
 		let actionRunId = data["actionRun"]["id"]
 		let actionRunMessage = data["actionRun"]["message"]
+		let actionRunTime = data["actionRun"]["create_time"]
 
-		label.appendMarkdown(`*${actionRunMessage}*\n\n`)
+		label.appendMarkdown(`*${actionRunMessage}*, ${actionRunTime}\n\n`)
 
-		label.appendMarkdown(`**Action Run ID**: ${actionRunId} \n`)
-		label.appendMarkdown(`[Inspect](command:soarApps.viewActionRun?${actionRunId}) \n`)
+		label.appendMarkdown(`**Action Run**: `)
+		label.appendMarkdown(`[$(git-commit) \`${actionRunId}\`](command:soarApps.viewActionRun?${actionRunId}) \n\n`)
 
 		if (data["actionRun"]["container"] !== null) {
 			let containerId = data["actionRun"]["container"].toString()
 			let containerLabel = data["actionRun"]["_pretty_container"]
 
-			label.appendMarkdown(`### Container \n`)
-			label.appendMarkdown(`**Container ID:** ${containerId} \n`)
-			label.appendMarkdown(`[Inspect](command:soarApps.viewContainer?${containerId}) \n\n`)
-			label.appendMarkdown(`**Container**: ${containerLabel} \n\n`)
+			label.appendMarkdown(`**Container:** `)
+			label.appendMarkdown(`[$(symbol-field) \`${containerId}\`](command:soarApps.viewContainer?${containerId}) \n`)
+			label.appendMarkdown(`${containerLabel} \n\n`)
 
 
 		}
 		if (data["actionRun"]["playbook_run"] !== null) {
-			label.appendMarkdown(`### Playbook \n`)
+			let playbookId = data["actionRun"]["playbook"]
+			let playbookLabel = data["actionRun"]["_pretty_playbook"]
 
-			label.appendMarkdown(`**Playbook Run ID:**</b> ${data["actionRun"]["playbook_run"].toString()}\n\n`)
-			label.appendMarkdown(`**Playbook:**</b> ${data["actionRun"]["_pretty_playbook"]}\n\n`)
-			label.appendMarkdown(`[Open in Playbook Editor](command:soarApps.viewPlaybookWeb?${data["actionRun"]["playbook"]}) \n\n`)
-
+			label.appendMarkdown(`**Playbook:** `)
+			label.appendMarkdown(`[$(file-code) \`${playbookId}\`](command:soarApps.viewPlaybookWeb?${playbookId}) \n`)
+			label.appendMarkdown(`${playbookLabel} \n\n`)
 		}
 
 		return label

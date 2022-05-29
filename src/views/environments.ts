@@ -20,7 +20,7 @@ export class SoarEnvironmentsTreeProvider implements vscode.TreeDataProvider<Soa
 		let environments: any = this.context.globalState.get(ENV_KEY)
 		let activeEnv: any = this.context.globalState.get(ACTIVE_ENV_KEY)
 
-		let environmentsTreeItems = environments.map((entry: any) => (entry["key"] === activeEnv ? new SoarInstancesTreeItem(entry["key"], entry, true, vscode.TreeItemCollapsibleState.None) : new SoarInstancesTreeItem(entry["key"], entry, false, vscode.TreeItemCollapsibleState.None)))
+		let environmentsTreeItems = environments.map((entry: any) => (entry["key"] === activeEnv ? new SoarInstancesTreeItem(entry["url"], entry, true, vscode.TreeItemCollapsibleState.None) : new SoarInstancesTreeItem(entry["url"], entry, false, vscode.TreeItemCollapsibleState.None)))
 		return Promise.resolve(environmentsTreeItems) // .concat([new SoarInstancesTreeItem("Connect Environment...", {}, vscode.TreeItemCollapsibleState.None, {"command": "splunkSoar.environments.connect", title: "Connect Environment..."})]))
 
     }
@@ -36,14 +36,16 @@ export class SoarInstancesTreeItem extends vscode.TreeItem {
 	) {
 		super(label, collapsibleState);
 		this.data = data
+		this.description = data.username
 
 		if (this.isActive) {
 			this.iconPath = new vscode.ThemeIcon("vm-active", new vscode.ThemeColor("terminal.ansiGreen"))
+			this.contextValue = 'soarenvironment:active'
 
 		} else {
-			this.iconPath = new vscode.ThemeIcon("vm")
+			this.iconPath = new vscode.ThemeIcon("vm"),
+			this.contextValue = 'soarenvironment:inactive'
 		}
 	}
 
-	contextValue = 'soarenvironment';
 }

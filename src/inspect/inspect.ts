@@ -28,7 +28,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 	const appScheme = "soarapp"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(appScheme, new AppContentProvider(context)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewApp', async (appId) => {
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.inspectApp', async (appId) => {
 		if (!appId) {
 			appId = await vscode.window.showInputBox({ placeHolder: 'id' });
 		} else {

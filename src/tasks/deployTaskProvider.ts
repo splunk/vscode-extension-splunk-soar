@@ -135,7 +135,7 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 			} catch(err: any) {
 				vscode.window.setStatusBarMessage("$(error) Error uploading app", 3000)
 				vscode.window.showErrorMessage(JSON.stringify(err))
-				this.writeEmitter.fire(JSON.stringify(err));
+				this.writeEmitter.fire(JSON.stringify(err.message));
 				this.closeEmitter.fire(0);
 				resolve()
 			}

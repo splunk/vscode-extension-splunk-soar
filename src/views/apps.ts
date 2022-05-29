@@ -115,7 +115,7 @@ class SoarAssetSection extends SoarAppsTreeItem {
 		this.description = `${data["app"]["_pretty_asset_count"]}`
 	}
 
-	iconPath = new vscode.ThemeIcon("gear")
+	iconPath = new vscode.ThemeIcon("settings")
 
 	contextValue: string = "soarassetsection"
 }
@@ -126,7 +126,7 @@ class SoarActionSection extends SoarAppsTreeItem {
 		super(label, data, collapsibleState, command)
 		this.description = `${data["app"]["_pretty_actions"].length}`
 	}
-	iconPath = new vscode.ThemeIcon("zap")
+	iconPath = new vscode.ThemeIcon("list-unordered")
 
 	contextValue: string = "soaractionsection"
 }
@@ -135,10 +135,10 @@ class SoarFilesSection extends SoarAppsTreeItem {
 
 	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)
-		this.description = `${data["app_content"].length} (readonly)`
+		this.description = `${data["app_content"].length} • Read-only`
 	}
 
-	iconPath = new vscode.ThemeIcon("file")
+	iconPath = new vscode.ThemeIcon("symbol-folder")
 
 	contextValue: string = "soarfilessection"
 }

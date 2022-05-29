@@ -32,3 +32,13 @@ export async function openAppDevDocs() {
 export async function openRepoDocs() {
     vscode.env.openExternal(vscode.Uri.parse("https://github.com/splunk/vscode-extension-splunk-soar/wiki"))
 }
+
+export async function openWebApp(context: vscode.ExtensionContext, appId: string) {
+    let client: SoarClient = await getClientForActiveEnvironment(context)
+    vscode.env.openExternal(vscode.Uri.parse(`${client.server}/apps/${appId}/asset`))	
+}
+
+export async function openWebAsset(context: vscode.ExtensionContext, appId: string, assetId: string) {
+    let client: SoarClient = await getClientForActiveEnvironment(context)
+    vscode.env.openExternal(vscode.Uri.parse(`${client.server}/apps/${appId}/asset/${assetId}`))
+}

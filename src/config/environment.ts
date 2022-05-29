@@ -5,6 +5,7 @@ export const ACTIVE_ENV_KEY = "splunkSOAR.activeEnvironment"
 import {IActionContext, MultiStepInput} from '../commands/apps/runAction'
 import { refreshViews } from '../views/views'
 import { SoarInstancesTreeItem } from '../views/environments'
+import { SoarClient } from '../soar/client'
 
 function deriveEnvKey(url: string, username: string) {
     return `${username}@${url}`
@@ -48,7 +49,8 @@ async function connectUrlInput(input: MultiStepInput, state: Partial<ConnectEnvi
         value: state.url || '',
         prompt: `SOAR Environment URL`,
         shouldResume: shouldResume,
-        validate: validateNoTrailingSlash
+        validate: validateNoTrailingSlash,
+        ignoreFocusOut: true
     });
 
     return (input: MultiStepInput) => connectSslVerifyInput(input, state);
@@ -60,7 +62,8 @@ async function connectSslVerifyInput(input: MultiStepInput, state: Partial<Conne
         totalSteps: totalSteps,
         placeholder: 'Verify TLS?',
         items: [{"label": "Yes"}, {"label": "No"}],
-        shouldResume: shouldResume
+        shouldResume: shouldResume,
+        ignoreFocusOut: true
     });
     state.sslVerify = sslPick.label === "Yes"
     return (input: MultiStepInput) => conectUsernameInput(input, state);
@@ -74,7 +77,8 @@ async function conectUsernameInput(input: MultiStepInput, state: Partial<Connect
         value: state.username || '',
         prompt: `Username`,
         shouldResume: shouldResume,
-        validate: validateNameIsUnique
+        validate: validateNameIsUnique,
+        ignoreFocusOut: true
     });
 
     return (input: MultiStepInput) => connectPasswordInput(input, state);
@@ -89,7 +93,8 @@ async function connectPasswordInput(input: MultiStepInput, state: Partial<Connec
         prompt: `Password`,
         shouldResume: shouldResume,
         validate: validateNameIsUnique,
-        isPassword: true
+        isPassword: true,
+        ignoreFocusOut: true
     });
 
     return
@@ -136,7 +141,6 @@ export async function connectEnvironment(context: vscode.ExtensionContext) {
     context.globalState.update(ENV_KEY, newEnvironments)
     context.secrets.store(envKey, state.password)
     await vscode.commands.executeCommand('splunkSoar.environments.refresh');
-    await vscode.commands.executeCommand('splunkSoar.version');
 }
 
 export async function disconnectEnvironment(context: vscode.ExtensionContext, actionContext: IActionContext) {
@@ -194,3 +198,18 @@ export async function openEnvironmentWeb(context: vscode.ExtensionContext, envir
     let env: ConfiguredConnectEnvironment = environmentContext.data
     vscode.env.openExternal(vscode.Uri.parse(env.url))
 }
+
+export async function environmentVersion(context: vscode.ExtensionContext, environmentContext: SoarInstancesTreeItem) {
+    let env: ConfiguredConnectEnvironment = environmentContext.data
+
+    let environment = await getEnvironment(context, env.key)
+    let client = new SoarClient(environment.url, environment.username, environment.password, environment.sslVerify)
+
+    client.version().then(
+        function(response) {
+            let {version} = response.data
+            vscode.window.showInformationMessage(`SOAR Version: ${version}`)
+        }
+    )
+}
+

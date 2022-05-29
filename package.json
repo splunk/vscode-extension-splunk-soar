@@ -16,11 +16,11 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:splunkSoar.version",
 		"onCommand:soarApps.installBundle",
 		"onCommand:splunk-soar.openWeb",
 		"onCommand:soarApps.viewContainer",
 		"onCommand:soarApps.viewAsset",
+		"onCommand:soarApps.viewAssetWeb",
 		"onCommand:soarApps.runAction",
 		"onView:soarApps",
 		"onView:soarActionRuns",
@@ -40,11 +40,9 @@
 		"commands": [
 			{
 				"command": "soarApps.showAppWizard",
-				"title": "SOAR: Show App Wizard"
-			},
-			{
-				"command": "splunkSoar.version",
-				"title": "SOAR: Version"
+				"title": "Open App Wizard",
+				"icon": "$(window)",
+				"category": "SOAR Apps"
 			},
 			{
 				"command": "splunkSoar.openWeb",
@@ -68,13 +66,15 @@
 			},
 			{
 				"command": "splunkSoar.openWebApps",
-				"title": "SOAR: Open Web UI - Apps",
-				"icon": "$(globe)"
+				"title": "Open in Web UI",
+				"icon": "$(globe)",
+				"category": "SOAR Apps"
 			},
 			{
 				"command": "splunkSoar.apps.refresh",
-				"title": "SOAR: Apps Refresh",
-				"icon": "$(refresh)"
+				"title": "Refresh",
+				"icon": "$(refresh)",
+				"category": "SOAR Apps"
 			},
 			{
 				"command": "soarApps.installBundle",
@@ -92,8 +92,9 @@
 			},
 			{
 				"command": "splunkSoar.environments.refresh",
-				"title": "SOAR: Environments Refresh",
-				"icon": "$(refresh)"
+				"title": "Refresh",
+				"icon": "$(refresh)",
+				"category": "SOAR Environments"
 			},
 			{
 				"command": "splunkSoar.playbooks.refresh",
@@ -109,29 +110,57 @@
 				}
 			},
 			{
+				"command": "soarApps.runPlaybook",
+				"title": "SOAR: Run Playbook",
+				"icon": "$(debug-start)"
+			},
+			{
 				"command": "soarApps.viewAppDocs",
-				"title": "SOAR: View App Documentation",
-				"icon": "$(book)"
+				"title": "View App Documentation",
+				"icon": "$(book)",
+				"category": "SOAR Apps"
+			},
+			{
+				"command": "soarApps.viewAppWeb",
+				"title": "View in Web UI",
+				"icon": "$(globe)",
+				"category": "SOAR Apps"
+			},
+			{
+				"command": "soarApps.viewAssetWeb",
+				"title": "View in Web UI",
+				"icon": "$(globe)",
+				"category": "SOAR Assets"
 			},
 			{
 				"command": "soarApps.viewAsset",
-				"title": "SOAR: Inspect Asset",
-				"icon": "$(eye)"
+				"title": "Inspect",
+				"icon": "$(eye)",
+				"category": "SOAR Assets"
 			},
 			{
 				"command": "soarApps.viewFile",
-				"title": "SOAR: Inspect File",
-				"icon": "$(eye)"
+				"title": "Inspect",
+				"icon": "$(eye)",
+				"category": "SOAR App File"
 			},
 			{
-				"command": "soarApps.viewApp",
-				"title": "SOAR: Inspect App",
-				"icon": "$(eye)"
+				"command": "soarApps.diffFile",
+				"title": "Compare with opened file",
+				"category": "SOAR App File",
+				"icon": "$(diff)"
+			},
+			{
+				"command": "splunkSoar.apps.inspectApp",
+				"title": "Inspect",
+				"icon": "$(eye)",
+				"category": "SOAR App"
 			},
 			{
 				"command": "soarApps.downloadBundle",
-				"title": "SOAR: Download App",
-				"icon": "$(cloud-download)"
+				"title": "Download Bundle",
+				"icon": "$(cloud-download)",
+				"category": "SOAR Apps"
 			},
 			{
 				"command": "soarApps.viewContainer",
@@ -170,23 +199,32 @@
 			},
 			{
 				"command": "splunkSoar.environments.connect",
-				"title": "SOAR: Connect Environment",
-				"icon": "$(plug)"
+				"title": "Connect",
+				"icon": "$(plug)",
+				"category": "SOAR Environments"
 			},
 			{
 				"command": "splunkSoar.environments.activate",
-				"title": "SOAR: Activate Environment",
-				"icon": "$(vm-running)"
+				"title": "Activate",
+				"icon": "$(vm-running)",
+				"category": "SOAR Environments"
 			},
 			{
 				"command": "splunkSoar.environments.disconnect",
-				"title": "SOAR: Disconnect Environment",
-				"icon": "$(debug-disconnect)"
+				"title": "Disconnect",
+				"icon": "$(debug-disconnect)",
+				"category": "SOAR Environments"
 			},
 			{
 				"command": "splunkSoar.environments.openWeb",
-				"title": "SOAR: Open Environment on Web",
-				"icon": "$(globe)"
+				"title": "Open in Web UI",
+				"icon": "$(globe)",
+				"category": "SOAR Environments"
+			},
+			{
+				"command": "splunkSoar.environments.version",
+				"title": "Version",
+				"category": "SOAR Environments"
 			}
 		],
 		"viewsContainers": {
@@ -241,6 +279,11 @@
 		"menus": {
 			"view/title": [
 				{
+					"command": "soarApps.showAppWizard",
+					"when": "view == soarApps",
+					"group": "navigation"
+				},
+				{
 					"command": "splunkSoar.apps.refresh",
 					"when": "view == soarApps",
 					"group": "navigation"
@@ -258,11 +301,6 @@
 				{
 					"command": "splunkSoar.playbooks.refresh",
 					"when": "view == soarPlaybooks",
-					"group": "navigation"
-				},
-				{
-					"command": "splunkSoar.environments.refresh",
-					"when": "view == soarEnvironments",
 					"group": "navigation"
 				},
 				{
@@ -306,6 +344,11 @@
 					"group": "inline"
 				},
 				{
+					"command": "soarApps.runPlaybook",
+					"when": "view == soarPlaybooks && viewItem == soarplaybook",
+					"group": "inline"
+				},
+				{
 					"command": "soarApps.viewPlaybookWeb",
 					"when": "view == soarPlaybooks && viewItem == soarplaybook",
 					"group": "inline@1"
@@ -317,25 +360,33 @@
 				},
 				{
 					"command": "splunkSoar.environments.disconnect",
-					"when": "view == soarEnvironments && viewItem == soarenvironment"
+					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
+					"group": "actions@2"
 				},
 				{
 					"command": "splunkSoar.environments.disconnect",
-					"when": "view == soarEnvironments && viewItem == soarenvironment",
+					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
 					"group": "inline"
 				},
 				{
 					"command": "splunkSoar.environments.activate",
-					"when": "view == soarEnvironments && viewItem == soarenvironment",
+					"when": "view == soarEnvironments && viewItem == soarenvironment:inactive",
 					"group": "inline"
 				},
 				{
 					"command": "splunkSoar.environments.activate",
-					"when": "view == soarEnvironments && viewItem == soarenvironment"
+					"when": "view == soarEnvironments && viewItem == soarenvironment:inactive",
+					"group": "actions@1"
+				},
+				{
+					"command": "splunkSoar.environments.version",
+					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
+					"group": "actions@2"
 				},
 				{
 					"command": "splunkSoar.environments.openWeb",
-					"when": "view == soarEnvironments && viewItem == soarenvironment"
+					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
+					"group": "web"
 				},
 				{
 					"command": "soarApps.viewAsset",
@@ -343,25 +394,37 @@
 					"group": "inline"
 				},
 				{
-					"command": "soarApps.viewApp",
+					"command": "splunkSoar.apps.inspectApp",
 					"when": "view == soarApps && viewItem == soarapp",
-					"group": "inline"
+					"group": "actions@1"
 				},
 				{
 					"command": "soarApps.viewAppDocs",
-					"when": "view == soarApps && viewItem == soarapp"
+					"when": "view == soarApps && viewItem == soarapp",
+					"group": "web"
 				},
 				{
-					"command": "soarApps.downloadBundle",
-					"when": "view == soarApps && viewItem == soarapp"
+					"command": "soarApps.viewAppWeb",
+					"when": "view == soarApps && viewItem == soarapp",
+					"group": "web"
+				},
+				{
+					"command": "soarApps.viewAssetWeb",
+					"when": "view == soarApps && viewItem == soarasset",
+					"group": "inline"
 				},
 				{
 					"command": "soarApps.downloadBundle",
 					"when": "view == soarApps && viewItem == soarapp",
-					"group": "inline"
+					"group": "actions@2"
 				},
 				{
 					"command": "soarApps.viewFile",
+					"when": "view == soarApps && viewItem == soarfile",
+					"group": "inline"
+				},
+				{
+					"command": "soarApps.diffFile",
 					"when": "view == soarApps && viewItem == soarfile",
 					"group": "inline"
 				}

@@ -1,4 +1,3 @@
-import { vsCodeBadge } from '@vscode/webview-ui-toolkit';
 import { QuickPickItem, window, Disposable, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri, ProgressLocation, env, workspace, commands, ImplementationProvider } from 'vscode';
 import { getClientForActiveEnvironment } from '../../soar/client';
 
@@ -334,7 +333,8 @@ export interface InputBoxParameters {
 	validate: (value: string) => Promise<string | undefined>;
 	buttons?: QuickInputButton[];
 	shouldResume: () => Thenable<boolean>;
-	isPassword?: boolean
+	isPassword?: boolean,
+	ignoreFocusOut?: boolean
 }
 
 export class MultiStepInput {
@@ -419,7 +419,7 @@ export class MultiStepInput {
 		}
 	}
 
-	async showInputBox<P extends InputBoxParameters>({ title, step, totalSteps, value, prompt, validate, buttons, shouldResume, isPassword }: P) {
+	async showInputBox<P extends InputBoxParameters>({ title, step, totalSteps, value, prompt, validate, buttons, shouldResume, isPassword, ignoreFocusOut }: P) {
 		const disposables: Disposable[] = [];
 		try {
 			return await new Promise<string | (P extends { buttons: (infer I)[] } ? I : never)>((resolve, reject) => {
@@ -428,7 +428,8 @@ export class MultiStepInput {
 				input.step = step;
 				input.totalSteps = totalSteps;
 				input.value = value || '';
-				input.password = isPassword!
+				input.password = isPassword!;
+				input.ignoreFocusOut = ignoreFocusOut!;
 				input.prompt = prompt;
 				input.buttons = [
 					...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
