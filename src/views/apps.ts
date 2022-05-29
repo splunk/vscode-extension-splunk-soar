@@ -31,8 +31,15 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppsTre
 				let appEntries = res.data["data"]
 				const [configured, unconfigured] = partition(appEntries, (app: SoarApp) => app["_pretty_asset_count"] > 0)
 
+				const config = vscode.workspace.getConfiguration()
+				const configuredAppsOnly: boolean = config.get<boolean>("apps.showConfiguredOnly", false)
+				let appItems = configured
 
-				let appTreeItems = configured.concat(unconfigured).map((entry: any) => (new SoarAppItem(entry["name"], {"app": entry}, vscode.TreeItemCollapsibleState.Collapsed)))
+				if (!configuredAppsOnly) {
+					appItems = configured.concat(unconfigured)
+				}
+
+				let appTreeItems = appItems.map((entry: any) => (new SoarAppItem(entry["name"], {"app": entry}, vscode.TreeItemCollapsibleState.Collapsed)))
 				return appTreeItems
 			})
 		}

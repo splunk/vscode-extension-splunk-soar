@@ -463,11 +463,17 @@
 					"description": "Filter the Playbooks view to show only playbooks that have been last edited by the configured user",
 					"order": 5
 				},
+				"apps.showConfiguredOnly": {
+					"type": "boolean",
+					"default": false,
+					"description": "Filter the Apps view to show only apps that have an asset configured",
+					"order": 6
+				},
 				"codeLensEnabled": {
 					"type": "boolean",
 					"default": true,
 					"description": "Show inline actions above action handlers",
-					"order": 6
+					"order": 7
 				}
 			}
 		}
