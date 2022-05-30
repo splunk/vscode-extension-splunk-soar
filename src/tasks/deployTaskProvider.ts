@@ -8,6 +8,7 @@ import * as os from 'os'
 import * as tar from 'tar'
 import * as fs from 'fs'
 import { getClientForActiveEnvironment } from '../soar/client';
+import ignore from 'ignore'
 
 interface CustomBuildTaskDefinition extends vscode.TaskDefinition {
 	cwd?: string
@@ -105,12 +106,31 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 
             let outPath = tmpDir + "/tmpapp.tgz"
             
-            const filterFiles = (path: any, entry: any) => {
-                if (path.includes("venv") || path.includes("__pycache__") || path.includes(".git") || path.includes(".mypy_cache") || path.includes(".DS_Store") || path.includes("./.pytest_cache") || path.includes(".vscode")) {
+
+			let excludeFilesPath = path.join(appPath, 'exclude_files.txt')
+
+			let excludedFilePatterns: string[] = []
+			if (fs.existsSync(excludeFilesPath)) {
+				excludedFilePatterns = fs.readFileSync(excludeFilesPath).toString().replace(/\r\n/g,'\n').split('\n');
+			}
+
+	
+            const filterFiles = (filepath: any, entry: any) => {
+				filepath = filepath.substring(filepath.indexOf('/') + 1)
+				if(excludedFilePatterns) {
+					const ig = ignore().add(excludedFilePatterns)
+					console.log(ig.ignores(filepath), filepath)
+					if(ig.ignores(filepath)) {
+						return false
+					}
+				}
+
+                if (filepath.includes("venv") || filepath.includes("__pycache__") || filepath.includes(".git") || filepath.includes(".mypy_cache") || filepath.includes(".DS_Store") || filepath.includes("./.pytest_cache") || filepath.includes(".vscode")) {
                     return false
                 }
                 return true
             }
+			
 
 			let base = path.basename(appPath) 
 			this.writeEmitter.fire(`Packaging app located in: ${base}\r\n`)

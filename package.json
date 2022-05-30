@@ -570,6 +570,7 @@
 		"@vscode/webview-ui-toolkit": "^1.0.0",
 		"axios": "^0.26.1",
 		"ejs": "^3.1.7",
+		"ignore": "^5.2.0",
 		"tar": "^6.1.11"
 	}
 }
