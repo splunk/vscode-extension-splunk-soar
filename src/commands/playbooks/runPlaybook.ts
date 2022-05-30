@@ -31,7 +31,7 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, playboo
 
     async function collectInputs() {
         const state = {
-            parameters: [{}]
+            playbook_id: playbookContext.data.playbook.id
         } as Partial<PlaybookRunState>;
         await MultiStepInput.run(input => pickContainer(input, state));
         return state as PlaybookRunState;
@@ -84,4 +84,56 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, playboo
     const state = await collectInputs();
     console.log(state)
 
+    let client = await getClientForActiveEnvironment(context)
+
+
+
+    vscode.window.withProgress({
+		location: vscode.ProgressLocation.Notification,
+		title: `Running ${playbookContext.data.playbook["name"]}'`,
+		cancellable: false
+	}, async (progress, token) => {
+		progress.report({ increment: 0 });
+        let result = await client.runPlaybook(state.playbook_id, state.scope.label, state.container_id)
+		let {playbook_run_id, message} = result.data
+		progress.report({ increment: 10, message: `${message}: Playbook Run ID: ${playbook_run_id}`});
+		
+		let playbookRun = await client.getPlaybookRun(playbook_run_id)
+		await vscode.commands.executeCommand('splunkSoar.playbookRuns.refresh');
+					
+		const config = vscode.workspace.getConfiguration()
+
+		let maxTries: number = config.get<number>("runAction.timeout", 30)
+		let actualTries = 0
+
+
+		while (playbookRun.data.status === "running" && actualTries < maxTries) {
+			progress.report({increment: 25, message: "Still running..."})
+			actualTries += 1
+			await wait()
+			playbookRun = await client.getPlaybookRun(playbook_run_id)
+		}
+
+
+		progress.report({increment: 50, message: `${playbookRun.data.message}`})
+
+		if (playbookRun.data.status === "running") {
+			vscode.window.showErrorMessage("Playbook execution timed out, playbook still running. Will retrieve last known status.")
+		}
+		
+		progress.report({increment: 75, message: "Collecting Results"})
+
+		let soarOutput = vscode.window.createOutputChannel("Splunk SOAR: Action Run");
+		soarOutput.clear()
+		soarOutput.append(playbookRun.data.message)
+		soarOutput.show()
+		await vscode.commands.executeCommand('splunkSoar.playbookRuns.refresh');
+	})
+
+    function wait(ms = 1000) {
+        return new Promise(resolve => {
+          console.log(`waiting ${ms} ms...`);
+          setTimeout(resolve, ms);
+        });
+    }
 }

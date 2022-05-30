@@ -106,6 +106,14 @@ export class SoarClient {
         return await this.fileClient.get(`playbook/${playbookId}/export`, {'responseType': "stream"})
     }
 
+    runPlaybook = async (playbookId:string, scope: string, containerId: string) => {
+        return await this.httpClient.post("playbook_run", {"run": true, "container_id": containerId, "scope": scope, "playbook_id": playbookId})
+    }
+
+    getPlaybookRun = async (playbookRunId: string) => {
+        return await this.httpClient.get(`playbook_run/${playbookRunId}`)
+    }
+
     listUserPlaybooks = async () => {
         return await this.httpClient.get("playbook", {params: {"pretty": true, "page_size": 0, "sort": "create_time", "order": "desc", "_filter_latest_editor__username": `'${this.username}'`}})
     }
@@ -138,6 +146,10 @@ export class SoarClient {
 
     cancelActionRun = async (actionRunId: string) => {
         return await this.httpClient.post(`action_run/${actionRunId}`, {"cancel": true})
+    }
+
+    cancelPlaybookRun = async (playbookRunId: string) => {
+        return await this.httpClient.post(`playbook_run/${playbookRunId}`, {"cancel": true})
     }
 
     getActionRun = async (actionRunId: string) => {

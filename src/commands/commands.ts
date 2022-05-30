@@ -11,6 +11,7 @@ import { runActionInput } from './apps/runAction';
 import { viewAppDocs } from './apps/viewAppDocs';
 import { runPlaybookInput } from './playbooks/runPlaybook';
 import { openAppDevDocs, openRepoDocs, openRepoIssues, openWeb, openWebActionRunResult, openWebApp, openWebApps, openWebAsset, openWebPlaybook } from './web';
+import { cancelPlaybookRun } from './playbookRuns/cancel';
 
 
 export function registerCommands(context: vscode.ExtensionContext) {
@@ -68,6 +69,10 @@ export function registerCommands(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.commands.registerCommand('soarApps.cancelActionRun', async (actionRunContext) => {
 		return cancelActionRun(context, actionRunContext)
+	}))
+
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbookRuns.cancel', async (playbookRunContext) => {
+		return cancelPlaybookRun(context, playbookRunContext)
 	}))
 
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewPlaybookWeb', async (playbookId) => {

@@ -187,6 +187,18 @@
 				"category": "SOAR Action Runs"
 			},
 			{
+				"command": "splunkSoar.playbookRuns.cancel",
+				"title": "Cancel",
+				"icon": "$(primitive-square)",
+				"category": "SOAR Playbook Runs"
+			},
+			{
+				"command": "splunkSoar.playbookRuns.inspect",
+				"title": "Inspect",
+				"icon": "$(eye)",
+				"category": "SOAR Playbook Runs"
+			},
+			{
 				"command": "soarApps.viewActionRunWeb",
 				"title": "View in Web UI",
 				"icon": "$(globe)",
@@ -349,6 +361,16 @@
 					"command": "soarApps.cancelActionRun",
 					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:(running)/",
 					"group": "inline@2"
+				},
+				{
+					"command": "splunkSoar.playbookRuns.cancel",
+					"when": "view == soarPlaybookRuns && viewItem =~ /soarplaybookrun:(running)/",
+					"group": "inline"
+				},
+				{
+					"command": "splunkSoar.playbookRuns.inspect",
+					"when": "view == soarPlaybookRuns && viewItem =~ /soarplaybookrun:*/",
+					"group": "actions@1"
 				},
 				{
 					"command": "soarApps.viewActionRun",

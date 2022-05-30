@@ -5,6 +5,7 @@ import { AppFileContentProvider } from './appFileContentProvider';
 import { AssetContentProvider } from './assetContentProvider';
 import { ContainerContentProvider } from './containerContentProvider';
 import { PlaybookContentProvider, PlaybookCodeContentProvider } from './playbookContentProvider';
+import { PlaybookRunContentProvider } from './playbookRunContentProvider';
 
 export function registerInspectProviders(context: vscode.ExtensionContext) {
 
@@ -74,6 +75,22 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 	}));
 
+	const playbookRunScheme = "soarplaybookrun"
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(playbookRunScheme, new PlaybookRunContentProvider(context)));
+
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbookRuns.inspect', async (playbookRunId) => {
+		if (!playbookRunId) {
+			playbookRunId = await vscode.window.showInputBox({ placeHolder: 'id' });
+		} else if (playbookRunId.hasOwnProperty("data")) {
+			playbookRunId = String(playbookRunId.data["playbookRun"]["id"])
+		}
+
+		if (playbookRunId) {
+			const uri = vscode.Uri.parse('soarplaybookrun:' + playbookRunId + ".json");
+			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			await vscode.window.showTextDocument(doc, { preview: false });
+		}
+	}));
 
 	const fileScheme = "soarfile"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(fileScheme, AppFileContentProvider));

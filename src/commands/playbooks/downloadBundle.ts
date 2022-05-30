@@ -26,6 +26,7 @@ export async function downloadBundle(context: vscode.ExtensionContext, playbookC
     try {
         let res = await client.downloadPlaybook(playbookContext.data.playbook.id)
         await pipeline(res.data, fs.createWriteStream(fileUri[0].fsPath + "/" + playbookContext.data.playbook.name + ".tgz"))
+        vscode.window.setStatusBarMessage("$(pass-filled) Successfully downloaded Playbook", 3000)
     } catch (err) {
         vscode.window.showErrorMessage(`Could not download Playbook bundle: ${err}`)
     }
