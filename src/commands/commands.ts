@@ -5,6 +5,7 @@ import { cancelActionRun } from './actionRuns/cancelActionRun';
 import { repeatActionRun } from './actionRuns/repeatActionRun';
 import { diffFile } from './apps/diffFile';
 import { downloadBundle } from './apps/downloadBundle';
+import { downloadBundle as downloadPlaybookBundle} from './playbooks/downloadBundle';
 import { installBundle } from './apps/installBundle';
 import { runActionInput } from './apps/runAction';
 import { viewAppDocs } from './apps/viewAppDocs';
@@ -128,6 +129,9 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.diffFile', async (fileContext) => {
 		diffFile(context, fileContext)
 	}))
+
+	let disposablePlaybookDownloadBundle = vscode.commands.registerCommand('splunkSoar.playbooks.downloadBundle', (playbookContext) => { downloadPlaybookBundle(context, playbookContext) });
+	context.subscriptions.push(disposablePlaybookDownloadBundle);
 
 
 }

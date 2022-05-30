@@ -8,6 +8,7 @@ export async function cancelActionRun(context: vscode.ExtensionContext, actionRu
         let actionRunId = actionRunContext.data["actionRun"]["id"]
         try {
             await client.cancelActionRun(actionRunId)
+            await vscode.commands.executeCommand('splunkSoar.actionRuns.refresh');
         } catch(err: any) {
             vscode.window.showErrorMessage(err.response.data.message)
         }

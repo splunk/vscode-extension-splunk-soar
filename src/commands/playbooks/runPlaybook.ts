@@ -74,7 +74,7 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, playboo
             title,
             step: 2,
             totalSteps: totalSteps,
-            placeholder: 'Verify TLS?',
+            placeholder: 'Scope?',
             items: [{"label": "all"}, {"label": "new"}],
             shouldResume: shouldResume
         });
@@ -83,5 +83,5 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, playboo
 
     const state = await collectInputs();
     console.log(state)
-    
+
 }

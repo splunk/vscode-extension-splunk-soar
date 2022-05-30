@@ -102,6 +102,10 @@ export class SoarClient {
         return await this.httpClient.get("playbook", {params: {"page_size": 500, "pretty": true, "sort": "name"}})
     }
 
+    downloadPlaybook = async (playbookId:string) => {
+        return await this.fileClient.get(`playbook/${playbookId}/export`, {'responseType': "stream"})
+    }
+
     listUserPlaybooks = async () => {
         return await this.httpClient.get("playbook", {params: {"pretty": true, "page_size": 0, "sort": "create_time", "order": "desc", "_filter_latest_editor__username": `'${this.username}'`}})
     }

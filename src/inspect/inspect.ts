@@ -4,7 +4,7 @@ import { AppContentProvider } from './appContentProvider';
 import { AppFileContentProvider } from './appFileContentProvider';
 import { AssetContentProvider } from './assetContentProvider';
 import { ContainerContentProvider } from './containerContentProvider';
-import { PlaybookContentProvider } from './playbookContentProvider';
+import { PlaybookContentProvider, PlaybookCodeContentProvider } from './playbookContentProvider';
 
 export function registerInspectProviders(context: vscode.ExtensionContext) {
 
@@ -93,6 +93,24 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 
 	const playbookScheme = "soarplaybook"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(playbookScheme, new PlaybookContentProvider(context)));
+
+	const playbookCodeScheme = "soarplaybookcode"
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(playbookCodeScheme, new PlaybookCodeContentProvider(context)));
+
+	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewPlaybookCode', async (playbookId) => {
+		if (!playbookId) {
+			playbookId = await vscode.window.showInputBox({ placeHolder: 'id' });
+		} else if (playbookId.hasOwnProperty("data")) {
+			playbookId = String(playbookId.data["playbook"]["id"])
+		}
+
+		if (playbookId) {
+			const uri = vscode.Uri.parse('soarplaybookcode:' + playbookId + ".py");
+			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			await vscode.window.showTextDocument(doc, { preview: false });
+		}
+	}));
+
 
 	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewPlaybook', async (playbookId) => {
 		if (!playbookId) {

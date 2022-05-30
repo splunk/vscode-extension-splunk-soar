@@ -19,3 +19,21 @@ export class PlaybookContentProvider implements vscode.TextDocumentContentProvid
         })
     }
 }
+
+export class PlaybookCodeContentProvider implements vscode.TextDocumentContentProvider {
+    onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>();
+    onDidChange = this.onDidChangeEmitter.event;
+
+    constructor(private context: vscode.ExtensionContext) {
+	}
+
+    async provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): Promise<string> {
+        let client = await getClientForActiveEnvironment(this.context)
+        return client.getPlaybook(uri.path.replace(".py", "")).then(function(res) {
+            return res.data.python
+        }).catch(function(err) {
+            console.log(err)
+            return "none"
+        })
+    }
+}
