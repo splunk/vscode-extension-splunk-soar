@@ -129,6 +129,10 @@ export class ActionRun extends ActionRunTreeItem {
 
 		label.appendMarkdown(`*${actionRunMessage}*, ${actionRunTime}\n\n`)
 
+		label.appendText('\n\n')
+		label.appendMarkdown('---')
+		label.appendText('\n\n')
+
 		label.appendMarkdown(`**Action Run**: `)
 		label.appendMarkdown(`[$(git-commit) \`${actionRunId}\`](command:soarApps.viewActionRun?${actionRunId}) \n\n`)
 

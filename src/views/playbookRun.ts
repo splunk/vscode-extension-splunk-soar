@@ -105,7 +105,6 @@ export class PlaybookRun extends PlaybookRunTreeItem {
 			};
 		}
 		this.contextValue = `soarplaybookrun:${data["playbookRun"]["status"]}`
-
 	}
 
 	contextValue: string = 'soarplaybookrun';
