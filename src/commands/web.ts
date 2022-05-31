@@ -42,3 +42,8 @@ export async function openWebAsset(context: vscode.ExtensionContext, appId: stri
     let client: SoarClient = await getClientForActiveEnvironment(context)
     vscode.env.openExternal(vscode.Uri.parse(`${client.server}/apps/${appId}/asset/${assetId}`))
 }
+
+export async function openWebPlaybookEditor(context: vscode.ExtensionContext) {
+    let client: SoarClient = await getClientForActiveEnvironment(context)
+    vscode.env.openExternal(vscode.Uri.parse(`${client.server}/playbook/`))	
+}

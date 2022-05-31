@@ -39,6 +39,11 @@
 		],
 		"commands": [
 			{
+				"command": "splunkSoar.openPlaybookEditor",
+				"title": "Open Visual Playbook Editor",
+				"icon": "$(debug-console)"
+			},
+			{
 				"command": "splunkSoar.showAppWizard",
 				"title": "Open App Wizard",
 				"icon": "$(window)",
@@ -342,7 +347,12 @@
 				{
 					"command": "splunkSoar.playbooks.refresh",
 					"when": "view == soarPlaybooks",
-					"group": "navigation"
+					"group": "navigation@2"
+				},
+				{
+					"command": "splunkSoar.openPlaybookEditor",
+					"when": "view == soarPlaybooks",
+					"group": "navigation@1"
 				},
 				{
 					"command": "splunkSoar.environments.connect",
