@@ -132,9 +132,6 @@ export class PlaybookRun extends PlaybookRunTreeItem {
 		label.appendMarkdown(`**Container:** `)
 		label.appendMarkdown(`[$(symbol-field) \`${containerId}\`](command:splunkSoar.containers.inspect?${containerId}) \n\n`)
 
-		label.appendMarkdown(`**Playbook:** `)
-		label.appendMarkdown(`[$(file-code) \`${playbookId}\`](command:splunkSoar.playbooks.viewWeb?${playbookId}) \n`)
-
 		return label
 	}
 
