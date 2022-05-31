@@ -147,7 +147,7 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 			showSkip = false
 		}
 
-		if ('value_list' in paramInfo) {
+		if ('value_list' in paramInfo && paramInfo["value_list"].length > 0) {
 			const values: QuickPickItem[] = paramInfo["value_list"]
     		.map((value: string) => ({'label': value}));
 			

@@ -214,15 +214,16 @@ export class AppWizardPanel {
               templateFiles.forEach(file => {
                 let currFile = fs.readFileSync(path.join(templatePath.fsPath, file), 'utf-8')
                 message.app.appid = randomUUID()
+                message.app.name_lower = message.app.name.toLowerCase()
                 var outFilename = file.substring(0, file.indexOf('.ejs'))
                 var outStr = ejs.render(currFile, message)
 
                 if (outFilename == "connector.py") {
-                  outFilename = `${message.app.name}_connector.py`
+                  outFilename = `${message.app.name_lower}_connector.py`
                 } else if (outFilename == "connector.json"){
-                  outFilename = `${message.app.name}.json`
+                  outFilename = `${message.app.name_lower}.json`
                 } else if (outFilename == "consts.py"){
-                  outFilename = `${message.app.name}_consts.py`
+                  outFilename = `${message.app.name_lower}_consts.py`
                 }
 
                 fs.writeFileSync(path.join(outAppFolderPath, outFilename), outStr)
