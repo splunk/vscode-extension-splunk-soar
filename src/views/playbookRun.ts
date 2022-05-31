@@ -94,24 +94,19 @@ export class PlaybookRun extends PlaybookRunTreeItem {
 		this.description = `${data["playbookRun"]["_pretty_start_time"]} · ${data["playbookRun"]["_pretty_owner"]}`
 
 		if (data["playbookRun"]["status"] == "failed") {
-			this.iconPath = {
-				light: path.join(__filename, '..', '..', 'resources', 'light', 'error.svg'),
-				dark: path.join(__filename, '..', '..', 'resources', 'dark', 'error.svg')
-			};
+			this.iconPath = new vscode.ThemeIcon("error", new vscode.ThemeColor("testing.iconFailed"))
+			if (data["playbookRun"]["cancelled"]) {
+			this.iconPath = new vscode.ThemeIcon("error", new vscode.ThemeColor("testing.iconSkipped"))
+			}
+
+
 		} else if (data["playbookRun"]["status"] == "running") {
-			this.iconPath = {
-				light: path.join(__filename, '..', '..', 'resources', 'light', 'gear.svg'),
-				dark: path.join(__filename, '..', '..', 'resources', 'dark', 'gear.svg')
-			};
+			this.iconPath = new vscode.ThemeIcon("watch", new vscode.ThemeColor("testing.iconQueued"))
 		}
 		this.contextValue = `soarplaybookrun:${data["playbookRun"]["status"]}`
 	}
 
 	contextValue: string = 'soarplaybookrun';
 
-	iconPath = {
-		light: "path.join(__filename, '..', '..', 'resources', 'light', 'pass.svg')",
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'pass.svg')
-	};
-
+	iconPath = new vscode.ThemeIcon("pass", new vscode.ThemeColor("testing.iconPassed"))
 }

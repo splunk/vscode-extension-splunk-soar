@@ -94,17 +94,14 @@ export class ActionRun extends ActionRunTreeItem {
 		this.description = `${data["actionRun"]["_pretty_create_time"]} · ${data["actionRun"]["_pretty_owner"]}`
 
 		if (data["actionRun"]["status"] == "failed") {
-			this.iconPath = {
-				light: path.join(__filename, '..', '..', 'resources', 'light', 'error.svg'),
-				dark: path.join(__filename, '..', '..', 'resources', 'dark', 'error.svg')
-			};
+			this.iconPath = new vscode.ThemeIcon("error", new vscode.ThemeColor("testing.iconFailed"))
+			if (data["actionRun"]["cancelled"]) {
+			this.iconPath = new vscode.ThemeIcon("error", new vscode.ThemeColor("testing.iconSkipped"))
+			}
 		} else if (data["actionRun"]["status"] == "running") {
-			this.iconPath = {
-				light: path.join(__filename, '..', '..', 'resources', 'light', 'gear.svg'),
-				dark: path.join(__filename, '..', '..', 'resources', 'dark', 'gear.svg')
-			};
+			this.iconPath = new vscode.ThemeIcon("watch", new vscode.ThemeColor("testing.iconQueued"))
 		}
-		
+
 		this.tooltip = this.generateLabel(data)
 		this.tooltip.isTrusted = true
 		this.tooltip.supportHtml = true
@@ -115,11 +112,7 @@ export class ActionRun extends ActionRunTreeItem {
 
 	contextValue: string = 'soaractionrun';
 
-	iconPath = {
-		light: "path.join(__filename, '..', '..', 'resources', 'light', 'pass.svg')",
-		dark: path.join(__filename, '..', '..', 'resources', 'dark', 'pass.svg')
-	};
-
+	iconPath = new vscode.ThemeIcon("pass", new vscode.ThemeColor("testing.iconPassed"))
 
 	generateLabel = function(data: any): vscode.MarkdownString {
 		let label = new vscode.MarkdownString(`### ${data["actionRun"]["action"]} \n`);
