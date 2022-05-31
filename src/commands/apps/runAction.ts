@@ -1,4 +1,4 @@
-import { QuickPickItem, window, Disposable, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri, ProgressLocation, env, workspace, commands, ImplementationProvider } from 'vscode';
+import { QuickPickItem, window, Disposable, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri, ProgressLocation, env, workspace, commands, ImplementationProvider, ThemeIcon } from 'vscode';
 import { getClientForActiveEnvironment } from '../../soar/client';
 
 interface IAction {
@@ -42,12 +42,9 @@ interface IParamInfo {
  */
 export async function runActionInput(context: ExtensionContext, actionContext: IActionContext) {
 	class MyButton implements QuickInputButton {
-		constructor(public iconPath: { light: Uri; dark: Uri; }, public tooltip: string) { }
+		constructor(public iconPath: ThemeIcon, public tooltip: string) { }
 	}
-	const skipParamButton = new MyButton({
-		dark: Uri.file(context.asAbsolutePath('resources/dark/debug-step-over.svg')),
-		light: Uri.file(context.asAbsolutePath('resources/light/debug-step-over.svg')),
-	}, 'Skip');
+	const skipParamButton = new MyButton(new ThemeIcon("debug-step-over"),'Skip');
 
 
 	interface State {

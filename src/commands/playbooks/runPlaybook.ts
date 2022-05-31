@@ -12,14 +12,6 @@ export interface IPlaybookContext {
 }
 
 export async function runPlaybookInput(context: vscode.ExtensionContext, playbookContext: IPlaybookContext) {
-    class MyButton implements vscode.QuickInputButton {
-        constructor(public iconPath: { light: vscode.Uri; dark: vscode.Uri; }, public tooltip: string) { }
-    }
-    const skipParamButton = new MyButton({
-        dark: vscode.Uri.file(context.asAbsolutePath('resources/dark/debug-step-over.svg')),
-        light: vscode.Uri.file(context.asAbsolutePath('resources/light/debug-step-over.svg')),
-    }, 'Skip');
-    
     interface PlaybookRunState {
         playbook_id: string;
         container_id: string

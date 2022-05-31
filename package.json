@@ -104,10 +104,7 @@
 			{
 				"command": "soarApps.runAction",
 				"title": "SOAR: Run Action",
-				"icon": {
-					"light": "resources/light/debug-start.svg",
-					"dark": "resources/dark/debug-start.svg"
-				}
+				"icon": "$(debug-start)"
 			},
 			{
 				"command": "soarApps.runPlaybook",
