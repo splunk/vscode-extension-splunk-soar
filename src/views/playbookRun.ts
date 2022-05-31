@@ -103,7 +103,39 @@ export class PlaybookRun extends PlaybookRunTreeItem {
 		} else if (data["playbookRun"]["status"] == "running") {
 			this.iconPath = new vscode.ThemeIcon("watch", new vscode.ThemeColor("testing.iconQueued"))
 		}
+
+		this.tooltip = this.generateLabel(data)
+		this.tooltip.isTrusted = true
+		this.tooltip.supportHtml = true
+		this.tooltip.supportThemeIcons = true
 		this.contextValue = `soarplaybookrun:${data["playbookRun"]["status"]}`
+	}
+
+	generateLabel = function(data: any): vscode.MarkdownString {
+		let label = new vscode.MarkdownString(``);
+
+		let playbookId = data["playbookRun"]["playbook"]
+		let playbookName = data["playbookRun"]["_pretty_playbook"]
+		let startTime = data["playbookRun"]["_pretty_start_time"]
+		let containerId = data["playbookRun"]["container"]
+		let playbookRunId = data["playbookRun"]["id"]
+
+		label.appendMarkdown(`**${playbookName} (${startTime})**\n\n`)
+
+		label.appendText('\n\n')
+		label.appendMarkdown('---')
+		label.appendText('\n\n')
+
+		label.appendMarkdown(`**Playbook Run**: `)
+		label.appendMarkdown(`[$(git-commit) \`${playbookRunId}\`](command:splunkSoar.playbookRuns.inspect?${playbookRunId}) \n\n`)
+
+		label.appendMarkdown(`**Container:** `)
+		label.appendMarkdown(`[$(symbol-field) \`${containerId}\`](command:splunkSoar.containers.inspect?${containerId}) \n\n`)
+
+		label.appendMarkdown(`**Playbook:** `)
+		label.appendMarkdown(`[$(file-code) \`${playbookId}\`](command:splunkSoar.playbooks.viewWeb?${playbookId}) \n`)
+
+		return label
 	}
 
 	contextValue: string = 'soarplaybookrun';

@@ -115,13 +115,13 @@ export class ActionRun extends ActionRunTreeItem {
 	iconPath = new vscode.ThemeIcon("pass", new vscode.ThemeColor("testing.iconPassed"))
 
 	generateLabel = function(data: any): vscode.MarkdownString {
-		let label = new vscode.MarkdownString(`### ${data["actionRun"]["action"]} \n`);
+		let label = new vscode.MarkdownString(``);
 		let actionRunId = data["actionRun"]["id"]
 		let actionRunMessage = data["actionRun"]["message"]
-		let actionRunTime = data["actionRun"]["create_time"]
+		let actionRunTime = data["actionRun"]["_pretty_create_time"]
 
-		label.appendMarkdown(`*${actionRunMessage}*, ${actionRunTime}\n\n`)
-
+		label.appendMarkdown(`**${data["actionRun"]["action"]} (${actionRunTime})**\n\n`)
+		label.appendMarkdown(`${actionRunMessage}`)
 		label.appendText('\n\n')
 		label.appendMarkdown('---')
 		label.appendText('\n\n')
