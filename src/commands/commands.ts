@@ -131,7 +131,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 		}
 	}))
 
-	context.subscriptions.push(vscode.commands.registerCommand('soarApps.diffFile', async (fileContext) => {
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.diffFile', async (fileContext) => {
 		diffFile(context, fileContext)
 	}))
 

@@ -95,7 +95,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 	const fileScheme = "soarfile"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(fileScheme, AppFileContentProvider));
 
-	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewFile', async (soarFileItem) => {
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.viewFile', async (soarFileItem) => {
 		if (!soarFileItem) {
 			return
 		}
