@@ -13,12 +13,20 @@ function setVSCodeMessageListener() {
 }
 
 function createApp() {
-  const titleInputValue = document.getElementById("name").value;
-  const descriptionInputValue= document.getElementById("description").value;
+  const name = document.getElementById("name").value;
+  const description = document.getElementById("description").value;
+  const productVendor = document.getElementById("productVendor").value;
+  const productName = document.getElementById("productName").value;
+  const appType = document.getElementById("appType").value
+  const publisher = document.getElementById("publisher").value
 
   const app = {
-    name: titleInputValue,
-    description: descriptionInputValue
+    name: name,
+    description: description,
+    productVendor: productVendor,
+    productName: productName,
+    publisher: publisher,
+    appType: appType
   }
 
   vscode.postMessage({ command: "createApp", app: app });

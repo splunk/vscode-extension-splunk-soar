@@ -139,7 +139,7 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 			packageDispose.dispose()
 
 			let uploadDispose = vscode.window.setStatusBarMessage("$(loading~spin) Uploading App...")
-			this.writeEmitter.fire(outPath);
+			this.writeEmitter.fire(`Local App Bundle: ${outPath}\r\n`);
 
 			try {
 				const appFile = fs.readFileSync(outPath, {encoding: 'base64'})

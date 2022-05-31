@@ -136,13 +136,13 @@ export class AppWizardPanel {
             <vscode-text-field id="name" placeholder="Required">App Name</vscode-text-field>
             <vscode-text-area id="description" placeholder="Required" resize="vertical" rows=5>App Description</vscode-text-area>
 
-            <vscode-text-field id="vendor" placeholder="Required">Product Vendor</vscode-text-field>
+            <vscode-text-field id="productVendor" placeholder="Required">Product Vendor</vscode-text-field>
             <vscode-text-field id="productName" placeholder="Required">Product Name</vscode-text-field>
             <vscode-text-field id="publisher" placeholder="Required">App Publisher</vscode-text-field>
 
             <div>
             <label class="label">App Type</label>
-            <vscode-dropdown position="below" style="margin-left: 10px">
+            <vscode-dropdown id="appType" position="below" style="margin-left: 10px">
               <vscode-option>information</vscode-option>
               <vscode-option>ticketing</vscode-option>
               <vscode-option>endpoint</vscode-option>
@@ -197,8 +197,12 @@ export class AppWizardPanel {
                 return
               }
 
+
+              message.app.appid = randomUUID()
+              message.app.name_lower = message.app.name.toLowerCase().replaceAll(' ', '')
+
               let targetFolderPath = targetFolder[0].fsPath
-              let outAppFolderPath = path.join(targetFolderPath, message.app.name)
+              let outAppFolderPath = path.join(targetFolderPath, message.app.name_lower)
 
               await fsPromises.mkdir(outAppFolderPath).catch((err) => {
                 //decide what you want to do if this failed
@@ -213,8 +217,6 @@ export class AppWizardPanel {
 
               templateFiles.forEach(file => {
                 let currFile = fs.readFileSync(path.join(templatePath.fsPath, file), 'utf-8')
-                message.app.appid = randomUUID()
-                message.app.name_lower = message.app.name.toLowerCase()
                 var outFilename = file.substring(0, file.indexOf('.ejs'))
                 var outStr = ejs.render(currFile, message)
 
