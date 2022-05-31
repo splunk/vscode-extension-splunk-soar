@@ -61,7 +61,7 @@ async function connectSslVerifyInput(input: MultiStepInput, state: Partial<Conne
         step: 2,
         totalSteps: totalSteps,
         placeholder: 'Verify TLS?',
-        items: [{"label": "Yes"}, {"label": "No"}],
+        items: [{"label": "$(lock) Yes"}, {"label": "$(unlock) No"}],
         shouldResume: shouldResume,
         ignoreFocusOut: true
     });

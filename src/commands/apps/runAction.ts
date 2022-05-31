@@ -33,6 +33,7 @@ interface IParamInfo {
 	value_list: string[],
 	data_type: string,
 	description: string,
+	default: string
 }
 
 /**
@@ -54,7 +55,6 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 		totalSteps: number;
 		asset: QuickPickItem;
 		name: string;
-		runtime: QuickPickItem;
 		parameters: any[]
 	}
 
@@ -189,7 +189,7 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 				title,
 				step: 2 + actionParamIndex,
 				totalSteps: totalSteps,
-				value: state.name || '',
+				value: paramInfo["default"] || '',
 				prompt: `${paramName}: ${paramInfo["description"]}`,
 				shouldResume: shouldResume,
 				validate: validateNameIsUnique,

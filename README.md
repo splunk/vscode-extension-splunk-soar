@@ -6,7 +6,7 @@ During setup, the extension is configured to connect to the SOAR platform. This 
 
 All features are targeted towards speeding up SOAR app development. Explicitly out-of-scope are features that assist with playbook development. For developing playbooks, the new Visual Playbook Editor (VPE) within SOAR is strongly recommended.
 
-Features include,
+Features include
 
 - Built-in [**App Wizard**](#app-wizard) to bootstrap a new local SOAR App project
 - New SOAR sidebar views to provide information and quick actions throughout the development process
@@ -24,8 +24,25 @@ Download the extension via the Visual Studio Marketplace.
 
 Alternatively, download the VSIX file from the [Releases page](https://github.com/splunk/vscode-extension-splunk-soar/releases/) and use the *Extensions -> Install from VSIX...* dialog within the VS Code extension panel.
 
+## Connect your environment
+
+After successful installation, open the Splunk SOAR view from the sidebar and press the **Connect Environment** button to set up the connection to your SOAR environment. 
+
+<p align="center">
+  <img src="media/connect_environment.png" alt="Connect Environment" />
+</p>
+
+After the environment is set up, it will be activated automatically. You're able to connect multiple environments but only a single environment can be active at any point in time.
 
 # Features
+
+## Multi-Environment Support
+
+<p align="center">
+  <img src="media/activate_environment.png" alt="Connect Environment" />
+</p>
+
+It's possible to create multiple environments to quickly context-switch between remote SOAR instances. Only a single environment can be active at the same time. Use the available context menus to manage environments and receive information about them.
 
 ## App Wizard
 
@@ -34,6 +51,31 @@ Alternatively, download the VSIX file from the [Releases page](https://github.co
 </p>
 
 The App Wizard allows to quickly scaffold a new SOAR App, similar to the App Wizard in the SOAR Web UI. After generation, the user will be asked for the directory where the new project should be saved and the project is opened in a new editor window.
+
+## Side Bar Views
+
+Splunk SOAR ships with many side bar views to provide features that make SOAR App Development quicker.
+
+<p align="center">
+  <img src="media/sidebar_views.png" alt="App Wizard" />
+</p>
+
+Take note that there is a dedicated view for help and feedback in case you experience any difficulties with this extension.
+
+### Apps View
+
+<p align="center">
+  <img src="media/sidebar_apps.png" alt="Sidebar Apps" />
+</p>
+
+
+
+### Action Runs View
+
+### Playbooks View
+
+### Playbook Runs View
+
 
 ## App Installation
 
