@@ -12,7 +12,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 	const assetScheme = "soarasset"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(assetScheme, new AssetContentProvider(context)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewAsset', async (assetId) => {
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.assets.inspect', async (assetId) => {
 		if (!assetId) {
 			assetId = await vscode.window.showInputBox({ placeHolder: 'id' });
 		} else {
@@ -46,7 +46,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 	const containerScheme = "soarcontainer"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(containerScheme, new ContainerContentProvider(context)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewContainer', async (containerId) => {
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.containers.inspect', async (containerId) => {
 		if (!containerId) {
 			containerId = await vscode.window.showInputBox({ placeHolder: 'id' });
 		}
@@ -61,7 +61,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 	const actionRunScheme = "soaractionrun"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(actionRunScheme, new ActionRunContentProvider(context)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewActionRun', async (actionRunId) => {
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.actionRuns.inspect', async (actionRunId) => {
 		if (!actionRunId) {
 			actionRunId = await vscode.window.showInputBox({ placeHolder: 'id' });
 		} else if (actionRunId.hasOwnProperty("data")) {
@@ -114,7 +114,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 	const playbookCodeScheme = "soarplaybookcode"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(playbookCodeScheme, new PlaybookCodeContentProvider(context)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewPlaybookCode', async (playbookId) => {
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbooks.viewCode', async (playbookId) => {
 		if (!playbookId) {
 			playbookId = await vscode.window.showInputBox({ placeHolder: 'id' });
 		} else if (playbookId.hasOwnProperty("data")) {
@@ -129,7 +129,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 	}));
 
 
-	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewPlaybook', async (playbookId) => {
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbooks.inspect', async (playbookId) => {
 		if (!playbookId) {
 			playbookId = await vscode.window.showInputBox({ placeHolder: 'id' });
 		} else if (playbookId.hasOwnProperty("data")) {

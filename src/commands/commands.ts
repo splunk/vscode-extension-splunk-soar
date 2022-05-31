@@ -22,7 +22,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	let disposableOpenWebApps = vscode.commands.registerCommand('splunkSoar.openWebApps', async () => { openWebApps(context) });
 	context.subscriptions.push(disposableOpenWebApps);
 
-	let disposableInstallBundle = vscode.commands.registerCommand('soarApps.installBundle', () => { installBundle(context) });
+	let disposableInstallBundle = vscode.commands.registerCommand('splunkSoar.apps.installBundle', () => { installBundle(context) });
 	context.subscriptions.push(disposableInstallBundle);
 
 	let disposableConnectEnvironment = vscode.commands.registerCommand('splunkSoar.environments.connect', () => { connectEnvironment(context) });
@@ -49,7 +49,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	let disposableAppDevDocs = vscode.commands.registerCommand('splunkSoar.openAppDevDocs', async () => { openAppDevDocs() });
 	context.subscriptions.push(disposableAppDevDocs);
 
-    context.subscriptions.push(vscode.commands.registerCommand('soarActionRuns.repeatActionRun', async (data) => {
+    context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.actionRuns.repeat', async (data) => {
 		if (data) {
 			repeatActionRun(context, data).catch(console.error)
 		} else {
@@ -57,7 +57,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 		}
 	}))
 
-	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewActionRunWeb', async (actionRunContext) => {
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.actionRuns.viewWeb', async (actionRunContext) => {
 		if (actionRunContext) {
 			let containerId = actionRunContext.data["actionRun"]["container"]
 			let actionRunId = actionRunContext.data["actionRun"]["id"]
@@ -67,7 +67,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 		}
 	}))
 
-    context.subscriptions.push(vscode.commands.registerCommand('soarApps.cancelActionRun', async (actionRunContext) => {
+    context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.actionRuns.cancel', async (actionRunContext) => {
 		return cancelActionRun(context, actionRunContext)
 	}))
 
@@ -75,7 +75,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 		return cancelPlaybookRun(context, playbookRunContext)
 	}))
 
-	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewPlaybookWeb', async (playbookId) => {
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbooks.viewWeb', async (playbookId) => {
 		if (playbookId) {
 			openWebPlaybook(context, playbookId.data.playbook.id)
 		} else {
@@ -83,10 +83,10 @@ export function registerCommands(context: vscode.ExtensionContext) {
 		}
 	}))
 
-	let disposableDownloadBundle = vscode.commands.registerCommand('soarApps.downloadBundle', (appContext) => { downloadBundle(context, appContext) });
+	let disposableDownloadBundle = vscode.commands.registerCommand('splunkSoar.apps.downloadBundle', (appContext) => { downloadBundle(context, appContext) });
 	context.subscriptions.push(disposableDownloadBundle);
 
-	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewAppWeb', async (appId) => {
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.viewWeb', async (appId) => {
 		if (appId) {
 			openWebApp(context, appId.data.app.id)
 		} else {
@@ -94,7 +94,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 		}
 	}))
 
-	context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewAssetWeb', async (assetContext) => {
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.assets.viewWeb', async (assetContext) => {
 		console.log("hwy")
 		if (assetContext) {
 			openWebAsset(context, assetContext.data.app.id, assetContext.data.asset.id)
@@ -103,7 +103,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 		}
 	}))
 
-    context.subscriptions.push(vscode.commands.registerCommand('soarApps.runAction', async (data) => {
+    context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.runAction', async (data) => {
 		if (data) {
 			runActionInput(context, data).catch(console.error)
 		} else {
@@ -111,7 +111,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 		}
 	}))
 
-    context.subscriptions.push(vscode.commands.registerCommand('soarApps.viewAppDocs', async (data) => {
+    context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.viewDocs', async (data) => {
 		if (data) {
 			viewAppDocs(context, data).catch(console.error)
 		} else {
@@ -119,11 +119,11 @@ export function registerCommands(context: vscode.ExtensionContext) {
 		}
 	}))
 
-    context.subscriptions.push(vscode.commands.registerCommand("soarApps.showAppWizard", async () => {
+    context.subscriptions.push(vscode.commands.registerCommand("splunkSoar.showAppWizard", async () => {
 		AppWizardPanel.render(context.extensionUri);
     }));
 
-	context.subscriptions.push(vscode.commands.registerCommand('soarApps.runPlaybook', async (data) => {
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbooks.runPlaybook', async (data) => {
 		if (data) {
 			runPlaybookInput(context, data).catch(console.error)
 		} else {

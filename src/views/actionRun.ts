@@ -127,14 +127,14 @@ export class ActionRun extends ActionRunTreeItem {
 		label.appendText('\n\n')
 
 		label.appendMarkdown(`**Action Run**: `)
-		label.appendMarkdown(`[$(git-commit) \`${actionRunId}\`](command:soarApps.viewActionRun?${actionRunId}) \n\n`)
+		label.appendMarkdown(`[$(git-commit) \`${actionRunId}\`](command:splunkSoar.actionRuns.inspect?${actionRunId}) \n\n`)
 
 		if (data["actionRun"]["container"] !== null) {
 			let containerId = data["actionRun"]["container"].toString()
 			let containerLabel = data["actionRun"]["_pretty_container"]
 
 			label.appendMarkdown(`**Container:** `)
-			label.appendMarkdown(`[$(symbol-field) \`${containerId}\`](command:soarApps.viewContainer?${containerId}) \n`)
+			label.appendMarkdown(`[$(symbol-field) \`${containerId}\`](command:splunkSoar.containers.inspect?${containerId}) \n`)
 			label.appendMarkdown(`${containerLabel} \n\n`)
 
 
@@ -144,7 +144,7 @@ export class ActionRun extends ActionRunTreeItem {
 			let playbookLabel = data["actionRun"]["_pretty_playbook"]
 
 			label.appendMarkdown(`**Playbook:** `)
-			label.appendMarkdown(`[$(file-code) \`${playbookId}\`](command:soarApps.viewPlaybookWeb?${playbookId}) \n`)
+			label.appendMarkdown(`[$(file-code) \`${playbookId}\`](command:splunkSoar.playbooks.viewWeb?${playbookId}) \n`)
 			label.appendMarkdown(`${playbookLabel} \n\n`)
 		}
 

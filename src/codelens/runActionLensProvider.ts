@@ -52,7 +52,7 @@ export class RunActionLensProvider implements CodeLensProvider {
           }
 
           let c: Command = {
-            command: 'soarApps.runAction',
+            command: 'splunkSoar.apps.runAction',
             title: `Run Action: ${matches[2]}`,
             arguments: [actionContext]
           }
