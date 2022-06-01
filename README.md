@@ -68,13 +68,25 @@ Take note that there is a dedicated view for help and feedback in case you exper
   <img src="media/sidebar_apps.png" alt="Sidebar Apps" />
 </p>
 
-
-
 ### Action Runs View
+
+<p align="center">
+  <img src="media/sidebar_actionruns.png" alt="Sidebar Apps" />
+</p>
+
 
 ### Playbooks View
 
+<p align="center">
+  <img src="media/sidebar_playbooks.png" alt="Sidebar Apps" />
+</p>
+
+
 ### Playbook Runs View
+
+<p align="center">
+  <img src="media/sidebar_playbookruns.png" alt="Sidebar Apps" />
+</p>
 
 
 ## App Installation
@@ -85,8 +97,6 @@ Take note that there is a dedicated view for help and feedback in case you exper
 
 Using the [TaskProvider API](https://code.visualstudio.com/api/extension-guides/task-provider) the extension provides a Task that allows to install a local app to the configured SOAR instance via REST API. This procedure works for both on-prem and cloud SOAR. The task will transparently create a tar bundle of the app code for and upload it  to the instance.
 
-
-
 ## Inspecting SOAR Objects
 
 <p align="center">
@@ -94,6 +104,14 @@ Using the [TaskProvider API](https://code.visualstudio.com/api/extension-guides/
 </p>
 
 By providing a [Tree View](https://code.visualstudio.com/api/extension-guides/tree-view), the extension allows to browse apps and assets configured on the connected SOAR instance. Using [Virtual Documents](https://code.visualstudio.com/api/extension-guides/virtual-documents), users are able to review SOAR objects in JSON format on-the-fly. Note that these views are read-only.[](media/appinstall.gif)
+
+## Hover Information
+
+<p align="center">
+  <img src="media/actionrun_hover.png" alt="Action Run Hover" />
+</p>
+
+Hovering over Playbook Runs and Action Runs views shows additional contextual information which provides quick links for inspecting the elements.
 
 
 ## Running Actions
@@ -108,15 +126,12 @@ Within the SOAR Apps view, there is a contextual control to run an action in the
 
 |  Name | Description  |
 |---|---|
-|  `authentication.server` |  URL (including protocol and port) pointing to the SOAR instance |
-| `authentication.sslVerify`  |  Specifies whether or not to validate the SOAR server TLS certificate |
-|  `authentication.username` | Username to connect to the SOAR instance  |
-|  `authentication.password` | Password to connect to the SOAR instance  |
-| `actionRuns.showOwnOnly`  |  Specifies whether to filter the Action Run view to only show actions executed by the configured user  |
+| `actionRuns.showOwnOnly`  |  Specifies whether to filter the Action Runs view to only show actions executed by the configured user  |
+| `playbookRuns.showOwnOnly`  |  Specifies whether to filter the Playbook Runs view to only show actions executed by the configured user  |
+| `apps.showConfiguredOnly`  |  Specifies whether to filter the Apps view to only show apps that have at least one asset configured  |
+| `runAction.timeout`  | Specifies the timeout in seconds for action executions |
 | `codeLensEnabled`  | Specifies whether or not to show place inline CodeLens hints to quickly run actions on top of action handlers |
 |   |   |
-
-
 
 # Contributing
 ## Requirements
