@@ -44,14 +44,6 @@ After the environment is set up, it will be activated automatically. You're able
 
 It's possible to create multiple environments to quickly context-switch between remote SOAR instances. Only a single environment can be active at the same time. Use the available context menus to manage environments and receive information about them.
 
-## App Wizard
-
-<p align="center">
-  <img src="media/appwizard.png" alt="App Wizard" />
-</p>
-
-The App Wizard allows to quickly scaffold a new SOAR App, similar to the App Wizard in the SOAR Web UI. After generation, the user will be asked for the directory where the new project should be saved and the project is opened in a new editor window.
-
 ## Side Bar Views
 
 Splunk SOAR ships with many side bar views to provide features that make SOAR App Development quicker.
@@ -68,12 +60,24 @@ Take note that there is a dedicated view for help and feedback in case you exper
   <img src="media/sidebar_apps.png" alt="Sidebar Apps" />
 </p>
 
+The Apps view provides actions to manage and interact with installed apps on the SOAR environment. It provides
+
+- Ability to review all installed apps, assets and provided actions 
+- Capability to execute actions on the installed apps
+- Browse files deployed within apps
+  - Compare remote files with a opened local file
+
 ### Action Runs View
 
 <p align="center">
   <img src="media/sidebar_actionruns.png" alt="Sidebar Apps" />
 </p>
 
+The Action Runs view provides means to manage and review current and prior runs
+
+- Ability to get information about past runs
+- An inline menu to cancel an ongoing run
+- An inline menu to re-run a prior action run with identical parameters
 
 ### Playbooks View
 
@@ -81,6 +85,11 @@ Take note that there is a dedicated view for help and feedback in case you exper
   <img src="media/sidebar_playbooks.png" alt="Sidebar Apps" />
 </p>
 
+The Playbooks view provides means to review Playbooks
+
+- Quickly run a Playbook from VS Code
+- Open and Inspect the Playbook in the SOAR Visual Playbook Editor
+- Review Playbook metadata 
 
 ### Playbook Runs View
 
@@ -88,22 +97,11 @@ Take note that there is a dedicated view for help and feedback in case you exper
   <img src="media/sidebar_playbookruns.png" alt="Sidebar Apps" />
 </p>
 
+The Playbooks Runs view provides means to manage and review current and prior runs
 
-## App Installation
+- Ability to get information about past runs
+- An inline menu to cancel an ongoing run
 
-<p align="center">
-  <img src="media/appinstall.gif" alt="App Wizard" />
-</p>
-
-Using the [TaskProvider API](https://code.visualstudio.com/api/extension-guides/task-provider) the extension provides a Task that allows to install a local app to the configured SOAR instance via REST API. This procedure works for both on-prem and cloud SOAR. The task will transparently create a tar bundle of the app code for and upload it  to the instance.
-
-## Inspecting SOAR Objects
-
-<p align="center">
-  <img src="media/inspect.gif" alt="Inspect" />
-</p>
-
-By providing a [Tree View](https://code.visualstudio.com/api/extension-guides/tree-view), the extension allows to browse apps and assets configured on the connected SOAR instance. Using [Virtual Documents](https://code.visualstudio.com/api/extension-guides/virtual-documents), users are able to review SOAR objects in JSON format on-the-fly. Note that these views are read-only.[](media/appinstall.gif)
 
 ## Hover Information
 
@@ -113,6 +111,29 @@ By providing a [Tree View](https://code.visualstudio.com/api/extension-guides/tr
 
 Hovering over Playbook Runs and Action Runs views shows additional contextual information which provides quick links for inspecting the elements.
 
+## App Installation
+
+<p align="center">
+  <img src="media/appinstall.gif" alt="App Wizard" />
+</p>
+
+Using the [TaskProvider API](https://code.visualstudio.com/api/extension-guides/task-provider) the extension provides a Task that allows to install a local app to the configured SOAR instance via REST API. This procedure works for both on-prem and cloud SOAR. The task will transparently create a tar bundle of the app code for and upload it  to the instance.
+
+## App Wizard
+
+<p align="center">
+  <img src="media/appwizard.png" alt="App Wizard" />
+</p>
+
+The App Wizard allows to quickly scaffold a new SOAR App, similar to the App Wizard in the SOAR Web UI. After generation, the user will be asked for the directory where the new project should be saved and the project is opened in a new editor window.
+
+## Inspecting SOAR Objects
+
+<p align="center">
+  <img src="media/inspect.gif" alt="Inspect" />
+</p>
+
+By providing a [Tree View](https://code.visualstudio.com/api/extension-guides/tree-view), the extension allows to browse apps and assets configured on the connected SOAR instance. Using [Virtual Documents](https://code.visualstudio.com/api/extension-guides/virtual-documents), users are able to review SOAR objects in JSON format on-the-fly. Note that these views are read-only.[](media/appinstall.gif)
 
 ## Running Actions
 
