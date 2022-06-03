@@ -111,6 +111,11 @@
 				"category": "SOAR Environments"
 			},
 			{
+				"command": "splunkSoar.environments.copyPassword",
+				"title": "Copy password to clipboard",
+				"category": "SOAR Environments"
+			},
+			{
 				"command": "splunkSoar.apps.refresh",
 				"title": "Refresh",
 				"icon": "$(refresh)",
@@ -455,6 +460,11 @@
 					"command": "splunkSoar.environments.version",
 					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
 					"group": "actions@2"
+				},
+				{
+					"command": "splunkSoar.environments.copyPassword",
+					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
+					"group": "actions@3"
 				},
 				{
 					"command": "splunkSoar.environments.openWeb",

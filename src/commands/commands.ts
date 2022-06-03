@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { activateEnvironment, connectEnvironment, disconnectEnvironment, environmentVersion, openEnvironmentWeb } from '../config/environment';
+import { activateEnvironment, connectEnvironment, copyPasswordToClipboard, disconnectEnvironment, environmentVersion, openEnvironmentWeb } from '../config/environment';
 import { AppWizardPanel } from '../webviews/appWizard';
 import { cancelActionRun } from './actionRuns/cancelActionRun';
 import { repeatActionRun } from './actionRuns/repeatActionRun';
@@ -39,6 +39,9 @@ export function registerCommands(context: vscode.ExtensionContext) {
 
 	let versionEnvironmentDisposable = vscode.commands.registerCommand('splunkSoar.environments.version', async (environmentContext) => { environmentVersion(context, environmentContext) });
 	context.subscriptions.push(versionEnvironmentDisposable);
+
+	let copyPasswordDisposable = vscode.commands.registerCommand('splunkSoar.environments.copyPassword', async (environmentContext) => { copyPasswordToClipboard(context, environmentContext) });
+	context.subscriptions.push(copyPasswordDisposable);
 
 	let disposableReportIssue = vscode.commands.registerCommand('splunkSoar.reportIssue', async () => { openRepoIssues() });
 	context.subscriptions.push(disposableReportIssue);

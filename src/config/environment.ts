@@ -213,3 +213,12 @@ export async function environmentVersion(context: vscode.ExtensionContext, envir
     )
 }
 
+export async function copyPasswordToClipboard(context: vscode.ExtensionContext, environmentContext: SoarInstancesTreeItem) {
+    let env: ConfiguredConnectEnvironment = environmentContext.data
+
+    let environment = await getEnvironment(context, env.key)
+    let client = new SoarClient(environment.url, environment.username, environment.password, environment.sslVerify)
+
+    vscode.env.clipboard.writeText(client.password)
+    vscode.window.setStatusBarMessage("Copied password to clipboard", 2000)
+}
