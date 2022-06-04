@@ -186,22 +186,21 @@ export async function activateEnvironment(context: vscode.ExtensionContext, envi
     let client = await getClientForEnvironment(context, envKey)
     try {
         let response = await client.version()
+        context.globalState.update(ACTIVE_ENV_KEY, envKey)
+        vscode.commands.executeCommand('setContext', 'splunkSoar.environments.hasActive', true);
+        await refreshViews()    
     } catch (error: any) {
         const {response} = error
 
         let errorMsg = `Failed to activate environment.`
         if (response?.data?.message) {
             errorMsg += " " + response.data.message
+        } else {
+            errorMsg += " " + JSON.stringify(error.message)
         }
-
         vscode.window.showErrorMessage(errorMsg)
         throw new Error(errorMsg)
     }
-
-    context.globalState.update(ACTIVE_ENV_KEY, envKey)
-    vscode.commands.executeCommand('setContext', 'splunkSoar.environments.hasActive', true);
-    await refreshViews()
-
 }
 
 export function getActiveEnvironment(context: vscode.ExtensionContext) {

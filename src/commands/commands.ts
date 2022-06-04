@@ -10,14 +10,11 @@ import { installBundle } from './apps/installBundle';
 import { runActionInput } from './apps/runAction';
 import { viewAppDocs } from './apps/viewAppDocs';
 import { runPlaybookInput } from './playbooks/runPlaybook';
-import { openAppDevDocs, openRepoDocs, openRepoIssues, openWeb, openWebActionRunResult, openWebApp, openWebApps, openWebAsset, openWebPlaybook, openWebPlaybookEditor } from './web';
+import { openAppDevDocs, openRepoDocs, openRepoIssues, openWebActionRunResult, openWebApp, openWebApps, openWebAsset, openWebPlaybook, openWebPlaybookEditor } from './web';
 import { cancelPlaybookRun } from './playbookRuns/cancel';
 
 
 export function registerCommands(context: vscode.ExtensionContext) {
-
-    let disposableOpenWeb = vscode.commands.registerCommand('splunkSoar.openWeb', async () => { openWeb(context) });
-	context.subscriptions.push(disposableOpenWeb);
 
 	let disposableOpenWebApps = vscode.commands.registerCommand('splunkSoar.openWebApps', async () => { openWebApps(context) });
 	context.subscriptions.push(disposableOpenWebApps);

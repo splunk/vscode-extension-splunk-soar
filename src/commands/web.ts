@@ -1,11 +1,6 @@
 import * as vscode from 'vscode';
 import { getClientForActiveEnvironment, SoarClient } from "../soar/client";
 
-export async function openWeb(context: vscode.ExtensionContext) {
-    let client: SoarClient = await getClientForActiveEnvironment(context)
-    vscode.env.openExternal(vscode.Uri.parse(client.server))	
-}
-
 export async function openWebApps(context: vscode.ExtensionContext) {
     let client: SoarClient = await getClientForActiveEnvironment(context)
     vscode.env.openExternal(vscode.Uri.parse(`${client.server}/apps`))	

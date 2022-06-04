@@ -113,11 +113,6 @@
 				"category": "SOAR Apps"
 			},
 			{
-				"command": "splunkSoar.openWeb",
-				"title": "SOAR: Open Active Environment Web UI",
-				"icon": "$(globe)"
-			},
-			{
 				"command": "splunkSoar.reportIssue",
 				"title": "SOAR: Report an Issue",
 				"icon": "$(globe)"
@@ -220,7 +215,7 @@
 				"icon": "$(diff)"
 			},
 			{
-				"command": "splunkSoar.apps.inspectApp",
+				"command": "splunkSoar.apps.inspect",
 				"title": "Inspect",
 				"icon": "$(eye)",
 				"category": "SOAR App"
@@ -392,6 +387,10 @@
 		"menus": {
 			"commandPalette": [
 				{
+					"command": "splunkSoar.environments.refresh",
+					"when": "false"
+				},
+				{
 					"command": "splunkSoar.environments.disconnect",
 					"when": "false"
 				},
@@ -400,8 +399,72 @@
 					"when": "false"
 				},
 				{
-					"command": "splunkSoar.openWeb",
-					"when": "splunkSoar.environments.hasActive"
+					"command": "splunkSoar.apps.runAction",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.apps.downloadBundle",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.playbooks.runPlaybook",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.playbooks.downloadBundle",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.playbooks.viewCode",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.playbookRuns.cancel",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.actionRuns.repeat",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.actionRuns.viewWeb",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.playbooks.viewWeb",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.apps.viewWeb",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.assets.viewWeb",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.apps.viewDocs",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.playbooks.runPlaybook",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.playbooks.inspect",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.apps.inspect",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.actionRuns.cancel",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.apps.diffFile",
+					"when": "false"
 				}
 			],
 			"view/title": [
@@ -558,7 +621,7 @@
 					"group": "actions@1"
 				},
 				{
-					"command": "splunkSoar.apps.inspectApp",
+					"command": "splunkSoar.apps.inspect",
 					"when": "view == soarApps && viewItem == soarapp",
 					"group": "actions@1"
 				},
