@@ -91,7 +91,7 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
     		.map((asset: any) => ({'label': asset["name"]}));
 
 		if (assets.length === 0) {
-			window.showErrorMessage("No asset configured for app.", ...["Configure in SOAR"]).then(selection => {
+			window.showErrorMessage("No asset configured for app.", ...["Configure Asset in SOAR"]).then(selection => {
 				const server: string = workspace.getConfiguration().get<string>("authentication.server", '')
 				
 				if (selection) {
