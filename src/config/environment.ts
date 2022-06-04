@@ -5,7 +5,9 @@ export const ACTIVE_ENV_KEY = "splunkSOAR.activeEnvironment"
 import {IActionContext, MultiStepInput} from '../commands/apps/runAction'
 import { refreshViews } from '../views/views'
 import { SoarInstancesTreeItem } from '../views/environments'
-import { SoarClient } from '../soar/client'
+import { getClientForActiveEnvironment, getClientForEnvironment, SoarClient } from '../soar/client'
+import { env } from 'process'
+import { AxiosError } from 'axios'
 
 function deriveEnvKey(url: string, username: string) {
     return `${username}@${url}`
@@ -25,7 +27,7 @@ interface ConfiguredConnectEnvironment extends BaseConnectEnvironment {
     key: string
 }
 
-const wizardTitle = "Connect a SOAR Environment"
+const wizardTitle = "Connect Environment"
 const totalSteps = 4
 
 function shouldResume() {
@@ -132,19 +134,22 @@ export async function connectEnvironment(context: vscode.ExtensionContext) {
     console.log(currentEnvironments)
 
     let newEnvironments = addOrReplace(currentEnvironments, newEnv)
-    
+        context.globalState.update(ENV_KEY, newEnvironments)
+    context.secrets.store(envKey, state.password)
+
     if (newEnvironments.length === 1) {
-        context.globalState.update(ACTIVE_ENV_KEY, envKey)
-        await refreshViews()
+        try {
+            await activateEnvironment(context, {"data": newEnvironments[0]})
+            await refreshViews()
+        } catch (error) {
+            vscode.window.showWarningMessage("Added environment but could not activate it.")
+        }
     }
 
-    context.globalState.update(ENV_KEY, newEnvironments)
-    context.secrets.store(envKey, state.password)
     await vscode.commands.executeCommand('splunkSoar.environments.refresh');
 }
 
 export async function disconnectEnvironment(context: vscode.ExtensionContext, actionContext: IActionContext) {
-    console.log("disconnecting")
     let key = actionContext.data["key"]
 
     let choice = await vscode.window.showInformationMessage(`Do you want to remove ${key}?`, ...["Yes", "No"])
@@ -158,17 +163,45 @@ export async function disconnectEnvironment(context: vscode.ExtensionContext, ac
     if (key == context.globalState.get(ACTIVE_ENV_KEY)) {
         vscode.window.showInformationMessage("Active environment got disconnected. Please ensure an another environment is activated to use the SOAR extension.")
         context.globalState.update(ACTIVE_ENV_KEY, undefined)
+        vscode.commands.executeCommand('setContext', 'splunkSoar.environments.hasActive', false);
     }
 
     context.globalState.update(ENV_KEY, newEnvironments)
     await refreshViews()
 }
 
-export async function activateEnvironment(context: vscode.ExtensionContext, actionContext: IActionContext) {
-    let key = actionContext.data["key"]
+export async function activateEnvironment(context: vscode.ExtensionContext, environmentContext: IActionContext) {
+    let envKey: string;
 
-    context.globalState.update(ACTIVE_ENV_KEY, key)
+    if (!environmentContext) {
+        let envPickResult = await pickEnvironment(context)
+        if (!envPickResult) {
+            return
+        }
+        envKey = envPickResult
+    } else {
+        envKey = environmentContext.data.key
+    }
+
+    let client = await getClientForEnvironment(context, envKey)
+    try {
+        let response = await client.version()
+    } catch (error: any) {
+        const {response} = error
+
+        let errorMsg = `Failed to activate environment.`
+        if (response?.data?.message) {
+            errorMsg += " " + response.data.message
+        }
+
+        vscode.window.showErrorMessage(errorMsg)
+        throw new Error(errorMsg)
+    }
+
+    context.globalState.update(ACTIVE_ENV_KEY, envKey)
+    vscode.commands.executeCommand('setContext', 'splunkSoar.environments.hasActive', true);
     await refreshViews()
+
 }
 
 export function getActiveEnvironment(context: vscode.ExtensionContext) {
@@ -194,15 +227,43 @@ export async function getEnvironment(context: vscode.ExtensionContext, envKey: s
     return {...env, "password": password}
 }
 
+
+export async function listEnvironments(context: vscode.ExtensionContext) {
+    let environments: ConfiguredConnectEnvironment[] = context.globalState.get(ENV_KEY) || []
+    return environments
+}
+
 export async function openEnvironmentWeb(context: vscode.ExtensionContext, environmentContext: SoarInstancesTreeItem) {
-    let env: ConfiguredConnectEnvironment = environmentContext.data
-    vscode.env.openExternal(vscode.Uri.parse(env.url))
+    let envKey: string;
+
+    if (!environmentContext) {
+        let envPickResult = await pickEnvironment(context)
+        if (!envPickResult) {
+            return
+        }
+        envKey = envPickResult
+    } else {
+        envKey = environmentContext.data.key
+    }
+
+    let environment = await getEnvironment(context, envKey)
+    vscode.env.openExternal(vscode.Uri.parse(environment.url))
 }
 
 export async function environmentVersion(context: vscode.ExtensionContext, environmentContext: SoarInstancesTreeItem) {
-    let env: ConfiguredConnectEnvironment = environmentContext.data
+    let envKey: string;
 
-    let environment = await getEnvironment(context, env.key)
+    if (!environmentContext) {
+        let envPickResult = await pickEnvironment(context)
+        if (!envPickResult) {
+            return
+        }
+        envKey = envPickResult
+    } else {
+        envKey = environmentContext.data.key
+    }
+
+    let environment = await getEnvironment(context, envKey)
     let client = new SoarClient(environment.url, environment.username, environment.password, environment.sslVerify)
 
     client.version().then(
@@ -221,4 +282,14 @@ export async function copyPasswordToClipboard(context: vscode.ExtensionContext, 
 
     vscode.env.clipboard.writeText(client.password)
     vscode.window.setStatusBarMessage("Copied password to clipboard", 2000)
+}
+
+export async function pickEnvironment (context: vscode.ExtensionContext) {
+    let envs = await listEnvironments(context)
+    let envItems = envs.map((env) => ({'label': env["key"], "description": env.username}))
+    let selectedEnv = await vscode.window.showQuickPick(envItems, {canPickMany: false})
+    if (!selectedEnv) {
+        return undefined
+    }
+    return selectedEnv.label
 }

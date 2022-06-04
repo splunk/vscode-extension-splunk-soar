@@ -1,7 +1,7 @@
 import { AxiosInstance } from "axios";
 import * as https from 'https'; 
 import * as vscode from 'vscode';
-import { getActiveEnvironment } from "../config/environment";
+import { getActiveEnvironment, getEnvironment } from "../config/environment";
 const axios = require('axios').default;
 
 import * as models from './models'
@@ -167,11 +167,22 @@ export class SoarClient {
     getContainer = async (containerId: string) => {
         return await this.httpClient.get(`container/${containerId}`)
     }
+    
+    getSystemSettings = async () => {
+        return await this.httpClient.get(`system_settings`)
+    }
 }
 
 export async function getClientForActiveEnvironment(context: vscode.ExtensionContext): Promise<SoarClient> {
 
     let {url, username, sslVerify, password} = await getActiveEnvironment(context)
+
+    return new SoarClient(url, username, password, sslVerify)
+}
+
+export async function getClientForEnvironment(context: vscode.ExtensionContext, envKey: string): Promise<SoarClient> {
+
+    let {url, username, sslVerify, password} = await getEnvironment(context, envKey)
 
     return new SoarClient(url, username, password, sslVerify)
 }

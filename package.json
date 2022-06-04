@@ -24,6 +24,9 @@
 		"onCommand:splunkSoar.apps.runAction",
 		"onView:soarApps",
 		"onView:soarActionRuns",
+		"onView:soarEnvironments",
+		"onView:soarPlaybooks",
+		"onView:soarPlaybookRuns",
 		"onCommand:workbench.action.tasks.runTask"
 	],
 	"main": "./dist/extension.js",
@@ -35,6 +38,66 @@
 					"!.vscode/*.json"
 				],
 				"url": "./schemas/splunk_phantom_app-1.0.json"
+			}
+		],
+		"walkthroughs": [
+			{
+				"id": "soarOnboarding",
+				"title": "Get started with Splunk SOAR in VS Code",
+				"description": "Connect your environments and get to know the extension features.",
+				"steps": [
+					{
+						"id": "connectenvironment",
+						"title": "Connect an environment",
+						"description": "You are able to connect multiple environments and switch between them as needed. Only one environment can be active at a time.\n[Connect Environment](command:splunkSoar.environments.connect)",
+						"media": { "markdown": "media/onboarding/connectenvironment.md" },
+						"completionEvents": [
+							"onCommand:splunkSoar.environments.connect"
+						]
+					},
+					{
+						"id": "activateenvironment",
+						"title": "Activate an environment",
+						"description": "Ensure the SOAR environment is active",
+						"media": {
+							"image": "media/activate_environment.png",
+							"altText": "Activate Environment"
+						},
+						"completionEvents": [
+							"onContext:splunkSoar.environments.hasActive"
+						]
+					},
+					{
+						"id": "appview",
+						"title": "Review your Apps view",
+						"description": "You should be able to browse objects on your active environment",
+						"media": {
+							"image": "media/sidebar_apps.png",
+							"altText": "Apps Sidebar"
+						},
+						"completionEvents": [
+							"onView:soarApps"
+						]
+					},
+					{
+						"id": "appwizard",
+						"title": "Create a new app",
+						"description": "If you're feeling adventurous, you can start a new SOAR app project using the built-in App Wizard. Feel free to skip this step. \n[Open App Wizard](command:splunkSoar.showAppWizard)",
+						"media": {
+							"image": "media/appwizard.png",
+							"altText": "Empty image"
+						},
+						"completionEvents": [
+							"onCommand:splunkSoar.showAppWizard"
+						]
+					},
+					{
+						"id": "exploreresources",
+						"title": "Explore further resources",
+						"description": "You made it! Review the 'Help and Feedback' view in the SOAR extension to discover more help and guidance around this software",
+						"media": { "markdown": "media/onboarding/connectenvironment.md" }
+					}
+				]
 			}
 		],
 		"commands": [
@@ -83,7 +146,7 @@
 			},
 			{
 				"command": "splunkSoar.environments.connect",
-				"title": "Connect",
+				"title": "Connect Environment...",
 				"icon": "$(plug)",
 				"category": "SOAR Environments"
 			},
@@ -288,25 +351,29 @@
 					"id": "soarApps",
 					"name": "Apps",
 					"icon": "media/soarcloud.png",
-					"visibility": "visible"
+					"visibility": "visible",
+					"when": "splunkSoar.environments.hasActive"
 				},
 				{
 					"id": "soarActionRuns",
 					"name": "Action Runs",
 					"icon": "media/soarcloud.png",
-					"visibility": "visible"
+					"visibility": "visible",
+					"when": "splunkSoar.environments.hasActive"
 				},
 				{
 					"id": "soarPlaybooks",
 					"name": "Playbooks",
 					"icon": "media/soarcloud.png",
-					"visibility": "collapsed"
+					"visibility": "collapsed",
+					"when": "splunkSoar.environments.hasActive"
 				},
 				{
 					"id": "soarPlaybookRuns",
 					"name": "Playbook Runs",
 					"icon": "media/soarcloud.png",
-					"visibility": "collapsed"
+					"visibility": "collapsed",
+					"when": "splunkSoar.environments.hasActive"
 				},
 				{
 					"id": "soarHelp",
@@ -323,6 +390,20 @@
 			}
 		],
 		"menus": {
+			"commandPalette": [
+				{
+					"command": "splunkSoar.environments.disconnect",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.environments.copyPassword",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.openWeb",
+					"when": "splunkSoar.environments.hasActive"
+				}
+			],
 			"view/title": [
 				{
 					"command": "splunkSoar.showAppWizard",

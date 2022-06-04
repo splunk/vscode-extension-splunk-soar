@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { getClientForActiveEnvironment } from '../soar/client';
 
 export class SoarHelpTreeProvider implements vscode.TreeDataProvider<HelpTreeItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<HelpTreeItem | undefined | void> = new vscode.EventEmitter<HelpTreeItem | undefined | void>();

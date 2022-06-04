@@ -39,4 +39,5 @@ export async function refreshViews() {
     await vscode.commands.executeCommand('splunkSoar.apps.refresh');
     await vscode.commands.executeCommand('splunkSoar.actionRuns.refresh');
     await vscode.commands.executeCommand('splunkSoar.playbooks.refresh');
+	await vscode.commands.executeCommand('splunkSoar.playbookRuns.refresh');
 }
