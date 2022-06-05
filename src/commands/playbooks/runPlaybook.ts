@@ -120,6 +120,7 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, playboo
 		soarOutput.append(playbookRun.data.message)
 		soarOutput.show()
 		await vscode.commands.executeCommand('splunkSoar.playbookRuns.refresh');
+		await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh')
 	})
 
     function wait(ms = 1000) {

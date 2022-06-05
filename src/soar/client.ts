@@ -114,6 +114,10 @@ export class SoarClient {
         return await this.httpClient.get(`playbook_run/${playbookRunId}`)
     }
 
+    getPlaybookRunLog = async (playbookRunId: string) => {
+        return await this.httpClient.get(`playbook_run/${playbookRunId}/log?page_size=500`) 
+    }
+
     listUserPlaybooks = async () => {
         return await this.httpClient.get("playbook", {params: {"pretty": true, "page_size": 0, "sort": "create_time", "order": "desc", "_filter_latest_editor__username": `'${this.username}'`}})
     }
@@ -165,11 +169,23 @@ export class SoarClient {
     }
 
     getContainer = async (containerId: string) => {
-        return await this.httpClient.get(`container/${containerId}`)
+        return await this.httpClient.get(`container/${containerId}?pretty=true`)
+    }
+
+    getArtifact = async (artifactId: string) => {
+        return await this.httpClient.get(`artifact/${artifactId}?pretty=true`)
     }
     
     getSystemSettings = async () => {
         return await this.httpClient.get(`system_settings`)
+    }
+
+    getContainerArtifacts = async (containerId: string) => {
+        return await this.httpClient.get(`container/${containerId}/artifacts`)
+    }
+
+    getContainerAttachments = async (containerId: string) => {
+        return await this.httpClient.get(`container/${containerId}/attachments?pretty=true`)
     }
 }
 

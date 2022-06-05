@@ -12,6 +12,7 @@ import { viewAppDocs } from './apps/viewAppDocs';
 import { runPlaybookInput } from './playbooks/runPlaybook';
 import { openAppDevDocs, openRepoDocs, openRepoIssues, openWebActionRunResult, openWebApp, openWebApps, openWebAsset, openWebPlaybook, openWebPlaybookEditor } from './web';
 import { cancelPlaybookRun } from './playbookRuns/cancel';
+import { add, clear, remove } from './containers/containerWatcher';
 
 
 export function registerCommands(context: vscode.ExtensionContext) {
@@ -141,5 +142,13 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	let disposablePlaybookDownloadBundle = vscode.commands.registerCommand('splunkSoar.playbooks.downloadBundle', (playbookContext) => { downloadPlaybookBundle(context, playbookContext) });
 	context.subscriptions.push(disposablePlaybookDownloadBundle);
 
+	let disposableContainerWatcherAdd = vscode.commands.registerCommand('splunkSoar.containerWatcher.add', () => { add(context) });
+	context.subscriptions.push(disposableContainerWatcherAdd);
+
+	let disposableContainerWatcherClear = vscode.commands.registerCommand('splunkSoar.containerWatcher.clear', () => { clear(context) });
+	context.subscriptions.push(disposableContainerWatcherClear);
+
+	let disposableContainerWatcherRemove = vscode.commands.registerCommand('splunkSoar.containerWatcher.remove', async (containerContext) => { remove(context, containerContext) });
+	context.subscriptions.push(disposableContainerWatcherRemove);
 
 }

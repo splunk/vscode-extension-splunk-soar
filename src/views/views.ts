@@ -1,6 +1,7 @@
 import * as vscode from 'vscode'
 import { SoarActionRunTreeProvider } from './actionRun';
 import { SoarAppsTreeProvider } from './apps';
+import { SoarContainerWatcherTreeProvider } from './containerWatcher';
 import { SoarEnvironmentsTreeProvider } from './environments';
 import { SoarHelpTreeProvider } from './help';
 import { SoarPlaybookRunTreeProvider } from './playbookRun';
@@ -31,6 +32,10 @@ export function registerTreeViews(context: vscode.ExtensionContext) {
 	const helpTreeProvider = new SoarHelpTreeProvider(context)
     vscode.window.registerTreeDataProvider('soarHelp', helpTreeProvider)
 
+	const containerWatcherTreeProvider = new SoarContainerWatcherTreeProvider(context)
+	vscode.window.registerTreeDataProvider('soarContainerWatcher', containerWatcherTreeProvider)
+	vscode.commands.registerCommand('splunkSoar.containerWatcher.refresh', () => containerWatcherTreeProvider.refresh());
+
 }
 
 
@@ -40,4 +45,5 @@ export async function refreshViews() {
     await vscode.commands.executeCommand('splunkSoar.actionRuns.refresh');
     await vscode.commands.executeCommand('splunkSoar.playbooks.refresh');
 	await vscode.commands.executeCommand('splunkSoar.playbookRuns.refresh');
+	await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh');
 }

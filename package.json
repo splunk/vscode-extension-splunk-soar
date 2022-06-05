@@ -307,6 +307,12 @@
 				"category": "SOAR Playbook Runs"
 			},
 			{
+				"command": "splunkSoar.playbookRuns.logs",
+				"title": "Logs",
+				"icon": "$(output)",
+				"category": "SOAR Playbook Runs"
+			},
+			{
 				"command": "splunkSoar.assets.viewWeb",
 				"title": "View in Web UI",
 				"icon": "$(globe)",
@@ -323,6 +329,36 @@
 				"title": "Inspect",
 				"icon": "$(eye)",
 				"category": "SOAR Containers"
+			},
+			{
+				"command": "splunkSoar.artifacts.inspect",
+				"title": "Inspect",
+				"icon": "$(eye)",
+				"category": "SOAR Artifacts"
+			},
+			{
+				"command": "splunkSoar.containerWatcher.add",
+				"title": "Watch Container...",
+				"icon": "$(add)",
+				"category": "SOAR Containers"
+			},
+			{
+				"command": "splunkSoar.containerWatcher.refresh",
+				"title": "Refresh",
+				"icon": "$(refresh)",
+				"category": "SOAR Containers"
+			},
+			{
+				"command": "splunkSoar.containerWatcher.clear",
+				"title": "Clear All",
+				"icon": "$(close-all)",
+				"category": "SOAR Containers"
+			},
+			{
+				"command": "splunkSoar.containerWatcher.remove",
+				"title": "Remove",
+				"icon": "$(close)",
+				"category": "SOAR Containers"
 			}
 		],
 		"viewsContainers": {
@@ -332,9 +368,23 @@
 					"title": "Splunk SOAR",
 					"icon": "media/soarcloud.png"
 				}
+			],
+			"panel": [
+				{
+					"id": "splunk-soar-panel",
+					"title": "SOAR",
+					"icon": "media/soarcloud.png"
+				}
 			]
 		},
 		"views": {
+			"splunk-soar-panel": [
+				{
+					"id": "soarContainerWatcher",
+					"name": "Container Watcher",
+					"icon": "media/soarcloud.png"
+				}
+			],
 			"splunk-soar": [
 				{
 					"id": "soarEnvironments",
@@ -512,6 +562,21 @@
 					"command": "splunkSoar.openWebApps",
 					"when": "view == soarApps",
 					"group": "navigation"
+				},
+				{
+					"command": "splunkSoar.containerWatcher.refresh",
+					"when": "view == soarContainerWatcher",
+					"group": "navigation@2"
+				},
+				{
+					"command": "splunkSoar.containerWatcher.add",
+					"when": "view == soarContainerWatcher",
+					"group": "navigation@1"
+				},
+				{
+					"command": "splunkSoar.containerWatcher.clear",
+					"when": "view == soarContainerWatcher",
+					"group": "navigation@3"
 				}
 			],
 			"view/item/context": [
@@ -534,6 +599,11 @@
 					"command": "splunkSoar.playbookRuns.inspect",
 					"when": "view == soarPlaybookRuns && viewItem =~ /soarplaybookrun:*/",
 					"group": "actions@1"
+				},
+				{
+					"command": "splunkSoar.playbookRuns.logs",
+					"when": "view == soarPlaybookRuns && viewItem =~ /soarplaybookrun:*/",
+					"group": "actions@2"
 				},
 				{
 					"command": "splunkSoar.actionRuns.inspect",
@@ -654,6 +724,21 @@
 					"command": "splunkSoar.apps.diffFile",
 					"when": "view == soarApps && viewItem == soarfile",
 					"group": "inline"
+				},
+				{
+					"command": "splunkSoar.containers.inspect",
+					"when": "view == soarContainerWatcher && viewItem == soarcontainer",
+					"group": "actions@1"
+				},
+				{
+					"command": "splunkSoar.artifacts.inspect",
+					"when": "view == soarContainerWatcher && viewItem == soarartifact",
+					"group": "actions@1"
+				},
+				{
+					"command": "splunkSoar.containerWatcher.remove",
+					"when": "view == soarContainerWatcher && viewItem == soarcontainer",
+					"group": "inline@1"
 				}
 			]
 		},

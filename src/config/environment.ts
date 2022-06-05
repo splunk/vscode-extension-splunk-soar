@@ -5,9 +5,7 @@ export const ACTIVE_ENV_KEY = "splunkSOAR.activeEnvironment"
 import {IActionContext, MultiStepInput} from '../commands/apps/runAction'
 import { refreshViews } from '../views/views'
 import { SoarInstancesTreeItem } from '../views/environments'
-import { getClientForActiveEnvironment, getClientForEnvironment, SoarClient } from '../soar/client'
-import { env } from 'process'
-import { AxiosError } from 'axios'
+import { getClientForEnvironment, SoarClient } from '../soar/client'
 
 function deriveEnvKey(url: string, username: string) {
     return `${username}@${url}`
@@ -134,7 +132,7 @@ export async function connectEnvironment(context: vscode.ExtensionContext) {
     console.log(currentEnvironments)
 
     let newEnvironments = addOrReplace(currentEnvironments, newEnv)
-        context.globalState.update(ENV_KEY, newEnvironments)
+    context.globalState.update(ENV_KEY, newEnvironments)
     context.secrets.store(envKey, state.password)
 
     if (newEnvironments.length === 1) {

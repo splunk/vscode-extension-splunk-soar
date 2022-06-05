@@ -14,3 +14,6 @@ export function removeIfExists(array, key, value) {
       ...array.slice(index + 1)
   ] : array;
 }
+
+
+export const zip = (a, b) => a.map((k, i) => [k, b[i]]);

@@ -75,6 +75,7 @@ export async function repeatActionRun(context: ExtensionContext, actionRunContex
 			soarOutput.append(JSON.stringify(appRunResult.data, null, 4))
 			soarOutput.show()
 			await commands.executeCommand('splunkSoar.actionRuns.refresh');
+			await commands.executeCommand('splunkSoar.containerWatcher.refresh')
 		})
 	}).catch(err => {
 		console.log(err)

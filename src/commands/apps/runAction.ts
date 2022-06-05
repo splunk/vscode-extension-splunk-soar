@@ -285,6 +285,7 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 		soarOutput.append(JSON.stringify(appRunResult.data, null, 4))
 		soarOutput.show()
 		await commands.executeCommand('splunkSoar.actionRuns.refresh');
+		await commands.executeCommand('splunkSoar.containerWatcher.refresh')
 	})
 }
 

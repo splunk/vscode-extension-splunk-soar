@@ -2,10 +2,11 @@ import * as vscode from 'vscode'
 import { ActionRunContentProvider } from './actionRunContentProvider';
 import { AppContentProvider } from './appContentProvider';
 import { AppFileContentProvider } from './appFileContentProvider';
+import { ArtifactContentProvider } from './artifactContentProvider';
 import { AssetContentProvider } from './assetContentProvider';
 import { ContainerContentProvider } from './containerContentProvider';
 import { PlaybookContentProvider, PlaybookCodeContentProvider } from './playbookContentProvider';
-import { PlaybookRunContentProvider } from './playbookRunContentProvider';
+import { PlaybookRunContentProvider, PlaybookRunLogContentProvider } from './playbookRunContentProvider';
 
 export function registerInspectProviders(context: vscode.ExtensionContext) {
 
@@ -14,7 +15,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.assets.inspect', async (assetId) => {
 		if (!assetId) {
-			assetId = await vscode.window.showInputBox({ placeHolder: 'id' });
+			assetId = await vscode.window.showInputBox({ placeHolder: 'Asset ID' });
 		} else {
 			assetId = String(assetId.data["asset"]["id"])
 		}
@@ -31,7 +32,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.inspect', async (appId) => {
 		if (!appId) {
-			appId = await vscode.window.showInputBox({ placeHolder: 'id' });
+			appId = await vscode.window.showInputBox({ placeHolder: 'App ID' });
 		} else {
 			appId = String(appId.data["app"]["id"])
 		}
@@ -48,7 +49,9 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.containers.inspect', async (containerId) => {
 		if (!containerId) {
-			containerId = await vscode.window.showInputBox({ placeHolder: 'id' });
+			containerId = await vscode.window.showInputBox({ placeHolder: 'Container ID' });
+		} else {
+			containerId = String(containerId.data[1].value.data["id"])
 		}
 
 		if (containerId) {
@@ -63,7 +66,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.actionRuns.inspect', async (actionRunId) => {
 		if (!actionRunId) {
-			actionRunId = await vscode.window.showInputBox({ placeHolder: 'id' });
+			actionRunId = await vscode.window.showInputBox({ placeHolder: 'Action Run ID' });
 		} else if (actionRunId.hasOwnProperty("data")) {
 			actionRunId = String(actionRunId.data["actionRun"]["id"])
 		}
@@ -78,9 +81,10 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 	const playbookRunScheme = "soarplaybookrun"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(playbookRunScheme, new PlaybookRunContentProvider(context)));
 
+
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbookRuns.inspect', async (playbookRunId) => {
 		if (!playbookRunId) {
-			playbookRunId = await vscode.window.showInputBox({ placeHolder: 'id' });
+			playbookRunId = await vscode.window.showInputBox({ placeHolder: 'Playbook Run ID' });
 		} else if (playbookRunId.hasOwnProperty("data")) {
 			playbookRunId = String(playbookRunId.data["playbookRun"]["id"])
 		}
@@ -91,6 +95,24 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
+
+	const playbookRunLogScheme = "soarplaybookrunlog"
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(playbookRunLogScheme, new PlaybookRunLogContentProvider(context)));
+
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbookRuns.logs', async (playbookRunId) => {
+		if (!playbookRunId) {
+			playbookRunId = await vscode.window.showInputBox({ placeHolder: 'Playbook Run ID' });
+		} else if (playbookRunId.hasOwnProperty("data")) {
+			playbookRunId = String(playbookRunId.data["playbookRun"]["id"])
+		}
+
+		if (playbookRunId) {
+			const uri = vscode.Uri.parse('soarplaybookrunlog:' + playbookRunId + ".json");
+			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			await vscode.window.showTextDocument(doc, { preview: false });
+		}
+	}));
+
 
 	const fileScheme = "soarfile"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(fileScheme, AppFileContentProvider));
@@ -116,7 +138,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbooks.viewCode', async (playbookId) => {
 		if (!playbookId) {
-			playbookId = await vscode.window.showInputBox({ placeHolder: 'id' });
+			playbookId = await vscode.window.showInputBox({ placeHolder: 'Playbook ID' });
 		} else if (playbookId.hasOwnProperty("data")) {
 			playbookId = String(playbookId.data["playbook"]["id"])
 		}
@@ -131,7 +153,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbooks.inspect', async (playbookId) => {
 		if (!playbookId) {
-			playbookId = await vscode.window.showInputBox({ placeHolder: 'id' });
+			playbookId = await vscode.window.showInputBox({ placeHolder: 'Playbook ID' });
 		} else if (playbookId.hasOwnProperty("data")) {
 			playbookId = String(playbookId.data["playbook"]["id"])
 		}
@@ -142,6 +164,24 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
+
+	const artifactScheme = "soarartifact"
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(artifactScheme, new ArtifactContentProvider(context)));
+
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.artifacts.inspect', async (artifactId) => {
+		if (!artifactId) {
+			artifactId = await vscode.window.showInputBox({ placeHolder: 'Artifact ID' });
+		} else {
+			artifactId = artifactId.data.id
+		}
+
+		if (artifactId) {
+			const uri = vscode.Uri.parse('soarartifact:' + artifactId + ".json");
+			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			await vscode.window.showTextDocument(doc, { preview: false });
+		}
+	}));
+	
 
 
 }
