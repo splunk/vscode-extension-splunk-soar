@@ -8,6 +8,7 @@ import { ContainerContentProvider } from './containerContentProvider';
 import { NoteContentProvider, NoteMetaContentProvider } from './noteContentProvider';
 import { PlaybookContentProvider, PlaybookCodeContentProvider } from './playbookContentProvider';
 import { PlaybookRunContentProvider, PlaybookRunLogContentProvider } from './playbookRunContentProvider';
+import { VaultFileContentProvider } from './vaultFileContentProvider';
 
 export function registerInspectProviders(context: vscode.ExtensionContext) {
 
@@ -213,6 +214,23 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 
 		if (noteId) {
 			const uri = vscode.Uri.parse('soarnotemeta:' + noteId + ".json");
+			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			await vscode.window.showTextDocument(doc, { preview: false });
+		}
+	}));
+
+	const vaultFileScheme = "soarvaultfile"
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(vaultFileScheme, new VaultFileContentProvider(context)));
+
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.vaultFile.inspect', async (docId) => {
+		if (!docId) {
+			docId = await vscode.window.showInputBox({ placeHolder: 'Vault File ID' });
+		} else {
+			docId = docId.data.id
+		}
+
+		if (docId) {
+			const uri = vscode.Uri.parse('soarvaultfile:' + docId + ".json");
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}

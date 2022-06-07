@@ -195,6 +195,11 @@ export class SoarClient {
     getNote = async (noteId: string) => {
         return await this.httpClient.get(`note/${noteId}?pretty=true`)
     }
+
+    getVaultDocument = async (docId: string) => {
+        return await this.httpClient.get(`vault_document/${docId}?pretty=true`)
+    }
+
 }
 
 export async function getClientForActiveEnvironment(context: vscode.ExtensionContext): Promise<SoarClient> {

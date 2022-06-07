@@ -377,6 +377,12 @@
 				"title": "Preview",
 				"icon": "$(preview)",
 				"category": "SOAR Notes"
+			},
+			{
+				"command": "splunkSoar.vaultFile.inspect",
+				"title": "Inspect",
+				"icon": "$(eye)",
+				"category": "SOAR Vault Files"
 			}
 		],
 		"viewsContainers": {
@@ -771,6 +777,11 @@
 				{
 					"command": "splunkSoar.notes.inspect",
 					"when": "view == soarContainerWatcher && viewItem == soarnoteitem",
+					"group": "actions@1"
+				},
+				{
+					"command": "splunkSoar.vaultFile.inspect",
+					"when": "view == soarContainerWatcher && viewItem == soarvaultitem",
 					"group": "actions@1"
 				}
 			]
