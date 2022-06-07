@@ -42,3 +42,8 @@ export async function openWebPlaybookEditor(context: vscode.ExtensionContext) {
     let client: SoarClient = await getClientForActiveEnvironment(context)
     vscode.env.openExternal(vscode.Uri.parse(`${client.server}/playbook/`))	
 }
+
+export async function openWebContainer(context: vscode.ExtensionContext, containerId: string) {
+    let client: SoarClient = await getClientForActiveEnvironment(context)
+    vscode.env.openExternal(vscode.Uri.parse(`${client.server}/mission/${containerId}/`))	
+}

@@ -359,6 +359,24 @@
 				"title": "Remove",
 				"icon": "$(close)",
 				"category": "SOAR Containers"
+			},
+			{
+				"command": "splunkSoar.containerWatcher.viewWeb",
+				"title": "View in Web UI",
+				"icon": "$(globe)",
+				"category": "SOAR Containers"
+			},
+			{
+				"command": "splunkSoar.notes.inspect",
+				"title": "Inspect",
+				"icon": "$(eye)",
+				"category": "SOAR Notes"
+			},
+			{
+				"command": "splunkSoar.notes.preview",
+				"title": "Preview",
+				"icon": "$(preview)",
+				"category": "SOAR Notes"
 			}
 		],
 		"viewsContainers": {
@@ -739,6 +757,21 @@
 					"command": "splunkSoar.containerWatcher.remove",
 					"when": "view == soarContainerWatcher && viewItem == soarcontainer",
 					"group": "inline@1"
+				},
+				{
+					"command": "splunkSoar.containerWatcher.viewWeb",
+					"when": "view == soarContainerWatcher && viewItem == soarcontainer",
+					"group": "web@1"
+				},
+				{
+					"command": "splunkSoar.notes.preview",
+					"when": "view == soarContainerWatcher && viewItem == soarnoteitem",
+					"group": "actions@2"
+				},
+				{
+					"command": "splunkSoar.notes.inspect",
+					"when": "view == soarContainerWatcher && viewItem == soarnoteitem",
+					"group": "actions@1"
 				}
 			]
 		},

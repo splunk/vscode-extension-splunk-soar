@@ -187,6 +187,14 @@ export class SoarClient {
     getContainerAttachments = async (containerId: string) => {
         return await this.httpClient.get(`container/${containerId}/attachments?pretty=true`)
     }
+
+    getContainerNotes = async (containerId: string) => {
+        return await this.httpClient.get(`container/${containerId}/notes?pretty=true`)
+    }
+
+    getNote = async (noteId: string) => {
+        return await this.httpClient.get(`note/${noteId}?pretty=true`)
+    }
 }
 
 export async function getClientForActiveEnvironment(context: vscode.ExtensionContext): Promise<SoarClient> {

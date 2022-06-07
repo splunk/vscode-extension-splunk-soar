@@ -91,7 +91,7 @@ export class ActionRun extends ActionRunTreeItem {
 
 	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)
-		this.description = `${data["actionRun"]["_pretty_create_time"]} · ${data["actionRun"]["_pretty_owner"]}`
+		this.description = `${data["actionRun"]["id"]} · ${data["actionRun"]["_pretty_create_time"]} · ${data["actionRun"]["_pretty_owner"]}`
 
 		if (data["actionRun"]["status"] == "failed") {
 			this.iconPath = new vscode.ThemeIcon("error", new vscode.ThemeColor("testing.iconFailed"))

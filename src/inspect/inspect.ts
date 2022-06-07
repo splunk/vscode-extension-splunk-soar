@@ -5,6 +5,7 @@ import { AppFileContentProvider } from './appFileContentProvider';
 import { ArtifactContentProvider } from './artifactContentProvider';
 import { AssetContentProvider } from './assetContentProvider';
 import { ContainerContentProvider } from './containerContentProvider';
+import { NoteContentProvider, NoteMetaContentProvider } from './noteContentProvider';
 import { PlaybookContentProvider, PlaybookCodeContentProvider } from './playbookContentProvider';
 import { PlaybookRunContentProvider, PlaybookRunLogContentProvider } from './playbookRunContentProvider';
 
@@ -181,7 +182,39 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
-	
 
+	const noteScheme = "soarnote"
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(noteScheme, new NoteContentProvider(context)));
 
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.notes.preview', async (noteId) => {
+		if (!noteId) {
+			noteId = await vscode.window.showInputBox({ placeHolder: 'Note ID' });
+		} else {
+			noteId = noteId.data.id
+		}
+
+		if (noteId) {
+			const uri = vscode.Uri.parse('soarnote:' + noteId + ".md");
+			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			await vscode.window.showTextDocument(doc, { preview: false });
+			await vscode.commands.executeCommand('markdown.showPreviewToSide')
+		}
+	}));
+
+	const noteMetaScheme = "soarnotemeta"
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(noteMetaScheme, new NoteMetaContentProvider(context)));
+
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.notes.inspect', async (noteId) => {
+		if (!noteId) {
+			noteId = await vscode.window.showInputBox({ placeHolder: 'Note ID' });
+		} else {
+			noteId = noteId.data.id
+		}
+
+		if (noteId) {
+			const uri = vscode.Uri.parse('soarnotemeta:' + noteId + ".json");
+			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			await vscode.window.showTextDocument(doc, { preview: false });
+		}
+	}));
 }

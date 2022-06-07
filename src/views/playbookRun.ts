@@ -91,7 +91,7 @@ export class PlaybookRun extends PlaybookRunTreeItem {
 
 	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)
-		this.description = `${data["playbookRun"]["_pretty_start_time"]} · ${data["playbookRun"]["_pretty_owner"]}`
+		this.description = `${data["playbookRun"]["id"]} · ${data["playbookRun"]["_pretty_start_time"]} · ${data["playbookRun"]["_pretty_owner"]}`
 
 		if (data["playbookRun"]["status"] == "failed") {
 			this.iconPath = new vscode.ThemeIcon("error", new vscode.ThemeColor("testing.iconFailed"))

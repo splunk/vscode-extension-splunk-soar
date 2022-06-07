@@ -49,7 +49,8 @@ export class SoarContainerWatcherTreeProvider implements vscode.TreeDataProvider
 			let artifactCollapsed = artifact_count == 0 ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed
             return [
                 new ContainerArtifactSection("Artifacts", {...element.data, icon: "symbol-class"}, artifactCollapsed),
-                new ContainerVaultSection("Vault", {...element.data, icon: "symbol-enum"}, vscode.TreeItemCollapsibleState.Collapsed)
+                new ContainerVaultSection("Vault", {...element.data, icon: "symbol-enum"}, vscode.TreeItemCollapsibleState.Collapsed),
+				new ContainerNoteSection("Notes", {...element.data, icon: "preview"}, vscode.TreeItemCollapsibleState.Collapsed)
             ]
         }
 
@@ -70,10 +71,17 @@ export class SoarContainerWatcherTreeProvider implements vscode.TreeDataProvider
 
 			let vaultElement =  vaultData.map((entry: any) => (new VaultItem(entry["name"], entry, vscode.TreeItemCollapsibleState.None)))	
 			return Promise.resolve(vaultElement)
-
 		}
 
 
+		if (element.contextValue == "soarnotesection") {
+			let containerId = element.data[1].value.data.id
+			let containerNotes = await client.getContainerNotes(containerId)
+			let noteData = containerNotes.data.data
+
+			let noteElements =  noteData.map((entry: any) => (new NoteItem(entry["title"], entry, vscode.TreeItemCollapsibleState.None)))	
+			return Promise.resolve(noteElements)
+		}
 
         return Promise.resolve([])
 	}
@@ -100,7 +108,15 @@ export class ContainerItem extends ContainerTreeItem {
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
 	) {
 		super(label, data, collapsibleState);
-        this.iconPath = new vscode.ThemeIcon("symbol-method")
+
+		let containerData = this.data[1].value.data
+
+		if (containerData["container_type"] == "case") {
+			this.iconPath = new vscode.ThemeIcon("briefcase", new vscode.ThemeColor("symbolIcon.methodForeground"))
+		} else {
+			this.iconPath = new vscode.ThemeIcon("symbol-method")
+		}
+
 		let containerLabel = this.data[1].value.data["label"]
 		let containerOwner = this.data[1].value.data["_pretty_owner"]
 		let containerCreated = this.data[1].value.data["_pretty_create_time"]
@@ -139,7 +155,6 @@ export class ArtifactItem extends ContainerTreeItem {
 	contextValue = 'soarartifact';
 }
 
-
 export class ContainerVaultSection extends ContainerTreeItem {
 	constructor(
 		public readonly label: string,
@@ -154,6 +169,21 @@ export class ContainerVaultSection extends ContainerTreeItem {
 	
 }
 
+export class ContainerNoteSection extends ContainerTreeItem {
+	constructor(
+		public readonly label: string,
+		public readonly data: any,
+		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+	) {
+		super(label, data, collapsibleState);
+        this.iconPath = new vscode.ThemeIcon(data.icon)
+	}
+
+	contextValue = 'soarnotesection';
+	
+}
+
+
 export class VaultItem extends ContainerTreeItem {
     constructor(
 		public readonly label: string,
@@ -166,4 +196,18 @@ export class VaultItem extends ContainerTreeItem {
 	}
 
 	contextValue = 'soarvaultitem';
+}
+
+export class NoteItem extends ContainerTreeItem {
+    constructor(
+		public readonly label: string,
+		public readonly data: any,
+		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+	) {
+		super(label, data, collapsibleState);
+        this.iconPath = new vscode.ThemeIcon("pencil")
+		this.description = `${data["id"]}`
+	}
+
+	contextValue = 'soarnoteitem';
 }
