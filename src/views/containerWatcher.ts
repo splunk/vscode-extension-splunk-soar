@@ -46,11 +46,21 @@ export class SoarContainerWatcherTreeProvider implements vscode.TreeDataProvider
 
         if (element.contextValue == "soarcontainer") {
 			let artifact_count = element.data[1].value.data.artifact_count
+			let containerId = element.data[1].value.data.id
+			let containerAttachments = await client.getContainerAttachments(containerId)
+			let containerNotes = await client.getContainerNotes(containerId)
+
+			let notesCount = containerNotes.data.data.length
+			let attachmentCount = containerAttachments.data.data.length
+			
 			let artifactCollapsed = artifact_count == 0 ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed
+			let notesCollapsed = notesCount == 0 ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed
+			let vaultCollapsed = attachmentCount == 0 ? vscode.TreeItemCollapsibleState.None : vscode.TreeItemCollapsibleState.Collapsed
+
             return [
                 new ContainerArtifactSection("Artifacts", {...element.data, icon: "symbol-class"}, artifactCollapsed),
-                new ContainerVaultSection("Vault", {...element.data, icon: "symbol-enum"}, vscode.TreeItemCollapsibleState.Collapsed),
-				new ContainerNoteSection("Notes", {...element.data, icon: "preview"}, vscode.TreeItemCollapsibleState.Collapsed)
+                new ContainerVaultSection("Vault", {...element.data, count: attachmentCount, icon: "symbol-enum"}, vaultCollapsed),
+				new ContainerNoteSection("Notes", {...element.data, count: notesCount, icon: "preview"}, notesCollapsed)
             ]
         }
 
@@ -133,7 +143,6 @@ export class ContainerArtifactSection extends ContainerTreeItem {
 	) {
 		super(label, data, collapsibleState);
         this.iconPath = new vscode.ThemeIcon(data.icon)
-		let artifact_count = data[1].value.data.artifact_count
 		this.description = JSON.stringify(data[1].value.data.artifact_count)
 	}
 
@@ -163,6 +172,7 @@ export class ContainerVaultSection extends ContainerTreeItem {
 	) {
 		super(label, data, collapsibleState);
         this.iconPath = new vscode.ThemeIcon(data.icon)
+		this.description = JSON.stringify(data.count)
 	}
 
 	contextValue = 'soarvaultsection';
@@ -177,6 +187,7 @@ export class ContainerNoteSection extends ContainerTreeItem {
 	) {
 		super(label, data, collapsibleState);
         this.iconPath = new vscode.ThemeIcon(data.icon)
+		this.description = JSON.stringify(data.count)
 	}
 
 	contextValue = 'soarnotesection';

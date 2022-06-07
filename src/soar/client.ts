@@ -185,15 +185,15 @@ export class SoarClient {
     }
 
     getContainerArtifacts = async (containerId: string) => {
-        return await this.httpClient.get(`container/${containerId}/artifacts`)
+        return await this.httpClient.get(`container/${containerId}/artifacts&page_size=100`)
     }
 
     getContainerAttachments = async (containerId: string) => {
-        return await this.httpClient.get(`container/${containerId}/attachments?pretty=true`)
+        return await this.httpClient.get(`container/${containerId}/attachments?pretty=true&page_size=100`)
     }
 
     getContainerNotes = async (containerId: string) => {
-        return await this.httpClient.get(`container/${containerId}/notes?pretty=true`)
+        return await this.httpClient.get(`container/${containerId}/notes?pretty=true&page_size=100`)
     }
 
     getNote = async (noteId: string) => {
