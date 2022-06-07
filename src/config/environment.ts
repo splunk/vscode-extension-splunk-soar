@@ -150,7 +150,7 @@ export async function connectEnvironment(context: vscode.ExtensionContext) {
 export async function disconnectEnvironment(context: vscode.ExtensionContext, actionContext: IActionContext) {
     let key = actionContext.data["key"]
 
-    let choice = await vscode.window.showInformationMessage(`Do you want to remove ${key}?`, ...["Yes", "No"])
+    let choice = await vscode.window.showWarningMessage(`Do you want to remove ${key}?`, ...["Yes", "No"])
     if (choice == "No") {
         return
     }

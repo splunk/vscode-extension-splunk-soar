@@ -27,7 +27,7 @@ export async function add(context: vscode.ExtensionContext) {
     await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh')
 }
 
-export async function remove(context: vscode.ExtensionContext, containerContext) {
+export async function remove(context: vscode.ExtensionContext, containerContext: any) {
     let key = containerContext.data[0]["key"]
 
     let watchedContainers = context.globalState.get(CONTAINER_WATCHER_KEY) || []

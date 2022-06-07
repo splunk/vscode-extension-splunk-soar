@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { ActionRunContentProvider } from './actionRunContentProvider';
+import { ActionRunAppRunContentProvider, ActionRunContentProvider } from './actionRunContentProvider';
 import { AppContentProvider } from './appContentProvider';
 import { AppFileContentProvider } from './appFileContentProvider';
 import { ArtifactContentProvider } from './artifactContentProvider';
@@ -75,6 +75,23 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 
 		if (actionRunId) {
 			const uri = vscode.Uri.parse('soaractionrun:' + actionRunId + ".json");
+			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			await vscode.window.showTextDocument(doc, { preview: false });
+		}
+	}));
+
+	const actionRunAppRunScheme = "soaractionrunapprun"
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(actionRunAppRunScheme, new ActionRunAppRunContentProvider(context)));
+
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.actionRuns.inspectAppRun', async (actionRunId) => {
+		if (!actionRunId) {
+			actionRunId = await vscode.window.showInputBox({ placeHolder: 'Action Run ID' });
+		} else if (actionRunId.hasOwnProperty("data")) {
+			actionRunId = String(actionRunId.data["actionRun"]["id"])
+		}
+
+		if (actionRunId) {
+			const uri = vscode.Uri.parse('soaractionrunapprun:' + actionRunId + ".json");
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}

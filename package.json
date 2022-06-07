@@ -238,6 +238,12 @@
 				"category": "SOAR Action Runs"
 			},
 			{
+				"command": "splunkSoar.actionRuns.inspectAppRun",
+				"title": "Inspect App Run",
+				"icon": "$(eye)",
+				"category": "SOAR Action Runs"
+			},
+			{
 				"command": "splunkSoar.actionRuns.cancel",
 				"title": "Cancel",
 				"icon": "$(primitive-square)",
@@ -334,6 +340,12 @@
 				"command": "splunkSoar.artifacts.inspect",
 				"title": "Inspect",
 				"icon": "$(eye)",
+				"category": "SOAR Artifacts"
+			},
+			{
+				"command": "splunkSoar.artifacts.delete",
+				"title": "Delete",
+				"icon": "$(trash)",
 				"category": "SOAR Artifacts"
 			},
 			{
@@ -635,8 +647,8 @@
 					"group": "actions@1"
 				},
 				{
-					"command": "splunkSoar.actionRuns.repeat",
-					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:(failed|success)/",
+					"command": "splunkSoar.actionRuns.inspectAppRun",
+					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:(running|failed|success)/",
 					"group": "actions@2"
 				},
 				{
@@ -758,6 +770,11 @@
 					"command": "splunkSoar.artifacts.inspect",
 					"when": "view == soarContainerWatcher && viewItem == soarartifact",
 					"group": "actions@1"
+				},
+				{
+					"command": "splunkSoar.artifacts.delete",
+					"when": "view == soarContainerWatcher && viewItem == soarartifact",
+					"group": "inline"
 				},
 				{
 					"command": "splunkSoar.containerWatcher.remove",

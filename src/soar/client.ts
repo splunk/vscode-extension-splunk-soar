@@ -157,15 +157,15 @@ export class SoarClient {
     }
 
     getActionRun = async (actionRunId: string) => {
-        return await this.httpClient.get(`action_run/${actionRunId}`)
+        return await this.httpClient.get(`action_run/${actionRunId}?pretty=true`)
     }
 
     getActionRunAppRuns = async (actionRunId: string) => {
-        return await this.httpClient.get(`action_run/${actionRunId}/app_runs`)
+        return await this.httpClient.get(`action_run/${actionRunId}/app_runs?pretty=true`)
     }
 
     getAppRun = async (appRunId: string) => {
-        return await this.httpClient.get(`app_run/${appRunId}`)
+        return await this.httpClient.get(`app_run/${appRunId}?pretty=true`)
     }
 
     getContainer = async (containerId: string) => {
@@ -175,7 +175,11 @@ export class SoarClient {
     getArtifact = async (artifactId: string) => {
         return await this.httpClient.get(`artifact/${artifactId}?pretty=true`)
     }
-    
+
+    deleteArtifact = async (artifactId: string) => {
+        return await this.httpClient.delete(`artifact/${artifactId}`)
+    }
+
     getSystemSettings = async () => {
         return await this.httpClient.get(`system_settings`)
     }

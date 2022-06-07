@@ -13,6 +13,7 @@ import { runPlaybookInput } from './playbooks/runPlaybook';
 import { openAppDevDocs, openRepoDocs, openRepoIssues, openWebActionRunResult, openWebApp, openWebApps, openWebAsset, openWebContainer, openWebPlaybook, openWebPlaybookEditor } from './web';
 import { cancelPlaybookRun } from './playbookRuns/cancel';
 import { add, clear, remove } from './containers/containerWatcher';
+import { deleteArtifact } from './artifacts/delete';
 
 
 export function registerCommands(context: vscode.ExtensionContext) {
@@ -148,11 +149,11 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	let disposableContainerWatcherClear = vscode.commands.registerCommand('splunkSoar.containerWatcher.clear', () => { clear(context) });
 	context.subscriptions.push(disposableContainerWatcherClear);
 
-	let disposableContainerWatcherRemove = vscode.commands.registerCommand('splunkSoar.containerWatcher.remove', async (containerContext) => { remove(context, containerContext) });
+	let disposableContainerWatcherRemove = vscode.commands.registerCommand('splunkSoar.containerWatcher.remove', async (containerContext: any) => { remove(context, containerContext) });
 	context.subscriptions.push(disposableContainerWatcherRemove);
 
 
-	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.containerWatcher.viewWeb', async (containerContext) => {
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.containerWatcher.viewWeb', async (containerContext: any) => {
 		if (containerContext) {
 			let containerId = containerContext.data[1].value.data["id"]
 			openWebContainer(context, containerId)
@@ -160,4 +161,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
 		}
 	}))
+
+
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.artifacts.delete', async (artifactContext: any) => deleteArtifact(context, artifactContext)))
 }
