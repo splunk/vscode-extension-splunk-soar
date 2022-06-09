@@ -26,7 +26,8 @@ Alternatively, download the VSIX file from the [Releases page](https://github.co
 
 ## Connect your environment
 
-After successful installation, open the Splunk SOAR view from the sidebar and press the **Connect Environment** button to set up the connection to your SOAR environment. 
+After successful installation, open the Splunk SOAR view from the sidebar and press the **Connect Environment** button to set up the connection to your SOAR environment. The screenshots taken are from the [Visual Studio Code](https://github.com/microsoft/vscode) environment
+where the extension is installed successfully.
 
 <p align="center">
   <img src="media/connect_environment.png" alt="Connect Environment" />
