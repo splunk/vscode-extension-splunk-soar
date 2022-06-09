@@ -151,7 +151,7 @@ export async function disconnectEnvironment(context: vscode.ExtensionContext, ac
     let key = actionContext.data["key"]
 
     let choice = await vscode.window.showWarningMessage(`Do you want to remove ${key}?`, ...["Yes", "No"])
-    if (choice == "No") {
+    if (choice !== "Yes") {
         return
     }
 
@@ -159,7 +159,7 @@ export async function disconnectEnvironment(context: vscode.ExtensionContext, ac
     let newEnvironments = removeIfExists(currentEnvironments, "key", key)
 
     if (key == context.globalState.get(ACTIVE_ENV_KEY)) {
-        vscode.window.showInformationMessage("Active environment got disconnected. Please ensure an another environment is activated to use the SOAR extension.")
+        vscode.window.showWarningMessage("Active environment got disconnected. Please ensure an another environment is activated to use the SOAR extension.")
         context.globalState.update(ACTIVE_ENV_KEY, undefined)
         vscode.commands.executeCommand('setContext', 'splunkSoar.environments.hasActive', false);
     }
