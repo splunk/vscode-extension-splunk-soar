@@ -55,7 +55,7 @@ Once the operation has completed, results will be displayed in the OUTPUT termin
   <img src="media/actionrun.gif" alt="Run an action" />
 </p>
 
-> :warning: If the app has no asset configured, an error could be thrown
+:warning:  If the app has no asset configured, an error could be thrown
 
 ### Hover Information
 
