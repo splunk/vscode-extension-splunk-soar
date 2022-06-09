@@ -27,6 +27,7 @@
 		"onView:soarEnvironments",
 		"onView:soarPlaybooks",
 		"onView:soarPlaybookRuns",
+		"onView:soarContainerWatcher",
 		"onCommand:workbench.action.tasks.runTask"
 	],
 	"main": "./dist/extension.js",

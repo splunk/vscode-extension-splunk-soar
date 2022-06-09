@@ -66,7 +66,7 @@ export class PlaybookTreeItem extends vscode.TreeItem {
         this.description = ``
 		if (data.playbook.active) {
 			this.description += "active"
-			this.iconPath = new vscode.ThemeIcon("file-code", new vscode.ThemeColor("terminal.ansiGreen"))
+			this.iconPath = new vscode.ThemeIcon("file-code", new vscode.ThemeColor("testing.iconPassed"))
 		}
 
 	}
