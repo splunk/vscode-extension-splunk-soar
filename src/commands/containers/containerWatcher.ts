@@ -1,5 +1,6 @@
 import * as vscode from 'vscode'
 import { getActiveEnvironment } from '../../config/environment';
+import { getClientForActiveEnvironment } from '../../soar/client';
 import { addOrReplace, removeIfExists } from '../../utils';
 // Store in Workspace State, but needs to be on a per-environment basiss
 
@@ -12,7 +13,18 @@ export interface WatchedContainer {
 }
 
 export async function add(context: vscode.ExtensionContext) {
-    let containerId = await vscode.window.showInputBox({ placeHolder: 'Container ID' });
+
+    async function validateContainerExists(containerId: string) {
+		let client = await getClientForActiveEnvironment(context)
+		try {
+			await client.getContainer(containerId)
+			return undefined
+		} catch {
+			return 'Container was not found in Splunk SOAR. Please enter a valid ID.'
+		}
+	}
+
+    let containerId = await vscode.window.showInputBox({ placeHolder: 'Container ID', validateInput: validateContainerExists });
 
     if (!containerId) {
         return
