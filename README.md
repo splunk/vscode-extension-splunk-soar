@@ -39,7 +39,7 @@ You can create multiple environments to quickly context-switch between remote SO
 ## Usage
 ### App Installation
 
-To install your locally developed app to the configured SOAR instance, click on the upload icon on the top right of the apps view. You'll be prompted to select the folder containing the your app files.
+To install your locally developed app to the configured SOAR instance, click on the upload icon on the top right of the apps view. You'll be prompted to select the folder containing your app files.
 
 > TODO what happens next?
 
@@ -54,6 +54,8 @@ Once the operation has completed, results will be displayed in the OUTPUT termin
 <p align="center">
   <img src="media/actionrun.gif" alt="Run an action" />
 </p>
+
+> :warning: If the app has no asset configured, an error could be thrown
 
 ### Hover Information
 
