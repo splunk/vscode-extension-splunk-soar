@@ -28,7 +28,8 @@
 		"onView:soarPlaybooks",
 		"onView:soarPlaybookRuns",
 		"onView:soarContainerWatcher",
-		"onCommand:workbench.action.tasks.runTask"
+		"onCommand:workbench.action.tasks.runTask",
+		"onWebviewPanel:soarOnboarding"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
