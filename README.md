@@ -57,35 +57,31 @@ Once the operation has completed, results will be displayed in the OUTPUT termin
 
 :warning:  If the app has no asset configured, an error could be thrown
 
-### Hover Information
+To re-execute the action keeping the same parameters and context, simply click on the refresh icon for that specific action in Action Runs View.
+
+#### Run Actions: Details
+
+By hovering over each run listed under the Action Runs View, additional contextual information can be displayed. Quick links for inspecting the elements can be clicked to open details for both the action run and the container.
 
 <p align="center">
 <img src="media/actionrun_hover.png" alt="Action Run Hover" />
 </p>
 
-Hovering over Playbook Runs and Action Runs views shows additional contextual information which provides quick links for inspecting the elements.
+### Run Playbooks
 
->TODO review section
+* Select the playbook you want to run from the Playbooks View
+* Click on the play icon for that playbook
+* Provide scope as well as execution context info (e.g. asset, container) at request in the appearing interactive dialog
 
-### App Wizard
+Once the operation has completed, results will be displayed in the OUTPUT terminal.
 
-<p align="center">
-<img src="media/appwizard.png" alt="App Wizard" />
-</p>
+#### Run Playbooks: Details
 
-The App Wizard allows to quickly scaffold a new SOAR App, similar to the App Wizard in the SOAR Web UI. After generation, the user will be asked for the directory where the new project should be saved and the project is opened in a new editor window.
+Similarly to Actions, by hovering over each run listed under the Playbook Runs View, additional contextual information can be displayed. Quick links for inspecting the elements can be clicked to open details for both the playbook run and the container.
 
->TODO review section
-
-### Inspecting SOAR Objects
-
-<p align="center">
-<img src="media/inspect.gif" alt="Inspect" />
-</p>
-
-By providing a [Tree View](https://code.visualstudio.com/api/extension-guides/tree-view), the extension allows to browse apps and assets configured on the connected SOAR instance. Using [Virtual Documents](https://code.visualstudio.com/api/extension-guides/virtual-documents), users are able to review SOAR objects in JSON format on-the-fly. Note that these views are read-only.[](media/appinstall.gif)
-
->TODO review section
+Execution logs can be displayed by:
+* right-clicking on a run listed under the Playbook Runs View
+* clicking on "Logs" 
 
 ## Documentation
 More specific documentation can be found in the wiki hosted on the public repository.
