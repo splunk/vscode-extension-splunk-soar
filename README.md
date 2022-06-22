@@ -5,10 +5,15 @@ The extension for developers building applications for Splunk SOAR. Works with S
 During setup, the extension is configured to connect to the SOAR platform. This allows the extension to pull information from SOAR and allows the developer to perform common operations such as browsing of remote objects, running actions and managing resulting action runs.
 
 ## Features
-* [Apps Installation](#app-installation)
-* [Actions Execution](#run-actions)
-* [Playbooks Execution](#run-playbooks)
-* [Tell me more...](https://github.com/splunk/vscode-extension-splunk-soar/wiki/Features)
+* Browse apps and assets configured on the connected SOAR instance via [Tree View](https://github.com/splunk/vscode-extension-splunk-soar/wiki/features#inspect-soar-objects)
+* [Apps Installation](#app-installation) via custom [SOAR App Build Task](https://github.com/splunk/vscode-extension-splunk-soar/wiki/features#app-build-task) to install a local SOAR app on the configured instance with a single key combination
+* Integrated [Actions Execution](#run-actions) to run a given action on the configured instance
+* Integrated [Playbooks Execution](#run-playbooks) to run a given playbook on the configured instance
+* Built-in [App Wizard](https://github.com/splunk/vscode-extension-splunk-soar/wiki/features#app-wizard) to bootstrap a new local SOAR App project
+* Smart [Run Action CodeLens](https://github.com/splunk/vscode-extension-splunk-soar/wiki/features#run-action-codelens) to detect action handlers in connector code and provide an inline action command
+* Set of useful [SOAR commands](https://github.com/splunk/vscode-extension-splunk-soar/wiki/soar-commands) aiming to
+  * Browse remote SOAR objects such as Containers, Assets, Apps
+  * Navigate to SOAR Web UI
 
 :warning: All features are targeted towards speeding up SOAR apps development. Explicitly out-of-scope are features assisting with playbook development. For developing playbooks, the new Visual Playbook Editor (VPE) within SOAR is strongly recommended.
 
