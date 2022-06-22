@@ -5,9 +5,12 @@ The extension for developers building applications for Splunk SOAR. Works with S
 During setup, the extension is configured to connect to the SOAR platform. This allows the extension to pull information from SOAR and allows the developer to perform common operations such as browsing of remote objects, running actions and managing resulting action runs.
 
 ## Features
-> TODO add features
+* [Apps Installation](#app-installation)
+* [Actions Execution](#run-actions)
+* [Playbooks Execution](#run-playbooks)
+* [Tell me more...](https://github.com/splunk/vscode-extension-splunk-soar/wiki/Features)
 
-All features are targeted towards speeding up SOAR app development. Explicitly out-of-scope are features that assist with playbook development. For developing playbooks, the new Visual Playbook Editor (VPE) within SOAR is strongly recommended.
+:warning: All features are targeted towards speeding up SOAR apps development. Explicitly out-of-scope are features assisting with playbook development. For developing playbooks, the new Visual Playbook Editor (VPE) within SOAR is strongly recommended.
 
 ## Getting Started
 ### Installation
@@ -81,7 +84,7 @@ Similarly to Actions, by hovering over each run listed under the Playbook Runs V
 
 Execution logs can be displayed by:
 * right-clicking on a run listed under the Playbook Runs View
-* clicking on "Logs" 
+* clicking on "Logs"
 
 ## Documentation
 More specific documentation can be found in the wiki hosted on the public repository.
