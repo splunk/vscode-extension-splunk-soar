@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { activateEnvironment, addEnvironment, copyPasswordToClipboard, removeEnvironment, environmentVersion, openEnvironmentWeb } from '../config/environment';
+import { activateEnvironment, addEnvironment, copyPasswordToClipboard, removeEnvironment, environmentVersion, openEnvironmentWeb } from '../commands/environments/environments';
 import { AppWizardPanel } from '../webviews/appWizard';
 import { cancelActionRun } from './actionRuns/cancelActionRun';
 import { repeatActionRun } from './actionRuns/repeatActionRun';
@@ -7,7 +7,7 @@ import { diffFile } from './apps/diffFile';
 import { downloadBundle } from './apps/downloadBundle';
 import { downloadBundle as downloadPlaybookBundle} from './playbooks/downloadBundle';
 import { installBundle } from './apps/installBundle';
-import { runActionInput } from './apps/runAction';
+import { runActionInput } from './actionRuns/triggerActionRun';
 import { viewAppDocs } from './apps/viewAppDocs';
 import { runPlaybookInput } from './playbooks/runPlaybook';
 import { openAppDevDocs, openRepoDocs, openRepoIssues, openWebActionRunResult, openWebApp, openWebApps, openWebAsset, openWebContainer, openWebPlaybook, openWebPlaybookEditor } from './web';

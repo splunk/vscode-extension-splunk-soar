@@ -5,8 +5,7 @@ import { registerTreeViews } from './views/views';
 import { registerInspectProviders } from './inspect/inspect';
 import { registerCodeLenses } from './codelens/codelens';
 import { DeployTaskProvider } from './tasks/deployTaskProvider';
-import { ACTIVE_ENV_KEY } from './config/environment';
-
+import { ACTIVE_ENV_KEY } from './commands/environments/environments';
 
 let deployTaskProvider: vscode.Disposable | undefined;
 

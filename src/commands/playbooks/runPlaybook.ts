@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { MultiStepInput } from '../apps/runAction';
+import { MultiStepInput } from '../../wizard/MultiStepInput';
 import { getClientForActiveEnvironment } from '../../soar/client';
 
 export interface IPlaybookContext {

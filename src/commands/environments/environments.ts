@@ -1,121 +1,31 @@
 import * as vscode from 'vscode'
-import { addOrReplace, removeIfExists } from '../utils'
+import { addOrReplace, removeIfExists } from '../../utils'
+import { refreshViews } from '../../views/views'
+import { SoarInstancesTreeItem } from '../../views/environments'
+import { getClientForEnvironment, SoarClient } from '../../soar/client'
+import { addEnvironmentWizard } from './addEnvironmentWizard'
+import { IActionContext } from '../actionRuns/triggerActionRun'
+
 export const ENV_KEY = "splunkSOAR.environments"
 export const ACTIVE_ENV_KEY = "splunkSOAR.activeEnvironment"
-import {IActionContext, MultiStepInput} from '../commands/apps/runAction'
-import { refreshViews } from '../views/views'
-import { SoarInstancesTreeItem } from '../views/environments'
-import { getClientForEnvironment, SoarClient } from '../soar/client'
 
-function deriveEnvKey(url: string, username: string) {
-    return `${username}@${url}`
-}
-
-interface BaseConnectEnvironment {
+export interface BaseConnectEnvironment {
     url: string,
     sslVerify: boolean,
     username: string
 }
 
-interface ConnectEnvironment extends BaseConnectEnvironment {
+export interface ConnectEnvironment extends BaseConnectEnvironment {
     password: string
 }
 
-interface ConfiguredConnectEnvironment extends BaseConnectEnvironment {
+export interface ConfiguredConnectEnvironment extends BaseConnectEnvironment {
     key: string
 }
 
-const wizardTitle = "Add Environment"
-const totalSteps = 4
-
-function shouldResume() {
-    // Could show a notification with the option to resume.
-    return new Promise<boolean>((resolve, reject) => {
-        // noop
-    });
+function deriveEnvKey(url: string, username: string) {
+    return `${username}@${url}`
 }
-
-async function addEnvironmentWizard() {
-    const state = {}
-    await MultiStepInput.run(input => connectUrlInput(input, state))
-    return state as ConnectEnvironment
-}
-
-async function connectUrlInput(input: MultiStepInput, state: Partial<ConnectEnvironment>){
-    state.url = await input.showInputBox({
-        title: wizardTitle,
-        step: 1,
-        totalSteps: totalSteps,
-        value: state.url || '',
-        prompt: `SOAR Environment URL`,
-        shouldResume: shouldResume,
-        validate: validateNoTrailingSlash,
-        ignoreFocusOut: true
-    });
-
-    return (input: MultiStepInput) => connectSslVerifyInput(input, state);
-}
-async function connectSslVerifyInput(input: MultiStepInput, state: Partial<ConnectEnvironment>){
-    let sslPick = await input.showQuickPick({
-        title: wizardTitle,
-        step: 2,
-        totalSteps: totalSteps,
-        placeholder: 'Verify TLS?',
-        items: [{"label": "$(lock) Yes"}, {"label": "$(unlock) No"}],
-        shouldResume: shouldResume,
-        ignoreFocusOut: true
-    });
-    state.sslVerify = sslPick.label === "Yes"
-    return (input: MultiStepInput) => conectUsernameInput(input, state);
-}
-
-async function conectUsernameInput(input: MultiStepInput, state: Partial<ConnectEnvironment>){
-    state.username = await input.showInputBox({
-        title: wizardTitle,
-        step: 3,
-        totalSteps: totalSteps,
-        value: state.username || '',
-        prompt: `Username`,
-        shouldResume: shouldResume,
-        validate: validateNameIsUnique,
-        ignoreFocusOut: true
-    });
-
-    return (input: MultiStepInput) => connectPasswordInput(input, state);
-}
-
-async function connectPasswordInput(input: MultiStepInput, state: Partial<ConnectEnvironment>){
-    state.password = await input.showInputBox({
-        title: wizardTitle,
-        step: 4,
-        totalSteps: totalSteps,
-        value: '',
-        prompt: `Password`,
-        shouldResume: shouldResume,
-        validate: validateNameIsUnique,
-        isPassword: true,
-        ignoreFocusOut: true
-    });
-
-    return
-}
-
-
-async function validateNameIsUnique(name: string) {
-    // ...validate...
-    return name === 'vscode' ? 'Name not unique' : undefined;
-}
-
-async function validateNoTrailingSlash(url: string) {
-    if (url.endsWith("/")) {
-        return "Please remove the trailing slash"
-    } else if (!url.startsWith("http://") && !url.startsWith("https://")) {
-        return "Please ensure that the URL starts with http:// or https://"
-    }
-    return 
-}
-
-
 
 export async function addEnvironment(context: vscode.ExtensionContext) {
     let state = await addEnvironmentWizard()
@@ -126,10 +36,9 @@ export async function addEnvironment(context: vscode.ExtensionContext) {
     }
 
     let envKey = deriveEnvKey(state.url, state.username)
-    let newEnv = {"key": envKey , "url": state.url, "username": state.username, "sslVerify": state.sslVerify}
+    let newEnv: ConfiguredConnectEnvironment = {"key": envKey , "url": state.url, "username": state.username, "sslVerify": state.sslVerify}
 
-    let currentEnvironments = context.globalState.get(ENV_KEY) || []
-    console.log(currentEnvironments)
+    let currentEnvironments = listEnvironments(context)
 
     let newEnvironments = addOrReplace(currentEnvironments, newEnv)
     context.globalState.update(ENV_KEY, newEnvironments)
@@ -155,7 +64,7 @@ export async function removeEnvironment(context: vscode.ExtensionContext, action
         return
     }
 
-    let currentEnvironments = context.globalState.get(ENV_KEY) || []
+    let currentEnvironments = listEnvironments(context)
     let newEnvironments = removeIfExists(currentEnvironments, "key", key)
 
     if (key == context.globalState.get(ACTIVE_ENV_KEY)) {
@@ -207,7 +116,7 @@ export function getActiveEnvironment(context: vscode.ExtensionContext) {
 }
 
 export async function getEnvironment(context: vscode.ExtensionContext, envKey: string) {
-    let currentEnvironments: ConfiguredConnectEnvironment[] = context.globalState.get(ENV_KEY) || []
+    let currentEnvironments = listEnvironments(context)
 
     if (currentEnvironments.length == 0) {
         throw new Error(`No environments configured.`)
@@ -225,7 +134,7 @@ export async function getEnvironment(context: vscode.ExtensionContext, envKey: s
 }
 
 
-export async function listEnvironments(context: vscode.ExtensionContext) {
+export function listEnvironments(context: vscode.ExtensionContext): ConfiguredConnectEnvironment[] {
     let environments: ConfiguredConnectEnvironment[] = context.globalState.get(ENV_KEY) || []
     return environments
 }
@@ -282,7 +191,7 @@ export async function copyPasswordToClipboard(context: vscode.ExtensionContext, 
 }
 
 export async function pickEnvironment (context: vscode.ExtensionContext) {
-    let envs = await listEnvironments(context)
+    let envs = listEnvironments(context)
     let envItems = envs.map((env) => ({'label': env["key"], "description": env.username}))
     let selectedEnv = await vscode.window.showQuickPick(envItems, {canPickMany: false})
     if (!selectedEnv) {

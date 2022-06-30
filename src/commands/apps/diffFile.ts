@@ -1,6 +1,4 @@
 import * as vscode from 'vscode'
-import * as fs from 'fs'
-import { getClientForActiveEnvironment, SoarClient } from '../../soar/client';
 
 export async function diffFile(context: vscode.ExtensionContext, fileContext: any) {
 

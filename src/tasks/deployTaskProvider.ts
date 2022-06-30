@@ -1,7 +1,3 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as os from 'os'
@@ -18,11 +14,6 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 	static CustomBuildScriptType = 'soarapp';
 	private tasks: vscode.Task[] | undefined;
 
-	// We use a CustomExecution task when state needs to be shared across runs of the task or when 
-	// the task requires use of some VS Code API to run.
-	// If you don't need to share state between runs and if you don't need to execute VS Code API in your task, 
-	// then a simple ShellExecution or ProcessExecution should be enough.
-	// Since our build has this shared state, the CustomExecution is used below.
 	private sharedState: string | undefined;
 
 	constructor(private workspaceRoot: string, private context: vscode.ExtensionContext) { 
@@ -56,11 +47,8 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 			};
 		}
 
-
 		return new vscode.Task(definition, vscode.TaskScope.Workspace, `soarapp`,
             DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
-				// When the task is executed, this callback will run. Here, we setup for running the task.
-
 				return new CustomBuildTaskTerminal(this.workspaceRoot, definition?.cwd ? definition.cwd : '.', this.context);
 			}));
 	}
@@ -113,7 +101,6 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 			if (fs.existsSync(excludeFilesPath)) {
 				excludedFilePatterns = fs.readFileSync(excludeFilesPath).toString().replace(/\r\n/g,'\n').split('\n');
 			}
-
 	
             const filterFiles = (filepath: any, entry: any) => {
 				filepath = filepath.substring(filepath.indexOf('/') + 1)
@@ -130,7 +117,6 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
                 }
                 return true
             }
-			
 
 			let base = path.basename(appPath) 
 			this.writeEmitter.fire(`Packaging app located in: ${base}\r\n`)

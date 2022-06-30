@@ -1,6 +1,6 @@
 import * as vscode from 'vscode'
 import { getClientForActiveEnvironment } from '../../soar/client'
-import {IActionRunContext} from './repeatActionRun'
+import {IActionRunContext} from './actionRuns'
 
 export async function cancelActionRun(context: vscode.ExtensionContext, actionRunContext: IActionRunContext) {
     let client = await getClientForActiveEnvironment(context)

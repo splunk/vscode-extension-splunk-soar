@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { ACTIVE_ENV_KEY, ENV_KEY } from '../config/environment';
+import { ACTIVE_ENV_KEY, ENV_KEY } from '../commands/environments/environments';
 
 export class SoarEnvironmentsTreeProvider implements vscode.TreeDataProvider<SoarInstancesTreeItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<SoarInstancesTreeItem | undefined | void> = new vscode.EventEmitter<SoarInstancesTreeItem | undefined | void>();
@@ -11,7 +11,6 @@ export class SoarEnvironmentsTreeProvider implements vscode.TreeDataProvider<Soa
 		this._onDidChangeTreeData.fire();
 	}
 
-
 	getTreeItem(element: SoarInstancesTreeItem): vscode.TreeItem {
 		return element
 	}
@@ -21,8 +20,7 @@ export class SoarEnvironmentsTreeProvider implements vscode.TreeDataProvider<Soa
 		let activeEnv: any = this.context.globalState.get(ACTIVE_ENV_KEY)
 
 		let environmentsTreeItems = environments.map((entry: any) => (entry["key"] === activeEnv ? new SoarInstancesTreeItem(entry["url"], entry, true, vscode.TreeItemCollapsibleState.None) : new SoarInstancesTreeItem(entry["url"], entry, false, vscode.TreeItemCollapsibleState.None)))
-		return Promise.resolve(environmentsTreeItems) // .concat([new SoarInstancesTreeItem("Connect Environment...", {}, vscode.TreeItemCollapsibleState.None, {"command": "splunkSoar.environments.connect", title: "Connect Environment..."})]))
-
+		return Promise.resolve(environmentsTreeItems) 
     }
 }
 

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { getActiveEnvironment } from '../../config/environment';
+import { getActiveEnvironment } from '../../commands/environments/environments';
 import { getClientForActiveEnvironment } from '../../soar/client';
 import { addOrReplace, removeIfExists } from '../../utils';
 // Store in Workspace State, but needs to be on a per-environment basiss

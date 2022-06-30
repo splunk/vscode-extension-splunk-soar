@@ -38,7 +38,6 @@ export function registerTreeViews(context: vscode.ExtensionContext) {
 
 }
 
-
 export async function refreshViews() {
 	await vscode.commands.executeCommand('splunkSoar.environments.refresh');
     await vscode.commands.executeCommand('splunkSoar.apps.refresh');

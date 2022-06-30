@@ -1,7 +1,7 @@
 import path = require('path');
-import {CodeLensProvider, TextDocument, CodeLens, Command, Range, DocumentSelector, Position, workspace, ExtensionContext} from 'vscode'
+import {CodeLensProvider, TextDocument, CodeLens, Command, DocumentSelector, Position, workspace, ExtensionContext} from 'vscode'
 import { getClientForActiveEnvironment } from '../soar/client';
-import {IActionContext, IActionDefinition} from '../commands/apps/runAction'
+import {IActionDefinition} from '../commands/actionRuns/actionRuns'
 
 export class RunActionLensProvider implements CodeLensProvider {
 

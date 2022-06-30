@@ -1,7 +1,7 @@
 import { AxiosInstance } from "axios";
 import * as https from 'https'; 
 import * as vscode from 'vscode';
-import { getActiveEnvironment, getEnvironment } from "../config/environment";
+import { getActiveEnvironment, getEnvironment } from "../commands/environments/environments";
 const axios = require('axios').default;
 
 import * as models from './models'
@@ -133,19 +133,16 @@ export class SoarClient {
     }
 
     triggerAction = async (actionName:string, container_id: string, assetName: string, appId: string, parameters: any) => {
-        return await this.httpClient.post(`action_run`, 
-        {
-            "action": actionName,
-            "container_id": parseInt(container_id),
-            "name": actionName,
-            "targets": [{
+
+        let targets = [{
                 "assets": [
                     assetName
                 ],
                 "parameters": parameters,
                 "app_id": appId
-            }]
-        })
+        }]
+
+       return await this.triggerActionTargets(actionName, container_id, targets)    
     }
 
     cancelActionRun = async (actionRunId: string) => {
