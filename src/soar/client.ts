@@ -106,7 +106,7 @@ export class SoarClient {
         return await this.fileClient.get(`playbook/${playbookId}/export`, {'responseType': "stream"})
     }
 
-    runPlaybook = async (playbookId:string, scope: string, containerId: string) => {
+    runPlaybook = async (playbookId:number, scope: string, containerId: string) => {
         return await this.httpClient.post("playbook_run", {"run": true, "container_id": containerId, "scope": scope, "playbook_id": playbookId})
     }
 

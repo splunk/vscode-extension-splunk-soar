@@ -1,32 +1,33 @@
 import * as vscode from 'vscode'
-import { MultiStepInput } from '../../wizard/MultiStepInput';
 import { getClientForActiveEnvironment } from '../../soar/client';
+import { MultiStepInput } from '../../wizard/MultiStepInput';
 import { processPlaybookRun } from '../playbookRuns/playbookRuns';
 
-export interface IPlaybookContext {
-    data: {
-        playbook: {
-            id: string,
-            name: string
-        }
-    }
-}
-
-export async function runPlaybookInput(context: vscode.ExtensionContext, playbookContext: IPlaybookContext) {
+export async function runPlaybookOnContainer(context: vscode.ExtensionContext, containerItemContext: any) {
     interface PlaybookRunState {
-        playbook_id: string;
+        playbook_id: number;
         container_id: string
         scope: vscode.QuickPickItem;
     }
 
-    const title = `Run Playbook: ${JSON.stringify(playbookContext.data.playbook.name)}`;
+    let containerInfo: any;
+
+    if (containerItemContext.data[1].status == "fulfilled") {
+        containerInfo = containerItemContext.data[1].value.data
+    } else {
+        return
+    }
+
+    let client = getClientForActiveEnvironment(context)
+
+    const title = `Run Playbook on Container: ${JSON.stringify(containerInfo.id)}`;
     const totalSteps = 1;
 
     async function collectInputs() {
         const state = {
-            playbook_id: playbookContext.data.playbook.id
+            container_id: JSON.stringify(containerInfo.id)
         } as Partial<PlaybookRunState>;
-        await MultiStepInput.run(input => pickContainer(input, state));
+        await MultiStepInput.run(input => pickPlaybook(input, state));
         return state as PlaybookRunState;
     }
 
@@ -36,30 +37,21 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, playboo
 			// noop
 		});
 	}
-	async function validateContainerExists(containerId: string) {
-		let client = await getClientForActiveEnvironment(context)
 
-		try {
-			await client.getContainer(containerId)
-			return undefined
-		} catch {
-			return 'Container was not found in Splunk SOAR. Please enter a valid ID.'
-		}
-	}
+    async function pickPlaybook(input: MultiStepInput, state: Partial<PlaybookRunState>){
+        
+        let playbooks = await (await (await client).listPlaybooks()).data
 
-    async function pickContainer(input: MultiStepInput, state: Partial<PlaybookRunState>){
-        state.container_id = await input.showInputBox({
-			title,
-			step: 1,
-			totalSteps: totalSteps,
-			value: state.container_id || '',
-			prompt: `Container ID`,
-			shouldResume: shouldResume,
-            validate: validateContainerExists
-		});
-
+        let playbookPick = await input.showQuickPick({
+            title,
+            step: 2,
+            totalSteps: totalSteps,
+            placeholder: 'Playbook?',
+            items: playbooks.data.map((playbook: any) => { return {"label": playbook.name, "description": `${JSON.stringify(playbook.id)}`}}),
+            shouldResume: shouldResume
+        });
+        state.playbook_id = Number(playbookPick.description)
         return (input: MultiStepInput) => scopeInput(input, state);
-
     }
 
     async function scopeInput(input: MultiStepInput, state: Partial<PlaybookRunState>){
@@ -78,7 +70,7 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, playboo
 
     vscode.window.withProgress({
 		location: vscode.ProgressLocation.Notification,
-		title: `Running ${playbookContext.data.playbook["name"]}'`,
+		title: `Running Playbook'`,
 		cancellable: false
 	}, async (progress, token) => {
 		await processPlaybookRun(progress, context, state.playbook_id, state.container_id, state.scope.label)

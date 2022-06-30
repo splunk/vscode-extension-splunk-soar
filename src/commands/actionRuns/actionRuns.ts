@@ -91,7 +91,7 @@ export async function processRunAction(actionName: string, containerId: string, 
     await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh')
 }
 
-function wait(ms = 1000) {
+export function wait(ms = 1000) {
 	return new Promise(resolve => {
 	  setTimeout(resolve, ms);
 	});

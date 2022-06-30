@@ -288,8 +288,14 @@
 			},
 			{
 				"command": "splunkSoar.playbooks.runPlaybook",
-				"title": "SOAR: Run Playbook",
+				"title": "SOAR: Run Playbook...",
 				"icon": "$(debug-start)"
+			},
+			{
+				"command": "splunkSoar.containers.runPlaybook",
+				"title": "Run Playbook...",
+				"icon": "$(debug-start)",
+				"category": "SOAR Containers"
 			},
 			{
 				"command": "splunkSoar.playbooks.downloadBundle",
@@ -767,6 +773,11 @@
 					"command": "splunkSoar.containers.inspect",
 					"when": "view == soarContainerWatcher && viewItem == soarcontainer",
 					"group": "actions@1"
+				},
+				{
+					"command": "splunkSoar.containers.runPlaybook",
+					"when": "view == soarContainerWatcher && viewItem == soarcontainer",
+					"group": "actions@2"
 				},
 				{
 					"command": "splunkSoar.artifacts.inspect",

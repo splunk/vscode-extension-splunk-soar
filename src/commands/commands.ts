@@ -14,6 +14,7 @@ import { openAppDevDocs, openRepoDocs, openRepoIssues, openWebActionRunResult, o
 import { cancelPlaybookRun } from './playbookRuns/cancel';
 import { add, clear, remove } from './containers/containerWatcher';
 import { deleteArtifact } from './artifacts/delete';
+import { runPlaybookOnContainer } from './containers/runPlaybook';
 
 
 export function registerCommands(context: vscode.ExtensionContext) {
@@ -131,6 +132,14 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbooks.runPlaybook', async (data) => {
 		if (data) {
 			runPlaybookInput(context, data).catch(console.error)
+		} else {
+			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
+		}
+	}))
+
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.containers.runPlaybook', async (data) => {
+		if (data) {
+			runPlaybookOnContainer(context, data).catch(console.error)
 		} else {
 			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
 		}
