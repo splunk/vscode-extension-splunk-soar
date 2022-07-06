@@ -6,14 +6,15 @@ During setup, the extension is configured to connect to the SOAR platform. This 
 
 ## Features
 * Browse apps and assets configured on the connected SOAR instance via [Tree View](https://github.com/splunk/vscode-extension-splunk-soar/wiki/features#inspect-soar-objects)
-* [Apps Installation](#app-installation) via custom [SOAR App Build Task](https://github.com/splunk/vscode-extension-splunk-soar/wiki/features#app-build-task) to install a local SOAR app on the configured instance with a single key combination
+* [Apps Installation](#app-installation) via custom [SOAR App Build Task](https://github.com/splunk/vscode-extension-splunk-soar/wiki/features#app-build-task) to install a local SOAR app on the configured instance with a [single key combination](https://github.com/splunk/vscode-extension-splunk-soar/wiki/commands#installing-an-app-using-the-command-palette)
 * Integrated [Actions Execution](#run-actions) to run a given action on the configured instance
 * Integrated [Playbooks Execution](#run-playbooks) to run a given playbook on the configured instance
 * Built-in [App Wizard](https://github.com/splunk/vscode-extension-splunk-soar/wiki/features#app-wizard) to bootstrap a new local SOAR App project
 * Smart [Run Action CodeLens](https://github.com/splunk/vscode-extension-splunk-soar/wiki/features#run-action-codelens) to detect action handlers in connector code and provide an inline action command
-* Set of useful [SOAR commands](https://github.com/splunk/vscode-extension-splunk-soar/wiki/soar-commands) aiming to
+* Set of useful [SOAR commands](https://github.com/splunk/vscode-extension-splunk-soar/wiki/commands) aiming to
   * Browse remote SOAR objects such as Containers, Assets, Apps
   * Navigate to SOAR Web UI
+* Integrated [SOAR: Container Watcher Console](https://github.com/splunk/vscode-extension-splunk-soar/wiki/features#container-watcher-console) to watch containers for changes at either action or playbook execution
 
 :warning: All features are targeted towards speeding up SOAR apps development. Explicitly out-of-scope are features assisting with playbook development. For developing playbooks, the new Visual Playbook Editor (VPE) within SOAR is strongly recommended.
 
@@ -47,9 +48,11 @@ You can create multiple environments to quickly context-switch between remote SO
 ## Usage
 ### App Installation
 
-To install your locally developed app to the configured SOAR instance, click on the upload icon on the top right of the apps view. You'll be prompted to select the folder containing your app files.
+To install your locally developed app to the configured SOAR instance, click on the upload icon on the top right of the apps view. You'll be prompted to select the folder containing your app bundle (`.tgz` file)
 
-> TODO what happens next?
+If you don't have a bundled app yet, automatically bundle and install it by following [these instructions](https://github.com/splunk/vscode-extension-splunk-soar/wiki/commands#installing-an-app-using-the-command-palette)
+
+> NOTE: Your app code **must** be opened in a dedicated VSCode window to work
 
 ### Run Actions
 
@@ -75,6 +78,10 @@ By hovering over each run listed under the Action Runs View, additional contextu
 <img src="media/actionrun_hover.png" alt="Action Run Hover" />
 </p>
 
+By right-clicking on each run users can:
+* Inspect the Action Run,
+* View the action in SOAR Web UI
+
 ### Run Playbooks
 
 * Select the playbook you want to run from the Playbooks View
@@ -82,6 +89,12 @@ By hovering over each run listed under the Action Runs View, additional contextu
 * Provide scope as well as execution context info (e.g. asset, container) at request in the appearing interactive dialog
 
 Once the operation has completed, results will be displayed in the OUTPUT terminal.
+
+By right-clicking on each playbook users can:
+* Inspect the playbook,
+* View the playbook code,
+* Download the playbook bundle (`tgz`),
+* Open the playbook in Visual Playbook Editor
 
 #### Run Playbooks: Details
 
