@@ -370,19 +370,25 @@
 			},
 			{
 				"command": "splunkSoar.containerWatcher.refresh",
-				"title": "Refresh",
+				"title": "Refresh Watcher",
 				"icon": "$(refresh)",
 				"category": "SOAR Containers"
 			},
 			{
 				"command": "splunkSoar.containerWatcher.clear",
-				"title": "Clear All",
+				"title": "Clear Watcher",
 				"icon": "$(close-all)",
 				"category": "SOAR Containers"
 			},
 			{
+				"command": "splunkSoar.containerWatcher.viewAnalystQueue",
+				"title": "Open Analyst Queue",
+				"icon": "$(globe)",
+				"category": "SOAR Containers"
+			},
+			{
 				"command": "splunkSoar.containerWatcher.remove",
-				"title": "Remove",
+				"title": "Remove from Watcher",
 				"icon": "$(close)",
 				"category": "SOAR Containers"
 			},
@@ -627,6 +633,11 @@
 					"command": "splunkSoar.containerWatcher.clear",
 					"when": "view == soarContainerWatcher",
 					"group": "navigation@3"
+				},
+				{
+					"command": "splunkSoar.containerWatcher.viewAnalystQueue",
+					"when": "view == soarContainerWatcher",
+					"group": "navigation@4"
 				}
 			],
 			"view/item/context": [

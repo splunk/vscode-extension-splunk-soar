@@ -10,7 +10,7 @@ import { installBundle } from './apps/installBundle';
 import { runActionInput } from './actionRuns/triggerActionRun';
 import { viewAppDocs } from './apps/viewAppDocs';
 import { runPlaybookInput } from './playbooks/runPlaybook';
-import { openAppDevDocs, openRepoDocs, openRepoIssues, openWebActionRunResult, openWebApp, openWebApps, openWebAsset, openWebContainer, openWebPlaybook, openWebPlaybookEditor } from './web';
+import { openAppDevDocs, openRepoDocs, openRepoIssues, openWebActionRunResult, openWebAnalystQueue, openWebApp, openWebApps, openWebAsset, openWebContainer, openWebPlaybook, openWebPlaybookEditor } from './web';
 import { cancelPlaybookRun } from './playbookRuns/cancel';
 import { add, clear, deleteContainer, remove } from './containers/containerWatcher';
 import { deleteArtifact } from './artifacts/delete';
@@ -172,6 +172,10 @@ export function registerCommands(context: vscode.ExtensionContext) {
 		} else {
 			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
 		}
+	}))
+
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.containerWatcher.viewAnalystQueue', async () => {
+			openWebAnalystQueue(context)
 	}))
 
 

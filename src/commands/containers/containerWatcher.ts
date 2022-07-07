@@ -53,6 +53,12 @@ export async function deleteContainer(context: vscode.ExtensionContext, containe
     let key = containerContext.data[0]["key"]
 
     let client = getClientForActiveEnvironment(context)
+
+    let choice = await vscode.window.showWarningMessage(`Are you sure you want to delete container ${containerId}?`, ...["Yes", "No"])
+    if (choice == "No") {
+        return
+    }
+
     await (await client).deleteContainer(containerId)
 
     let watchedContainers = context.globalState.get(CONTAINER_WATCHER_KEY) || []

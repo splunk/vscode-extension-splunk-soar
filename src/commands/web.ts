@@ -47,3 +47,8 @@ export async function openWebContainer(context: vscode.ExtensionContext, contain
     let client: SoarClient = await getClientForActiveEnvironment(context)
     vscode.env.openExternal(vscode.Uri.parse(`${client.server}/mission/${containerId}/`))	
 }
+
+export async function openWebAnalystQueue(context: vscode.ExtensionContext) {
+    let client: SoarClient = await getClientForActiveEnvironment(context)
+    vscode.env.openExternal(vscode.Uri.parse(`${client.server}/browse`))
+}
