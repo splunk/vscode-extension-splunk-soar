@@ -37,7 +37,7 @@ export class SoarContainerWatcherTreeProvider implements vscode.TreeDataProvider
 				if (entry[1].status == "fulfilled") {
 					return new ContainerItem(`${entry[0]["containerId"]}: ${entry[1].value["data"]["name"]}` , entry, vscode.TreeItemCollapsibleState.Collapsed)
 				} else {
-					return new ContainerTreeItem(`${entry[0]["containerId"]}: Not found` , entry, vscode.TreeItemCollapsibleState.None)
+					return new UnavailableContainerItem(`${entry[0]["containerId"]}` , entry, vscode.TreeItemCollapsibleState.None)
 				}
 			})
 	
@@ -111,6 +111,19 @@ export class ContainerTreeItem extends vscode.TreeItem {
 	
 }
 
+export class UnavailableContainerItem extends ContainerTreeItem {
+    constructor(
+		public readonly label: string,
+		public readonly data: any,
+		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
+	) {
+		super(label, data, collapsibleState);
+
+		this.iconPath = new vscode.ThemeIcon("symbol-method", new vscode.ThemeColor("testing.iconSkipped"))
+		this.description = `not found`
+	}
+}
+
 export class ContainerItem extends ContainerTreeItem {
     constructor(
 		public readonly label: string,
@@ -122,9 +135,9 @@ export class ContainerItem extends ContainerTreeItem {
 		let containerData = this.data[1].value.data
 
 		if (containerData["container_type"] == "case") {
-			this.iconPath = new vscode.ThemeIcon("briefcase", new vscode.ThemeColor("symbolIcon.methodForeground"))
+			this.iconPath = new vscode.ThemeIcon("briefcase", new vscode.ThemeColor("testing.iconPassed"))
 		} else {
-			this.iconPath = new vscode.ThemeIcon("symbol-method")
+			this.iconPath = new vscode.ThemeIcon("symbol-method", new vscode.ThemeColor("testing.iconPassed"))
 		}
 
 		let containerLabel = this.data[1].value.data["label"]

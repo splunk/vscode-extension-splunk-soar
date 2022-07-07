@@ -4,7 +4,7 @@
 	"description": "VS Code Extension for Splunk SOAR",
 	"icon": "media/soarcloud.png",
 	"publisher": "Splunk",
-	"version": "0.0.11",
+	"version": "0.0.13",
 	"engines": {
 		"vscode": "^1.67.0"
 	},
@@ -27,7 +27,9 @@
 		"onView:soarEnvironments",
 		"onView:soarPlaybooks",
 		"onView:soarPlaybookRuns",
-		"onCommand:workbench.action.tasks.runTask"
+		"onView:soarContainerWatcher",
+		"onCommand:workbench.action.tasks.runTask",
+		"onWebviewPanel:soarOnboarding"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -49,10 +51,10 @@
 					{
 						"id": "connectenvironment",
 						"title": "Connect an environment",
-						"description": "You are able to connect multiple environments and switch between them as needed. Only one environment can be active at a time.\n[Connect Environment](command:splunkSoar.environments.connect)",
+						"description": "You are able to connect multiple environments and switch between them as needed. Only one environment can be active at a time.\n[Connect Environment](command:splunkSoar.environments.add)",
 						"media": { "markdown": "media/onboarding/connectenvironment.md" },
 						"completionEvents": [
-							"onCommand:splunkSoar.environments.connect"
+							"onCommand:splunkSoar.environments.add"
 						]
 					},
 					{
@@ -140,9 +142,9 @@
 				"category": "SOAR Environments"
 			},
 			{
-				"command": "splunkSoar.environments.connect",
+				"command": "splunkSoar.environments.add",
 				"title": "Connect Environment...",
-				"icon": "$(plug)",
+				"icon": "$(plus)",
 				"category": "SOAR Environments"
 			},
 			{
@@ -152,9 +154,9 @@
 				"category": "SOAR Environments"
 			},
 			{
-				"command": "splunkSoar.environments.disconnect",
-				"title": "Disconnect",
-				"icon": "$(debug-disconnect)",
+				"command": "splunkSoar.environments.remove",
+				"title": "Remove",
+				"icon": "$(close)",
 				"category": "SOAR Environments"
 			},
 			{
@@ -477,7 +479,7 @@
 					"when": "false"
 				},
 				{
-					"command": "splunkSoar.environments.disconnect",
+					"command": "splunkSoar.environments.remove",
 					"when": "false"
 				},
 				{
@@ -590,7 +592,7 @@
 					"group": "navigation@1"
 				},
 				{
-					"command": "splunkSoar.environments.connect",
+					"command": "splunkSoar.environments.add",
 					"when": "view == soarEnvironments",
 					"group": "navigation"
 				},
@@ -687,12 +689,12 @@
 					"group": "web@1"
 				},
 				{
-					"command": "splunkSoar.environments.disconnect",
+					"command": "splunkSoar.environments.remove",
 					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
 					"group": "actions@2"
 				},
 				{
-					"command": "splunkSoar.environments.disconnect",
+					"command": "splunkSoar.environments.remove",
 					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
 					"group": "inline"
 				},

@@ -4,6 +4,9 @@ The extension for developers building applications for Splunk SOAR. Works with S
 
 During setup, the extension is configured to connect to the SOAR platform. This allows the extension to pull information from SOAR and allows the developer to perform common operations such as browsing of remote objects, running actions and managing resulting action runs.
 
+The screenshots below are taken from the [Visual Studio Code](https://github.com/microsoft/vscode) environment
+where the extension is installed successfully.
+
 ## Features
 * Browse apps and assets configured on the connected SOAR instance via [Tree View](https://github.com/splunk/vscode-extension-splunk-soar/wiki/features#inspect-soar-objects)
 * [Apps Installation](#app-installation) via custom [SOAR App Build Task](https://github.com/splunk/vscode-extension-splunk-soar/wiki/features#app-build-task) to install a local SOAR app on the configured instance with a [single key combination](https://github.com/splunk/vscode-extension-splunk-soar/wiki/commands#installing-an-app-using-the-command-palette)
@@ -27,9 +30,7 @@ Alternatively, download the VSIX file from the [Releases page](https://github.co
 
 ### Connect your environment
 
-After successful installation, open the Splunk SOAR view from the sidebar and press the **Connect Environment** button to set up the connection to your SOAR environment. Type info such as SOAR URL and credentials to the appearing step-by-step interactive dialog.
-
-Once the environment is set up, it will be activated automatically.
+After successful installation, open the Splunk SOAR view from the sidebar and press the **Connect Environment** button to set up the connection to your SOAR environment. Type info such as SOAR URL and credentials to the appearing step-by-step interactive dialog. Once the environment is set up, it will be activated automatically.
 
 <p align="center">
   <img src="media/connect_environment.png" alt="Connect Environment" />
@@ -129,3 +130,13 @@ $ yarn install
 ## Support & License
 
 Please refer to [License](LICENSE) with regards to licensing. This software is released as-is. Splunk provides no warranty and no support on this software. If you have any issues with the software, please file an issue on the repository.
+
+## Splunk Copyright Notice
+
+Copyright 2022 Splunk Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.

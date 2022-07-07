@@ -102,7 +102,7 @@ export class SoarAppItem extends SoarAppsTreeItem {
 		}
 
 		if (data["app"]["_pretty_asset_count"] > 0) {
-			this.iconPath = new vscode.ThemeIcon("package", new vscode.ThemeColor("terminal.ansiGreen"))
+			this.iconPath = new vscode.ThemeIcon("package", new vscode.ThemeColor("testing.iconPassed"))
 		}
 	}
 

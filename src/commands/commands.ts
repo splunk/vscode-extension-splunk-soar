@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { activateEnvironment, connectEnvironment, copyPasswordToClipboard, disconnectEnvironment, environmentVersion, openEnvironmentWeb } from '../config/environment';
+import { activateEnvironment, addEnvironment, copyPasswordToClipboard, removeEnvironment, environmentVersion, openEnvironmentWeb } from '../config/environment';
 import { AppWizardPanel } from '../webviews/appWizard';
 import { cancelActionRun } from './actionRuns/cancelActionRun';
 import { repeatActionRun } from './actionRuns/repeatActionRun';
@@ -24,11 +24,11 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	let disposableInstallBundle = vscode.commands.registerCommand('splunkSoar.apps.installBundle', () => { installBundle(context) });
 	context.subscriptions.push(disposableInstallBundle);
 
-	let disposableConnectEnvironment = vscode.commands.registerCommand('splunkSoar.environments.connect', () => { connectEnvironment(context) });
-	context.subscriptions.push(disposableConnectEnvironment);
+	let disposableAddEnvironment = vscode.commands.registerCommand('splunkSoar.environments.add', () => { addEnvironment(context) });
+	context.subscriptions.push(disposableAddEnvironment);
 
-	let disposableDisconnectEnvironment = vscode.commands.registerCommand('splunkSoar.environments.disconnect', (actionContext) => { disconnectEnvironment(context, actionContext) });
-	context.subscriptions.push(disposableDisconnectEnvironment);
+	let disposableRemoveEnvironment = vscode.commands.registerCommand('splunkSoar.environments.remove', (actionContext) => { removeEnvironment(context, actionContext) });
+	context.subscriptions.push(disposableRemoveEnvironment);
 
 	let activateEnvironmentDisposable = vscode.commands.registerCommand('splunkSoar.environments.activate', (actionContext) => { activateEnvironment(context, actionContext) });
 	context.subscriptions.push(activateEnvironmentDisposable);

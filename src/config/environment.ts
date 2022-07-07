@@ -25,7 +25,7 @@ interface ConfiguredConnectEnvironment extends BaseConnectEnvironment {
     key: string
 }
 
-const wizardTitle = "Connect Environment"
+const wizardTitle = "Add Environment"
 const totalSteps = 4
 
 function shouldResume() {
@@ -35,7 +35,7 @@ function shouldResume() {
     });
 }
 
-async function connectEnvironmentWizard() {
+async function addEnvironmentWizard() {
     const state = {}
     await MultiStepInput.run(input => connectUrlInput(input, state))
     return state as ConnectEnvironment
@@ -117,8 +117,8 @@ async function validateNoTrailingSlash(url: string) {
 
 
 
-export async function connectEnvironment(context: vscode.ExtensionContext) {
-    let state = await connectEnvironmentWizard()
+export async function addEnvironment(context: vscode.ExtensionContext) {
+    let state = await addEnvironmentWizard()
 
     if (!state.password || !state.username || !state.url) {
         vscode.window.showErrorMessage("Could not add environment")
@@ -147,11 +147,11 @@ export async function connectEnvironment(context: vscode.ExtensionContext) {
     await vscode.commands.executeCommand('splunkSoar.environments.refresh');
 }
 
-export async function disconnectEnvironment(context: vscode.ExtensionContext, actionContext: IActionContext) {
+export async function removeEnvironment(context: vscode.ExtensionContext, actionContext: IActionContext) {
     let key = actionContext.data["key"]
 
     let choice = await vscode.window.showWarningMessage(`Do you want to remove ${key}?`, ...["Yes", "No"])
-    if (choice == "No") {
+    if (choice !== "Yes") {
         return
     }
 
@@ -159,7 +159,7 @@ export async function disconnectEnvironment(context: vscode.ExtensionContext, ac
     let newEnvironments = removeIfExists(currentEnvironments, "key", key)
 
     if (key == context.globalState.get(ACTIVE_ENV_KEY)) {
-        vscode.window.showInformationMessage("Active environment got disconnected. Please ensure an another environment is activated to use the SOAR extension.")
+        vscode.window.showWarningMessage("Active environment got removed. Please ensure an another environment is activated to use the SOAR extension.")
         context.globalState.update(ACTIVE_ENV_KEY, undefined)
         vscode.commands.executeCommand('setContext', 'splunkSoar.environments.hasActive', false);
     }

@@ -39,7 +39,7 @@ export class SoarInstancesTreeItem extends vscode.TreeItem {
 		this.description = data.username
 
 		if (this.isActive) {
-			this.iconPath = new vscode.ThemeIcon("vm-active", new vscode.ThemeColor("terminal.ansiGreen"))
+			this.iconPath = new vscode.ThemeIcon("vm-active", new vscode.ThemeColor("testing.iconPassed"))
 			this.contextValue = 'soarenvironment:active'
 
 		} else {
