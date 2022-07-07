@@ -278,6 +278,12 @@
 			{
 				"command": "splunkSoar.playbooks.viewWeb",
 				"title": "Open in Visual Playbook Editor",
+				"icon": "$(debug-console)",
+				"category": "SOAR Playbooks"
+			},
+			{
+				"command": "splunkSoar.playbooks.viewListWeb",
+				"title": "Open Playbooks Web UI",
 				"icon": "$(globe)",
 				"category": "SOAR Playbooks"
 			},
@@ -608,6 +614,11 @@
 					"command": "splunkSoar.openPlaybookEditor",
 					"when": "view == soarPlaybooks",
 					"group": "navigation@1"
+				},
+				{
+					"command": "splunkSoar.playbooks.viewListWeb",
+					"when": "view == soarPlaybooks",
+					"group": "navigation@2"
 				},
 				{
 					"command": "splunkSoar.environments.add",

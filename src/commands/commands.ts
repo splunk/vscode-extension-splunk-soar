@@ -10,7 +10,7 @@ import { installBundle } from './apps/installBundle';
 import { runActionInput } from './actionRuns/triggerActionRun';
 import { viewAppDocs } from './apps/viewAppDocs';
 import { runPlaybookInput } from './playbooks/runPlaybook';
-import { openAppDevDocs, openRepoDocs, openRepoIssues, openWebActionRunResult, openWebAnalystQueue, openWebApp, openWebApps, openWebAsset, openWebContainer, openWebPlaybook, openWebPlaybookEditor } from './web';
+import { openAppDevDocs, openRepoDocs, openRepoIssues, openWebActionRunResult, openWebAnalystQueue, openWebApp, openWebApps, openWebAsset, openWebContainer, openWebPlaybook, openWebPlaybookEditor, openWebPlaybooks } from './web';
 import { cancelPlaybookRun } from './playbookRuns/cancel';
 import { add, clear, deleteContainer, remove } from './containers/containerWatcher';
 import { deleteArtifact } from './artifacts/delete';
@@ -54,6 +54,9 @@ export function registerCommands(context: vscode.ExtensionContext) {
 
 	let disposablePlaybookEditor = vscode.commands.registerCommand('splunkSoar.openPlaybookEditor', async () => { openWebPlaybookEditor(context) });
 	context.subscriptions.push(disposablePlaybookEditor);
+
+	let disposablePlaybooks = vscode.commands.registerCommand('splunkSoar.playbooks.viewListWeb', async () => { openWebPlaybooks(context) });
+	context.subscriptions.push(disposablePlaybooks);
 
     context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.actionRuns.repeat', async (data) => {
 		if (data) {
