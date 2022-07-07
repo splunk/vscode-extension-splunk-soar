@@ -12,7 +12,7 @@ import { viewAppDocs } from './apps/viewAppDocs';
 import { runPlaybookInput } from './playbooks/runPlaybook';
 import { openAppDevDocs, openRepoDocs, openRepoIssues, openWebActionRunResult, openWebApp, openWebApps, openWebAsset, openWebContainer, openWebPlaybook, openWebPlaybookEditor } from './web';
 import { cancelPlaybookRun } from './playbookRuns/cancel';
-import { add, clear, remove } from './containers/containerWatcher';
+import { add, clear, deleteContainer, remove } from './containers/containerWatcher';
 import { deleteArtifact } from './artifacts/delete';
 import { runPlaybookOnContainer } from './containers/runPlaybook';
 
@@ -160,6 +160,9 @@ export function registerCommands(context: vscode.ExtensionContext) {
 
 	let disposableContainerWatcherRemove = vscode.commands.registerCommand('splunkSoar.containerWatcher.remove', async (containerContext: any) => { remove(context, containerContext) });
 	context.subscriptions.push(disposableContainerWatcherRemove);
+	
+	let disposableContainerWatcherDelete = vscode.commands.registerCommand('splunkSoar.containers.delete', async (containerContext: any) => { deleteContainer(context, containerContext) });
+	context.subscriptions.push(disposableContainerWatcherDelete);
 
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.containerWatcher.viewWeb', async (containerContext: any) => {

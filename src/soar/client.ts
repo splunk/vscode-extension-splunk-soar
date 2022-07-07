@@ -169,6 +169,10 @@ export class SoarClient {
         return await this.httpClient.get(`container/${containerId}?pretty=true`)
     }
 
+    deleteContainer = async (containerId: string) => {
+        return await this.httpClient.delete(`container/${containerId}`)
+    }
+
     getArtifact = async (artifactId: string) => {
         return await this.httpClient.get(`artifact/${artifactId}?pretty=true`)
     }

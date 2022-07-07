@@ -345,6 +345,12 @@
 				"category": "SOAR Containers"
 			},
 			{
+				"command": "splunkSoar.containers.delete",
+				"title": "Delete",
+				"icon": "$(trash)",
+				"category": "SOAR Containers"
+			},
+			{
 				"command": "splunkSoar.artifacts.inspect",
 				"title": "Inspect",
 				"icon": "$(eye)",
@@ -773,6 +779,11 @@
 					"command": "splunkSoar.containers.inspect",
 					"when": "view == soarContainerWatcher && viewItem == soarcontainer",
 					"group": "actions@1"
+				},
+				{
+					"command": "splunkSoar.containers.delete",
+					"when": "view == soarContainerWatcher && viewItem == soarcontainer",
+					"group": "actions@2"
 				},
 				{
 					"command": "splunkSoar.containers.runPlaybook",

@@ -48,6 +48,20 @@ export async function remove(context: vscode.ExtensionContext, containerContext:
     await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh')
 }
 
+export async function deleteContainer(context: vscode.ExtensionContext, containerContext: any) {
+    let containerId = containerContext.data[1].value.data["id"]
+    let key = containerContext.data[0]["key"]
+
+    let client = getClientForActiveEnvironment(context)
+    await (await client).deleteContainer(containerId)
+
+    let watchedContainers = context.globalState.get(CONTAINER_WATCHER_KEY) || []
+    let newWatchedContainers = removeIfExists(watchedContainers, "key", key)
+    context.globalState.update(CONTAINER_WATCHER_KEY, newWatchedContainers)
+
+    await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh')
+}
+
 export async function clear(context: vscode.ExtensionContext) {
     context.globalState.update(CONTAINER_WATCHER_KEY, undefined)
     await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh')
