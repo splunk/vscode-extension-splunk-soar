@@ -205,6 +205,10 @@ export class SoarClient {
         return await this.httpClient.get(`vault_document/${docId}?pretty=true`)
     }
 
+    listScm = async () => {
+        return await this.httpClient.get(`scm?pretty=true`)
+    }
+
 }
 
 export async function getClientForActiveEnvironment(context: vscode.ExtensionContext): Promise<SoarClient> {

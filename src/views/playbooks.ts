@@ -1,3 +1,4 @@
+import { throws } from 'assert';
 import * as vscode from 'vscode';
 import { getClientForActiveEnvironment } from '../soar/client';
 
@@ -31,6 +32,12 @@ export class SoarPlaybookTreeProvider implements vscode.TreeDataProvider<Playboo
 		const config = vscode.workspace.getConfiguration()
 		const ownOnly: boolean = config.get<boolean>("playbooks.showOwnOnly", false)
 
+		let scmMap:any = {}
+		let scmResponse = await (await client.listScm())
+		
+		scmResponse.data.data.map((el: any) => {
+			scmMap[el["name"]] = el
+		})
 
 		if (!element) {
             let playbooksFunc = client.listPlaybooks
@@ -58,7 +65,7 @@ export class SoarPlaybookTreeProvider implements vscode.TreeDataProvider<Playboo
 				let repoTreeItems: any = []
 
 				Object.keys(playbookByRepoMap).map( repo => {
-					repoTreeItems.push(new RepoTreeItem(repo, playbookByRepoMap[repo], vscode.TreeItemCollapsibleState.Expanded))
+					repoTreeItems.push(new RepoTreeItem(repo, {repo: scmMap[repo], playbooks: playbookByRepoMap[repo]}, vscode.TreeItemCollapsibleState.Expanded))
 				});
 
 				return repoTreeItems
@@ -71,7 +78,7 @@ export class SoarPlaybookTreeProvider implements vscode.TreeDataProvider<Playboo
 		if (element.contextValue.startsWith("soarrepo")) {
 			let playbookTreeItems: any = []
 
-			for (const playbook of element.data) {
+			for (const playbook of element.data.playbooks) {
 				playbookTreeItems.push(new PlaybookTreeItem(playbook.name, {"playbook": playbook}, vscode.TreeItemCollapsibleState.None))
 			}
 			return playbookTreeItems
@@ -114,8 +121,30 @@ export class RepoTreeItem extends PlaybookTreeItem {
 	) {
 		super(label, collapsibleState, data);
 		this.data = data
-        this.description = ``
+        this.description = `${data.playbooks.length}`
+		this.tooltip = this.generateLabel(data)
+		this.tooltip.isTrusted = true
+		this.tooltip.supportHtml = true
+		this.tooltip.supportThemeIcons = true
 	}
+
+	generateLabel = function(data: any): vscode.MarkdownString {
+		let label = new vscode.MarkdownString(``);
+
+		label.appendMarkdown(`**${data["repo"]["name"]}**\n\n`)
+		label.appendMarkdown(`${data["repo"]["uri"]}`)
+		label.appendText('\n\n')
+		label.appendMarkdown('---')
+		label.appendText('\n\n')
+		label.appendText(`read only: ${data["repo"]["read_only"]}`)
+		label.appendText('\n\n')
+		label.appendText(`type: ${data["repo"]["type"]}`)
+		label.appendText('\n\n')
+		label.appendText(`version: ${data["repo"]["version"]}`)
+		return label
+	}
+
+
     iconPath = new vscode.ThemeIcon("repo")
 	contextValue = 'soarrepo';
 	
