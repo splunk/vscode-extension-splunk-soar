@@ -794,7 +794,7 @@
 				},
 				{
 					"command": "splunkSoar.apps.diffFile",
-					"when": "view == soarApps && viewItem == soarfile",
+					"when": "view == soarApps && viewItem == soarfile && editorIsOpen",
 					"group": "inline"
 				},
 				{
