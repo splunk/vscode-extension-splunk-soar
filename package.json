@@ -421,6 +421,16 @@
 				"title": "Inspect",
 				"icon": "$(eye)",
 				"category": "SOAR Vault Files"
+			},
+			{
+				"command": "splunkSoar.scm.sync",
+				"title": "Sync SCM",
+				"icon": "$(repo-push)"
+			},
+			{
+				"command": "splunkSoar.scm.syncForce",
+				"title": "Force Sync SCM",
+				"icon": "$(repo-force-push)"
 			}
 		],
 		"viewsContainers": {
@@ -846,6 +856,16 @@
 					"command": "splunkSoar.vaultFile.inspect",
 					"when": "view == soarContainerWatcher && viewItem == soarvaultitem",
 					"group": "actions@1"
+				},
+				{
+					"command": "splunkSoar.scm.sync",
+					"when": "view == soarPlaybooks && viewItem =~ /soarrepo:(.*)/ && viewItem != soarrepo:local",
+					"group": "inline"
+				},
+				{
+					"command": "splunkSoar.scm.syncForce",
+					"when": "view == soarPlaybooks && viewItem =~ /soarrepo:(.*)/ && viewItem != soarrepo:local",
+					"group": "inline@2"
 				}
 			]
 		},

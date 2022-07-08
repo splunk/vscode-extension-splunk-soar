@@ -15,7 +15,7 @@ import { cancelPlaybookRun } from './playbookRuns/cancel';
 import { add, clear, deleteContainer, remove } from './containers/containerWatcher';
 import { deleteArtifact } from './artifacts/delete';
 import { runPlaybookOnContainer } from './containers/runPlaybook';
-
+import { syncScm } from './scm/scm';
 
 export function registerCommands(context: vscode.ExtensionContext) {
 
@@ -183,4 +183,10 @@ export function registerCommands(context: vscode.ExtensionContext) {
 
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.artifacts.delete', async (artifactContext: any) => deleteArtifact(context, artifactContext)))
+
+	let disposableScmSync = vscode.commands.registerCommand('splunkSoar.scm.sync', async (repoContext: any) => { syncScm(context, repoContext) });
+	context.subscriptions.push(disposableScmSync);
+	let disposableScmSyncForce = vscode.commands.registerCommand('splunkSoar.scm.syncForce', async (repoContext: any) => { syncScm(context, repoContext, true)});
+	context.subscriptions.push(disposableScmSyncForce);
+
 }

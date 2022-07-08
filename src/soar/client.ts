@@ -209,6 +209,10 @@ export class SoarClient {
         return await this.httpClient.get(`scm?pretty=true`)
     }
 
+    syncScm = async (scmId: string, force: boolean = false) => {
+        return await this.httpClient.post(`scm/${scmId}`, {"pull": true, "force": force})
+    }
+
 }
 
 export async function getClientForActiveEnvironment(context: vscode.ExtensionContext): Promise<SoarClient> {

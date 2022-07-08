@@ -64,6 +64,10 @@ export class SoarPlaybookTreeProvider implements vscode.TreeDataProvider<Playboo
 
 				let repoTreeItems: any = []
 
+				repoTreeItems.push(new RepoTreeItem("local", {repo: scmMap["local"], playbooks: playbookByRepoMap["local"]}, vscode.TreeItemCollapsibleState.Expanded))
+				
+				delete playbookByRepoMap["local"]
+
 				Object.keys(playbookByRepoMap).map( repo => {
 					repoTreeItems.push(new RepoTreeItem(repo, {repo: scmMap[repo], playbooks: playbookByRepoMap[repo]}, vscode.TreeItemCollapsibleState.Expanded))
 				});
@@ -126,6 +130,8 @@ export class RepoTreeItem extends PlaybookTreeItem {
 		this.tooltip.isTrusted = true
 		this.tooltip.supportHtml = true
 		this.tooltip.supportThemeIcons = true
+
+		this.contextValue = `soarrepo:${data["repo"]["name"]}`
 	}
 
 	generateLabel = function(data: any): vscode.MarkdownString {
