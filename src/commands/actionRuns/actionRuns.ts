@@ -50,8 +50,10 @@ export async function processRunAction(actionName: string, containerId: string, 
     let client = await getClientForActiveEnvironment(context)
 
     progress.report({ increment: 0 });
+    try {
     let result = await client.triggerActionTargets(actionName, containerId, actionRunTargets)
     let {action_run_id, message} = result.data
+
     progress.report({ increment: 10, message: `${message}: Action Run ID: ${action_run_id}`});
     
     let actionRunResult = await client.getActionRun(action_run_id)
@@ -80,13 +82,17 @@ export async function processRunAction(actionName: string, containerId: string, 
     progress.report({increment: 75, message: "Collecting Results"})
 
     let appRunId = appRunsResult.data.data[0]["id"]
-
     let appRunResult = await client.getAppRun(appRunId)
-
     let soarOutput = vscode.window.createOutputChannel("Splunk SOAR: Action Run");
     soarOutput.clear()
     soarOutput.append(JSON.stringify(appRunResult.data, null, 4))
     soarOutput.show()
+    }
+    catch (err) {
+        console.log(err)
+        return
+    }
+
     await vscode.commands.executeCommand('splunkSoar.actionRuns.refresh');
     await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh')
 }

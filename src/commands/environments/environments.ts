@@ -4,7 +4,7 @@ import { refreshViews } from '../../views/views'
 import { SoarInstancesTreeItem } from '../../views/environments'
 import { getClientForEnvironment, SoarClient } from '../../soar/client'
 import { addEnvironmentWizard } from './addEnvironmentWizard'
-import { IActionContext } from '../actionRuns/triggerActionRun'
+import { IActionContext } from '../actionRuns/actionRuns'
 
 export const ENV_KEY = "splunkSOAR.environments"
 export const ACTIVE_ENV_KEY = "splunkSOAR.activeEnvironment"

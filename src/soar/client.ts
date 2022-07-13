@@ -83,7 +83,7 @@ export class SoarClient {
     }
 
     getAsset = async (assetId: string) => {
-        return await this.httpClient.get(`asset/${assetId}`)
+        return await this.httpClient.get(`asset/${assetId}`, {params: {"pretty": true, "_special_app_info": true}})
     }
 
     getApp = async (appId: string) => {

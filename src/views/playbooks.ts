@@ -126,6 +126,10 @@ export class RepoTreeItem extends PlaybookTreeItem {
 		super(label, collapsibleState, data);
 		this.data = data
         this.description = `${data.playbooks.length}`
+
+		if (this.data["repo"]["read_only"]) {
+			this.description += " • Read-only"
+		}
 		this.tooltip = this.generateLabel(data)
 		this.tooltip.isTrusted = true
 		this.tooltip.supportHtml = true

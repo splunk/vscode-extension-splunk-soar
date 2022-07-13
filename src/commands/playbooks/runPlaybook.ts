@@ -81,6 +81,6 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, playboo
 		title: `Running ${playbookContext.data.playbook["name"]}'`,
 		cancellable: false
 	}, async (progress, token) => {
-		await processPlaybookRun(progress, context, state.playbook_id, state.container_id, state.scope.label)
+		await processPlaybookRun(progress, context, parseInt(state.playbook_id), state.container_id, state.scope.label)
 	})
 }
