@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import * as vscode from 'vscode'
 import { getClientForActiveEnvironment } from '../../soar/client';
 
@@ -48,12 +49,21 @@ export interface IActionRunContext {
 
 export async function processRunAction(actionName: string, containerId: string, actionRunTargets: any, progress: vscode.Progress<{message?: string | undefined, increment?: number | undefined}>, context: vscode.ExtensionContext){
     let client = await getClientForActiveEnvironment(context)
-
     progress.report({ increment: 0 });
-    try {
-    let result = await client.triggerActionTargets(actionName, containerId, actionRunTargets)
-    let {action_run_id, message} = result.data
 
+    let action_run_id: string;
+    let message: string;
+    let result: AxiosResponse
+    try {
+    result = await client.triggerActionTargets(actionName, containerId, actionRunTargets)
+
+    message = result.data.message
+    action_run_id = result.data.action_run_id
+    } catch (error: any) {
+        message = error.response.data.message
+        vscode.window.showErrorMessage(`Error while running Action: ${message}`)
+        return
+    }
     progress.report({ increment: 10, message: `${message}: Action Run ID: ${action_run_id}`});
     
     let actionRunResult = await client.getActionRun(action_run_id)
@@ -87,11 +97,6 @@ export async function processRunAction(actionName: string, containerId: string, 
     soarOutput.clear()
     soarOutput.append(JSON.stringify(appRunResult.data, null, 4))
     soarOutput.show()
-    }
-    catch (err) {
-        console.log(err)
-        return
-    }
 
     await vscode.commands.executeCommand('splunkSoar.actionRuns.refresh');
     await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh')
