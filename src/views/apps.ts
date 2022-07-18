@@ -59,7 +59,7 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppsTre
 		} else if (element.contextValue === "soarassetsection") {
 			return client.listAppAssets(element.data["app"]["id"]).then(function (res) {
 				let assetEntries = res.data["data"]
-				let assetTreeItems = assetEntries.map((entry: any) => (new SoarAssetItem(entry["name"], {"asset": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
+				let assetTreeItems = assetEntries.map((entry: any) => (new SoarAssetItem(entry["name"], {"asset": entry, ...element.data}, vscode.TreeItemCollapsibleState.None, {'command': 'splunkSoar.assets.inspect', 'title': "Inspect", "arguments": [{"data": {"asset": entry, ...element.data}}]})))
 				return assetTreeItems
 			}).catch(function (err) {
 				console.error(err)
@@ -68,7 +68,7 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppsTre
 			let actionTreeItems = element.data["app"]["_pretty_actions"].map((entry: any) => (new SoarActionItem(entry["name"], {"action": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
 			return Promise.resolve(actionTreeItems)
 		} else if (element.contextValue === "soarfilessection") {
-			let actionTreeItems = element.data["app_content"].map((entry: any) => (new SoarFileItem(entry["name"], {"file": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
+			let actionTreeItems = element.data["app_content"].map((entry: any) => (new SoarFileItem(entry["name"], {"file": entry, ...element.data}, vscode.TreeItemCollapsibleState.None, {'command': 'splunkSoar.apps.viewFile', 'title': "Inspect", "arguments": [{"data": {"file": entry, ...element.data}}]})))
 			return Promise.resolve(actionTreeItems)
 		}
 
@@ -111,7 +111,6 @@ export class SoarAppItem extends SoarAppsTreeItem {
 
 export class SoarAssetItem extends SoarAppsTreeItem {
 	contextValue: string = 'soarasset';
-
 	iconPath = new vscode.ThemeIcon("gear")
 }
 
