@@ -5,6 +5,7 @@ import * as tar from 'tar'
 import * as fs from 'fs'
 import { getClientForActiveEnvironment } from '../soar/client';
 import ignore from 'ignore'
+import { directoryContainsApp } from '../commands/apps/deploy';
 
 interface CustomBuildTaskDefinition extends vscode.TaskDefinition {
 	cwd?: string
@@ -90,6 +91,10 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 
 			let appPath = path.join(this.workspaceRoot, this.cwd)
 
+			if (!directoryContainsApp(appPath)) {
+				vscode.window.showErrorMessage("Could not find SOAR App for deploy task")
+				return
+			}
             let tmpDir = os.tmpdir()
 
             let outPath = tmpDir + "/tmpapp.tgz"
