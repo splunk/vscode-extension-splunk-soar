@@ -45,16 +45,24 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppsTre
 		}
 
 		if (element.contextValue === "soarapp") {
-			return client.appContent(element.data["app"]["id"]).then(function (res) {
-				let appContent = res.data["data"]
-				const jsonContent = appContent.find((file: any) => file.metadata == "AppJSON");
-				let appJSON = JSON.parse(jsonContent.content)
+			
+			let isImmutable = element.data["app"]["immutable"]
+			let appJSON;
+			let appContent;
 
-				return Promise.resolve([new SoarAssetSection("Assets", {"app_content": appContent, "app_json": appJSON, ...element.data}, vscode.TreeItemCollapsibleState.Collapsed), 
-										  new SoarActionSection("Actions",{"app_content": appContent, "app_json": appJSON, ...element.data}, vscode.TreeItemCollapsibleState.Collapsed),
-										  new SoarFilesSection("Files",{"app_content": appContent, "app_json": appJSON, ...element.data}, vscode.TreeItemCollapsibleState.Collapsed),
-										])
-			})
+			let sections = [new SoarAssetSection("Assets", {"app_content": appContent, "app_json": appJSON, ...element.data}, vscode.TreeItemCollapsibleState.Collapsed), 
+			new SoarActionSection("Actions",{"app_content": appContent, "app_json": appJSON, ...element.data}, vscode.TreeItemCollapsibleState.Collapsed)]
+			
+			if (!isImmutable) {
+				appContent = await (await client.appContent(element.data["app"]["id"])).data.data
+				const jsonContent = appContent.find((file: any) => file.metadata == "AppJSON");
+				appJSON = JSON.parse(jsonContent.content)
+
+				sections.push(new SoarFilesSection("Files", {"app_content": appContent, "app_json": appJSON, ...element.data}, vscode.TreeItemCollapsibleState.Collapsed))
+			}
+
+			return Promise.resolve(sections)
+
 
 		} else if (element.contextValue === "soarassetsection") {
 			return client.listAppAssets(element.data["app"]["id"]).then(function (res) {
@@ -63,6 +71,7 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppsTre
 				return assetTreeItems
 			}).catch(function (err) {
 				console.error(err)
+				vscode.window.showErrorMessage(JSON.stringify(err));
 			})
 		} else if (element.contextValue === "soaractionsection") {
 			let actionTreeItems = element.data["app"]["_pretty_actions"].map((entry: any) => (new SoarActionItem(entry["name"], {"action": entry, ...element.data}, vscode.TreeItemCollapsibleState.None)))
@@ -100,7 +109,9 @@ export class SoarAppItem extends SoarAppsTreeItem {
 		if (data["app"]["draft_mode"]) {
 			this.description += " • draft"
 		}
-
+		if (data["app"]["immutable"]) {
+			this.description += " • immutable"
+		}
 		if (data["app"]["_pretty_asset_count"] > 0) {
 			this.iconPath = new vscode.ThemeIcon("package", new vscode.ThemeColor("testing.iconPassed"))
 		}
@@ -141,10 +152,14 @@ class SoarFilesSection extends SoarAppsTreeItem {
 
 	constructor(label: any, data: any, collapsibleState: any, command?: any) {
 		super(label, data, collapsibleState, command)
-		this.description = `${data["app_content"].length} • Read-only`
+		this.description = ""
+		if (data["app_content"]) {
+			this.description = `${data["app_content"].length} •`
+		}
+		this.description += `Read-only`
 	}
 
-	iconPath = new vscode.ThemeIcon("symbol-folder")
+	iconPath = new vscode.ThemeIcon("folder")
 
 	contextValue: string = "soarfilessection"
 }
