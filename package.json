@@ -188,6 +188,18 @@
 				"category": "SOAR Apps"
 			},
 			{
+				"command": "splunkSoar.apps.installConnector",
+				"title": "SOAR: Install App",
+				"icon": "$(cloud-upload)",
+				"category": "SOAR Apps"
+			},
+			{
+				"command": "splunkSoar.apps.installFolder",
+				"title": "SOAR: Install App from Folder",
+				"icon": "$(cloud_upload)",
+				"category": "SOAR Apps"
+			},
+			{
 				"command": "splunkSoar.apps.runAction",
 				"title": "SOAR: Run Action",
 				"icon": "$(debug-start)"
@@ -866,6 +878,20 @@
 					"command": "splunkSoar.scm.syncForce",
 					"when": "view == soarPlaybooks && viewItem =~ /soarrepo:(.*)/ && viewItem != soarrepo:local",
 					"group": "inline@2"
+				}
+			],
+			"editor/title": [
+				{
+					"command": "splunkSoar.apps.installConnector",
+					"when": "editorTextFocus && resourceFilename =~ /.*_connector.py/",
+					"group": "navigation@1"
+				}
+			],
+			"explorer/context": [
+				{
+					"command": "splunkSoar.apps.installFolder",
+					"when": "explorerResourceIsFolder == true",
+					"group": "soar@1"
 				}
 			]
 		},

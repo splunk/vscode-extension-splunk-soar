@@ -16,6 +16,7 @@ import { add, clear, deleteContainer, remove } from './containers/containerWatch
 import { deleteArtifact } from './artifacts/delete';
 import { runPlaybookOnContainer } from './containers/runPlaybook';
 import { syncScm } from './scm/scm';
+import { installConnector, installFolder } from './apps/deploy';
 
 export function registerCommands(context: vscode.ExtensionContext) {
 
@@ -104,7 +105,6 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	}))
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.assets.viewWeb', async (assetContext) => {
-		console.log("hwy")
 		if (assetContext) {
 			openWebAsset(context, assetContext.data.app.id, assetContext.data.asset.id)
 		} else {
@@ -188,5 +188,11 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposableScmSync);
 	let disposableScmSyncForce = vscode.commands.registerCommand('splunkSoar.scm.syncForce', async (repoContext: any) => { syncScm(context, repoContext, true)});
 	context.subscriptions.push(disposableScmSyncForce);
+
+	let disposableInstallConnector = vscode.commands.registerCommand('splunkSoar.apps.installConnector', async (actionContext) => { installConnector(context, actionContext) });
+	context.subscriptions.push(disposableInstallConnector);
+
+	let disposableInstallFolder = vscode.commands.registerCommand('splunkSoar.apps.installFolder', async (actionContext) => { installFolder(context, actionContext) });
+	context.subscriptions.push(disposableInstallFolder);
 
 }
