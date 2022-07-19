@@ -16,7 +16,7 @@ export async function deleteArtifact(context: vscode.ExtensionContext, artifactC
     }
 
     let choice = await vscode.window.showWarningMessage(`Are you sure you want to delete artifact ${artifactId}?`, ...["Yes", "No"])
-    if (choice == "No") {
+    if (choice != "Yes") {
         return
     }
 

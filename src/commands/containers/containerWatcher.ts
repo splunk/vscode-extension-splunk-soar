@@ -55,7 +55,7 @@ export async function deleteContainer(context: vscode.ExtensionContext, containe
     let client = getClientForActiveEnvironment(context)
 
     let choice = await vscode.window.showWarningMessage(`Are you sure you want to delete container ${containerId}?`, ...["Yes", "No"])
-    if (choice == "No") {
+    if (choice != "Yes") {
         return
     }
 
@@ -69,6 +69,11 @@ export async function deleteContainer(context: vscode.ExtensionContext, containe
 }
 
 export async function clear(context: vscode.ExtensionContext) {
+    let choice = await vscode.window.showWarningMessage("Are you sure you want to clear the container watcher?", ...["Yes", "No"])
+    if (choice != "Yes") {
+        return
+    }
+
     context.globalState.update(CONTAINER_WATCHER_KEY, undefined)
     await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh')
 }
