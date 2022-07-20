@@ -28,6 +28,11 @@ export async function repeatLastActionRun(context: ExtensionContext) {
 	let client = await getClientForActiveEnvironment(context)
 
 	let actionRunResponse = await client.getLastUserActionRun()
+
+	if (actionRunResponse.data["data"].length == 0) {
+		window.showWarningMessage("Did not find any action runs for the active user. Aborting.")
+		return
+	}
 	let actionRun = actionRunResponse.data["data"][0]
 
 	client.getActionRun(actionRun["id"]).then(function(actionRun) {
