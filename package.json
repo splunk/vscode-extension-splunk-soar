@@ -52,7 +52,9 @@
 						"id": "connectenvironment",
 						"title": "Connect an environment",
 						"description": "You are able to connect multiple environments and switch between them as needed. Only one environment can be active at a time.\n[Connect Environment](command:splunkSoar.environments.add)",
-						"media": { "markdown": "media/onboarding/connectenvironment.md" },
+						"media": {
+							"markdown": "media/onboarding/connectenvironment.md"
+						},
 						"completionEvents": [
 							"onCommand:splunkSoar.environments.add"
 						]
@@ -97,7 +99,9 @@
 						"id": "exploreresources",
 						"title": "Explore further resources",
 						"description": "You made it! Review the 'Help and Feedback' view in the SOAR extension to discover more help and guidance around this software",
-						"media": { "markdown": "media/onboarding/connectenvironment.md" }
+						"media": {
+							"markdown": "media/onboarding/connectenvironment.md"
+						}
 					}
 				]
 			}
@@ -987,8 +991,9 @@
 		"@vscode/webview-ui-toolkit": "^1.0.0",
 		"axios": "^0.26.1",
 		"ejs": "^3.1.7",
+		"glob-parent": "6.0.1",
 		"ignore": "^5.2.0",
 		"tar": "^6.1.11",
-		"glob-parent": "6.0.1"
+		"terser": "5.14.2"
 	}
 }
