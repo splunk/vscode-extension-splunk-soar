@@ -1,6 +1,7 @@
 import { QuickPickItem, window, QuickInputButton, ExtensionContext, Uri, ProgressLocation, env, workspace, commands, ThemeIcon } from 'vscode';
 import { getClientForActiveEnvironment } from '../../soar/client';
 import {MultiStepInput} from '../../wizard/MultiStepInput'
+import { openAppAssetConfiguration } from '../web';
 import { processRunAction } from './actionRuns';
 import { IActionDefinition, IParamInfo, IActionContext } from './actionRuns';
 
@@ -29,9 +30,12 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 	}
 
 	const title = `Run Action: ${JSON.stringify(actionContext.data.action["name"])}`;
+	let client = await getClientForActiveEnvironment(context)
+
+	let appActions: IActionDefinition[] = await (await client.getAppActions(actionContext.data["app"]["id"])).data.data
 
     let actionName = actionContext.data.action["name"]
-    const actionDefinition = actionContext.data.app_json.actions.find((action: IActionDefinition) => action.action == actionName);
+    const actionDefinition = appActions.find((action: IActionDefinition) => action.action == actionName);
 	if (actionDefinition == undefined) {
 		window.showErrorMessage("Run Action failed: Could not find action definition in app metadata")
 		return
@@ -46,7 +50,6 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 
 	async function pickAsset(input: MultiStepInput, state: Partial<State>) {
 
-        let client = await getClientForActiveEnvironment(context)
         let assetResponse = await client.listAppAssets(actionContext.data.app.id)
 
         const assets: QuickPickItem[] = assetResponse.data.data
@@ -54,11 +57,8 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 
 		if (assets.length === 0) {
 			window.showErrorMessage("No asset configured for app.", ...["Configure Asset in SOAR"]).then(selection => {
-				const server: string = workspace.getConfiguration().get<string>("authentication.server", '')
-				
 				if (selection) {
-					let assetConfigUrl = `${server}/apps/${actionContext.data.app.id}/asset/`
-					env.openExternal(Uri.parse(assetConfigUrl))	
+					openAppAssetConfiguration(context, actionContext.data["app"]["id"])
 				}
 			})
 			return

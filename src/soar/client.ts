@@ -90,6 +90,10 @@ export class SoarClient {
         return await this.httpClient.get(`app/${appId}`, {params: {"pretty": true}})
     }
 
+    getAppActions = async (appId: string) => {
+        return await this.httpClient.get(`app/${appId}/actions`, {params: {"pretty": true}})
+    }
+
     getAppByAppid = async (appId: string) => {
     return await this.httpClient.get(`app`, {params: {"pretty": true, "_filter_appid": `"${appId}"`}})
     }

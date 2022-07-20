@@ -10,7 +10,7 @@ import { installBundle } from './apps/installBundle';
 import { runActionInput } from './actionRuns/triggerActionRun';
 import { viewAppDocs } from './apps/viewAppDocs';
 import { runPlaybookInput } from './playbooks/runPlaybook';
-import { openAppDevDocs, openRepoDocs, openRepoIssues, openWebActionRunResult, openWebAnalystQueue, openWebApp, openWebApps, openWebAsset, openWebContainer, openWebPlaybook, openWebPlaybookEditor, openWebPlaybooks } from './web';
+import { openAppAssetConfiguration, openAppDevDocs, openRepoDocs, openRepoIssues, openWebActionRunResult, openWebAnalystQueue, openWebApp, openWebApps, openWebAsset, openWebContainer, openWebPlaybook, openWebPlaybookEditor, openWebPlaybooks } from './web';
 import { cancelPlaybookRun } from './playbookRuns/cancel';
 import { add, clear, deleteContainer, remove } from './containers/containerWatcher';
 import { deleteArtifact } from './artifacts/delete';
@@ -194,5 +194,9 @@ export function registerCommands(context: vscode.ExtensionContext) {
 
 	let disposableInstallFolder = vscode.commands.registerCommand('splunkSoar.apps.installFolder', async (actionContext) => { installFolder(context, actionContext) });
 	context.subscriptions.push(disposableInstallFolder);
+
+
+	let disposableConfigureAsset = vscode.commands.registerCommand('splunkSoar.assets.configureWeb', async (actionContext) => { openAppAssetConfiguration(context, String(actionContext.data.app.id)) });
+	context.subscriptions.push(disposableConfigureAsset);
 
 }

@@ -351,6 +351,12 @@
 				"category": "SOAR Assets"
 			},
 			{
+				"command": "splunkSoar.assets.configureWeb",
+				"title": "Configure Asset",
+				"category": "SOAR Assets",
+				"icon": "$(plus)"
+			},
+			{
 				"command": "splunkSoar.assets.inspect",
 				"title": "Inspect",
 				"icon": "$(eye)",
@@ -878,6 +884,11 @@
 					"command": "splunkSoar.scm.syncForce",
 					"when": "view == soarPlaybooks && viewItem =~ /soarrepo:(.*)/ && viewItem != soarrepo:local",
 					"group": "inline@2"
+				},
+				{
+					"command": "splunkSoar.assets.configureWeb",
+					"when": "view == soarApps && viewItem == soarassetsection",
+					"group": "inline@1"
 				}
 			],
 			"editor/title": [

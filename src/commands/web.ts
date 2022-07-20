@@ -57,3 +57,10 @@ export async function openWebAnalystQueue(context: vscode.ExtensionContext) {
     let client: SoarClient = await getClientForActiveEnvironment(context)
     vscode.env.openExternal(vscode.Uri.parse(`${client.server}/browse`))
 }
+
+export async function openAppAssetConfiguration(context: vscode.ExtensionContext, appId: string) {
+
+    let client: SoarClient = await getClientForActiveEnvironment(context)
+    let assetConfigUrl = `${client.server}/apps/${appId}/asset/`
+    vscode.env.openExternal(vscode.Uri.parse(assetConfigUrl))	
+}
