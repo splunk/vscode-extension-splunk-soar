@@ -280,6 +280,12 @@
 				"category": "SOAR Action Runs"
 			},
 			{
+				"command": "splunkSoar.actionRuns.repeatLast",
+				"title": "Repeat Last Action Run",
+				"icon": "$(debug-restart)",
+				"category": "SOAR Action Runs"
+			},
+			{
 				"command": "splunkSoar.playbooks.inspect",
 				"title": "Inspect",
 				"icon": "$(eye)",

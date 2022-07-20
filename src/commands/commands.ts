@@ -2,7 +2,7 @@ import * as vscode from 'vscode'
 import { activateEnvironment, addEnvironment, copyPasswordToClipboard, removeEnvironment, environmentVersion, openEnvironmentWeb } from '../commands/environments/environments';
 import { AppWizardPanel } from '../webviews/appWizard';
 import { cancelActionRun } from './actionRuns/cancelActionRun';
-import { repeatActionRun } from './actionRuns/repeatActionRun';
+import { repeatActionRun, repeatLastActionRun } from './actionRuns/repeatActionRun';
 import { diffFile } from './apps/diffFile';
 import { downloadBundle } from './apps/downloadBundle';
 import { downloadBundle as downloadPlaybookBundle} from './playbooks/downloadBundle';
@@ -198,5 +198,9 @@ export function registerCommands(context: vscode.ExtensionContext) {
 
 	let disposableConfigureAsset = vscode.commands.registerCommand('splunkSoar.assets.configureWeb', async (actionContext) => { openAppAssetConfiguration(context, String(actionContext.data.app.id)) });
 	context.subscriptions.push(disposableConfigureAsset);
+
+
+	let disposableRepeatLastActionRun = vscode.commands.registerCommand('splunkSoar.actionRuns.repeatLast', async () => { repeatLastActionRun(context) });
+	context.subscriptions.push( disposableRepeatLastActionRun);
 
 }
