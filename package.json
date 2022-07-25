@@ -552,6 +552,14 @@
 					"when": "false"
 				},
 				{
+					"command": "splunkSoar.apps.pin",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.apps.unpin",
+					"when": "false"
+				},
+				{
 					"command": "splunkSoar.environments.remove",
 					"when": "false"
 				},

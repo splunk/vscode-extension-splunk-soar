@@ -71,6 +71,7 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 			placeholder: 'Pick an asset',
 			items: assets,
 			activeItem: typeof state.asset !== 'string' ? state.asset : undefined,
+			canSelectMany: true,
 			shouldResume: shouldResume
 		});
 		state.asset = pick;
@@ -118,6 +119,7 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 				items: values,
 				activeItem: typeof state.parameters[0][paramName] !== 'string' ? state.parameters[0][paramName] : undefined,
 				shouldResume: shouldResume,
+				canSelectMany: false,
 				buttons: showSkip ? [skipParamButton] : [] 
 			});
 
@@ -137,6 +139,7 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 				items: values,
 				activeItem: typeof state.parameters[0][paramName] !== 'string' ? state.parameters[0][paramName] : undefined,
 				shouldResume: shouldResume,
+				canSelectMany: false,
 				buttons: showSkip ? [skipParamButton] : []
 			});
 
@@ -197,14 +200,12 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 
 	window.withProgress({
 		location: ProgressLocation.Notification,
-		title: `Running ${actionContext.data.action["name"]} with Asset ${state.asset.label} on Container ${state.container_id}'`,
+		title: `Running ${actionContext.data.action["name"]} with Asset ${state.asset.map(asset => asset.label).join()} on container ${state.container_id}'`,
 		cancellable: false
 	}, async (progress, token) => {
 
 		let targets = [{
-                "assets": [
-					state.asset.label
-				],
+                "assets": state.asset.map(asset => asset.label),
                 "parameters": state.parameters,
                 "app_id": actionContext.data.app.id
         }]

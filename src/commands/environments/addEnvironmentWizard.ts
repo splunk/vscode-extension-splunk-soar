@@ -39,7 +39,8 @@ async function connectSslVerifyInput(input: MultiStepInput, state: Partial<Conne
         placeholder: 'Verify TLS?',
         items: [{"label": "$(lock) Yes"}, {"label": "$(unlock) No"}],
         shouldResume: shouldResume,
-        ignoreFocusOut: true
+        ignoreFocusOut: true,
+        canSelectMany: false
     });
     state.sslVerify = sslPick.label === "Yes"
     return (input: MultiStepInput) => conectUsernameInput(input, state);

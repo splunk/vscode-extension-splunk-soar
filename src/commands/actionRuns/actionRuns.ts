@@ -91,11 +91,9 @@ export async function processRunAction(actionName: string, containerId: string, 
     
     progress.report({increment: 75, message: "Collecting Results"})
 
-    let appRunId = appRunsResult.data.data[0]["id"]
-    let appRunResult = await client.getAppRun(appRunId)
     let soarOutput = vscode.window.createOutputChannel("Splunk SOAR: Action Run");
     soarOutput.clear()
-    soarOutput.append(JSON.stringify(appRunResult.data, null, 4))
+    soarOutput.append(JSON.stringify(appRunsResult.data, null, 4))
     soarOutput.show()
 
     await vscode.commands.executeCommand('splunkSoar.actionRuns.refresh');

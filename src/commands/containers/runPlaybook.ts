@@ -48,7 +48,8 @@ export async function runPlaybookOnContainer(context: vscode.ExtensionContext, c
             totalSteps: totalSteps,
             placeholder: 'Playbook?',
             items: playbooks.data.map((playbook: any) => { return {"label": playbook.name, "description": `${JSON.stringify(playbook.id)}`}}),
-            shouldResume: shouldResume
+            shouldResume: shouldResume,
+            canSelectMany: false
         });
         state.playbook_id = Number(playbookPick.description)
         return (input: MultiStepInput) => scopeInput(input, state);
@@ -61,7 +62,8 @@ export async function runPlaybookOnContainer(context: vscode.ExtensionContext, c
             totalSteps: totalSteps,
             placeholder: 'Scope?',
             items: [{"label": "all", "description": "Run the playbook for only artifacts added to the container since the last time the playbook was run"}, {"label": "new", "description": "Run the playbook against all artifacts in the container"}],
-            shouldResume: shouldResume
+            shouldResume: shouldResume,
+            canSelectMany: false
         });
         state.scope = scopePick
     }    

@@ -21,6 +21,7 @@ export interface QuickPickParameters<T extends vscode.QuickPickItem> {
 	activeItem?: T;
 	placeholder: string;
 	buttons?: vscode.QuickInputButton[];
+	canSelectMany: boolean;
 	shouldResume: () => Thenable<boolean>;
 }
 
@@ -75,7 +76,7 @@ export class MultiStepInput {
 		}
 	}
 
-	async showQuickPick<T extends vscode.QuickPickItem, P extends QuickPickParameters<T>>({ title, step, totalSteps, items, activeItem, placeholder, buttons, shouldResume }: P) {
+	async showQuickPick<T extends vscode.QuickPickItem, P extends QuickPickParameters<T>>({ title, step, totalSteps, items, activeItem, placeholder, buttons, canSelectMany, shouldResume }: P) {
 		const disposables: vscode.Disposable[] = [];
 		try {
 			return await new Promise<T | (P extends { buttons: (infer I)[] } ? I : never)>((resolve, reject) => {
@@ -85,6 +86,7 @@ export class MultiStepInput {
 				input.totalSteps = totalSteps;
 				input.placeholder = placeholder;
 				input.items = items;
+				input.canSelectMany = canSelectMany;
 				if (activeItem) {
 					input.activeItems = [activeItem];
 				}
@@ -97,10 +99,17 @@ export class MultiStepInput {
 						if (item === vscode.QuickInputButtons.Back) {
 							reject(InputFlowAction.back);
 						} else {
-							resolve(<any>item);
+
+							if (input.canSelectMany) {
+								console.log("many")
+							} else {
+								resolve(<any>item);
+							}
 						}
 					}),
-					input.onDidChangeSelection(items => resolve(items[0])),
+					input.onDidAccept(function (items){
+						resolve(input.selectedItems)
+					}),
 					input.onDidHide(() => {
 						(async () => {
 							reject(shouldResume && await shouldResume() ? InputFlowAction.resume : InputFlowAction.cancel);
