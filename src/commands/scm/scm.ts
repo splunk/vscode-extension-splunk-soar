@@ -9,7 +9,7 @@ export async function syncScm(context: vscode.ExtensionContext, repoContext: any
     let client = await getClientForActiveEnvironment(context)
 
     if (force) {
-        let choice = await vscode.window.showWarningMessage(`Are you sure you want to perform a forced sync? This is a potentially destructive action.`, ...["Yes", "No"])
+        let choice = await vscode.window.showWarningMessage(`Are you sure you want to perform a forced sync? This is a potentially destructive action.`, {modal: true}, ...["Yes", "No"])
         if (choice != "Yes") {
             return
         }

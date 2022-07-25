@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
-import * as path from 'path';
 import { getClientForActiveEnvironment } from '../soar/client';
 import {partition} from '../utils'
 import { SoarApp } from '../soar/models';
+import { listPinnedApps, PinnedApp } from '../commands/apps/pin';
+import { list } from 'tar';
 
 export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppsTreeItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<SoarAppsTreeItem | undefined | void> = new vscode.EventEmitter<SoarAppsTreeItem | undefined | void>();
@@ -27,24 +28,32 @@ export class SoarAppsTreeProvider implements vscode.TreeDataProvider<SoarAppsTre
 			return Promise.resolve([])
 		}
 		if (!element) {
-			return client.listApps().then(function (res) {
-				let appEntries = res.data["data"]
-				const [configured, unconfigured] = partition(appEntries, (app: SoarApp) => app["_pretty_asset_count"] > 0)
+			let appResponse = await client.listApps()
+			let appEntries = appResponse.data["data"]
+			const [configured, unconfigured] = partition(appEntries, (app: SoarApp) => app["_pretty_asset_count"] > 0)
 
-				const config = vscode.workspace.getConfiguration()
-				const configuredAppsOnly: boolean = config.get<boolean>("apps.showConfiguredOnly", false)
-				let appItems = configured
+			const config = vscode.workspace.getConfiguration()
+			const configuredAppsOnly: boolean = config.get<boolean>("apps.showConfiguredOnly", false)
+			let appItems = configured
 
-				if (!configuredAppsOnly) {
-					appItems = configured.concat(unconfigured)
+			if (!configuredAppsOnly) {
+				appItems = configured.concat(unconfigured)
+			}
+			
+			let pinnedApps: PinnedApp[] = await listPinnedApps(this.context)
+			let pinnedAppTreeItems = []
+			for (let pinnedApp of pinnedApps) {
+				let appEntry = appItems.find((app: any) => app.id == pinnedApp.appId)
+				if (appEntry !== undefined) {
+					pinnedAppTreeItems.push(new SoarAppItem(appEntry["name"], {"app": appEntry, "isPinned": true}, vscode.TreeItemCollapsibleState.Collapsed))
 				}
+			}
 
-				let appTreeItems = appItems.map((entry: any) => (new SoarAppItem(entry["name"], {"app": entry}, vscode.TreeItemCollapsibleState.Collapsed)))
-				return appTreeItems
-			})
+			let appTreeItems = appItems.map((entry: any) => (new SoarAppItem(entry["name"], {"app": entry}, vscode.TreeItemCollapsibleState.Collapsed)))
+			return Promise.resolve(pinnedAppTreeItems.concat(appTreeItems))
 		}
 
-		if (element.contextValue === "soarapp") {
+		if (element.contextValue.startsWith("soarapp")) {
 			
 			let isImmutable = element.data["app"]["immutable"]
 			let appJSON;
@@ -114,6 +123,14 @@ export class SoarAppItem extends SoarAppsTreeItem {
 		}
 		if (data["app"]["_pretty_asset_count"] > 0) {
 			this.iconPath = new vscode.ThemeIcon("package", new vscode.ThemeColor("testing.iconPassed"))
+		}
+		if(data["isPinned"] == true) {
+			if (data["app"]["_pretty_asset_count"] > 0) {
+				this.iconPath = new vscode.ThemeIcon("pin", new vscode.ThemeColor("testing.iconPassed"))
+			} else {
+				this.iconPath = new vscode.ThemeIcon("pin", new vscode.ThemeColor("testing.iconSkipped"))	
+			}
+			this.contextValue = "soarapp:pinned"
 		}
 	}
 

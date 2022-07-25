@@ -17,6 +17,7 @@ import { deleteArtifact } from './artifacts/delete';
 import { runPlaybookOnContainer } from './containers/runPlaybook';
 import { syncScm } from './scm/scm';
 import { installConnector, installFolder } from './apps/deploy';
+import { pinApp, unpinApp } from './apps/pin';
 
 export function registerCommands(context: vscode.ExtensionContext) {
 
@@ -203,4 +204,9 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	let disposableRepeatLastActionRun = vscode.commands.registerCommand('splunkSoar.actionRuns.repeatLast', async () => { repeatLastActionRun(context) });
 	context.subscriptions.push( disposableRepeatLastActionRun);
 
+
+	// Pinning Apps
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.pin', (appContext) => { pinApp(context, appContext)}));
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.unpin', (appContext) => { unpinApp(context, appContext)}));
+	
 }

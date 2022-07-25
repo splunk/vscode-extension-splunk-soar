@@ -239,6 +239,17 @@
 				"category": "SOAR App"
 			},
 			{
+				"command": "splunkSoar.apps.pin",
+				"title": "Pin",
+				"icon": "$(pin)",
+				"category": "SOAR App"
+			},
+			{
+				"command": "splunkSoar.apps.unpin",
+				"title": "Unpin",
+				"category": "SOAR App"
+			},
+			{
 				"command": "splunkSoar.apps.downloadBundle",
 				"title": "Download Bundle",
 				"icon": "$(cloud-download)",
@@ -804,6 +815,16 @@
 					"command": "splunkSoar.apps.inspect",
 					"when": "view == soarApps && viewItem == soarapp",
 					"group": "actions@1"
+				},
+				{
+					"command": "splunkSoar.apps.pin",
+					"when": "view == soarApps && viewItem == soarapp",
+					"group": "actions@2"
+				},
+				{
+					"command": "splunkSoar.apps.unpin",
+					"when": "view == soarApps && viewItem == soarapp:pinned",
+					"group": "actions@2"
 				},
 				{
 					"command": "splunkSoar.apps.viewDocs",

@@ -54,7 +54,7 @@ export async function deleteContainer(context: vscode.ExtensionContext, containe
 
     let client = getClientForActiveEnvironment(context)
 
-    let choice = await vscode.window.showWarningMessage(`Are you sure you want to delete container ${containerId}?`, ...["Yes", "No"])
+    let choice = await vscode.window.showWarningMessage(`Are you sure you want to delete container ${containerId}?`, {modal: true}, ...["Yes", "No"])
     if (choice != "Yes") {
         return
     }
@@ -69,7 +69,7 @@ export async function deleteContainer(context: vscode.ExtensionContext, containe
 }
 
 export async function clear(context: vscode.ExtensionContext) {
-    let choice = await vscode.window.showWarningMessage("Are you sure you want to clear the container watcher?", ...["Yes", "No"])
+    let choice = await vscode.window.showWarningMessage("Are you sure you want to clear the container watcher?", {modal: true}, ...["Yes", "No"])
     if (choice != "Yes") {
         return
     }
