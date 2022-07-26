@@ -742,12 +742,12 @@
 				},
 				{
 					"command": "splunkSoar.actionRuns.cancel",
-					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:(running)/",
+					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:(running|pending)/",
 					"group": "inline@2"
 				},
 				{
 					"command": "splunkSoar.playbookRuns.cancel",
-					"when": "view == soarPlaybookRuns && viewItem =~ /soarplaybookrun:(running)/",
+					"when": "view == soarPlaybookRuns && viewItem =~ /soarplaybookrun:(running|pending)/",
 					"group": "inline"
 				},
 				{
@@ -767,12 +767,12 @@
 				},
 				{
 					"command": "splunkSoar.actionRuns.inspect",
-					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:(running|failed|success)/",
+					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:*/",
 					"group": "actions@1"
 				},
 				{
 					"command": "splunkSoar.actionRuns.inspectAppRun",
-					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:(running|failed|success)/",
+					"when": "view == soarActionRuns && viewItem =~ /soaractionrun:*/",
 					"group": "actions@2"
 				},
 				{

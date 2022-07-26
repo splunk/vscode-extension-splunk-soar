@@ -97,7 +97,7 @@ export class ActionRun extends ActionRunTreeItem {
 			if (data["actionRun"]["cancelled"]) {
 			this.iconPath = new vscode.ThemeIcon("error", new vscode.ThemeColor("testing.iconSkipped"))
 			}
-		} else if (data["actionRun"]["status"] == "running") {
+		} else if (data["actionRun"]["status"] == "running" || data["actionRun"]["status"] == "pending") {
 			this.iconPath = new vscode.ThemeIcon("watch", new vscode.ThemeColor("testing.iconQueued"))
 		}
 
