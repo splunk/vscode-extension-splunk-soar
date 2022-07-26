@@ -450,7 +450,7 @@
 			},
 			{
 				"command": "splunkSoar.containerWatcher.remove",
-				"title": "Remove from Watcher",
+				"title": "Remove",
 				"icon": "$(close)",
 				"category": "SOAR Containers"
 			},
@@ -857,12 +857,12 @@
 				},
 				{
 					"command": "splunkSoar.apps.inspect",
-					"when": "view == soarApps && viewItem == soarapp",
+					"when": "view == soarApps && viewItem =~ /soarapp:*/",
 					"group": "actions@1"
 				},
 				{
 					"command": "splunkSoar.apps.pin",
-					"when": "view == soarApps && viewItem == soarapp",
+					"when": "view == soarApps && viewItem =~ /soarapp:unpinned/",
 					"group": "actions@2"
 				},
 				{
@@ -872,12 +872,12 @@
 				},
 				{
 					"command": "splunkSoar.apps.viewDocs",
-					"when": "view == soarApps && viewItem == soarapp",
+					"when": "view == soarApps && viewItem =~ /soarapp:*/",
 					"group": "web"
 				},
 				{
 					"command": "splunkSoar.apps.viewWeb",
-					"when": "view == soarApps && viewItem == soarapp",
+					"when": "view == soarApps && viewItem =~ /soarapp:*/",
 					"group": "web"
 				},
 				{
@@ -887,8 +887,8 @@
 				},
 				{
 					"command": "splunkSoar.apps.downloadBundle",
-					"when": "view == soarApps && viewItem == soarapp",
-					"group": "actions@2"
+					"when": "view == soarApps && viewItem =~ /soarapp:*/",
+					"group": "actions@3"
 				},
 				{
 					"command": "splunkSoar.apps.viewFile",
@@ -908,7 +908,7 @@
 				{
 					"command": "splunkSoar.containers.delete",
 					"when": "view == soarContainerWatcher && viewItem == soarcontainer",
-					"group": "actions@2"
+					"group": "actions@3"
 				},
 				{
 					"command": "splunkSoar.containers.runPlaybook",
@@ -929,6 +929,11 @@
 					"command": "splunkSoar.containerWatcher.remove",
 					"when": "view == soarContainerWatcher && viewItem == soarcontainer",
 					"group": "inline@1"
+				},
+				{
+					"command": "splunkSoar.containerWatcher.remove",
+					"when": "view == soarContainerWatcher && viewItem == soarcontainer",
+					"group": "actions@2"
 				},
 				{
 					"command": "splunkSoar.containerWatcher.viewWeb",

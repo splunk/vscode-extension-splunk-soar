@@ -134,7 +134,7 @@ export class SoarAppItem extends SoarAppsTreeItem {
 		}
 	}
 
-	contextValue: string = 'soarapp';
+	contextValue: string = 'soarapp:unpinned';
 }
 
 export class SoarAssetItem extends SoarAppsTreeItem {
