@@ -18,6 +18,7 @@ import { runPlaybookOnContainer } from './containers/runPlaybook';
 import { syncScm } from './scm/scm';
 import { installConnector, installFolder } from './apps/deploy';
 import { pinApp, unpinApp } from './apps/pin';
+import { createContainer } from './containers/create';
 
 export function registerCommands(context: vscode.ExtensionContext) {
 
@@ -208,5 +209,6 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	// Pinning Apps
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.pin', (appContext) => { pinApp(context, appContext)}));
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.unpin', (appContext) => { unpinApp(context, appContext)}));
-	
+
+	context.subscriptions.push(vscode.commands.registerCommand("splunkSoar.containers.create", () => {createContainer(context)}))
 }

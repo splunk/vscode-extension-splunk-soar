@@ -384,6 +384,12 @@
 				"category": "SOAR Assets"
 			},
 			{
+				"command": "splunkSoar.containers.create",
+				"title": "Create Container...",
+				"icon": "$(pencil)",
+				"category": "SOAR Containers"
+			},
+			{
 				"command": "splunkSoar.containers.inspect",
 				"title": "Inspect",
 				"icon": "$(eye)",
@@ -701,6 +707,11 @@
 					"command": "splunkSoar.containerWatcher.clear",
 					"when": "view == soarContainerWatcher",
 					"group": "navigation@3"
+				},
+				{
+					"command": "splunkSoar.containers.create",
+					"when": "view == soarContainerWatcher",
+					"group": "navigation@5"
 				},
 				{
 					"command": "splunkSoar.containerWatcher.viewAnalystQueue",

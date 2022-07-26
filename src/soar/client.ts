@@ -221,6 +221,13 @@ export class SoarClient {
         return await this.httpClient.post(`scm/${scmId}`, {"pull": true, "force": force})
     }
 
+    createContainer = async (label: string, name: string) => {
+        return await this.httpClient.post(`container`, {label, name})
+    }
+
+    getContainerOptions = async () => {
+        return await this.httpClient.get(`container_options`)
+    }
 }
 
 export async function getClientForActiveEnvironment(context: vscode.ExtensionContext): Promise<SoarClient> {

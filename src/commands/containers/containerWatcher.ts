@@ -30,6 +30,11 @@ export async function add(context: vscode.ExtensionContext) {
         return
     }
 
+    addById(context, containerId)
+}
+
+
+export async function addById(context: vscode.ExtensionContext, containerId: string) {
     let watchedContainers = context.globalState.get(CONTAINER_WATCHER_KEY) || []
     let newContainer = await watchedContainerFromId(context, containerId)
     
@@ -37,6 +42,7 @@ export async function add(context: vscode.ExtensionContext) {
     context.globalState.update(CONTAINER_WATCHER_KEY, newWatchedContainers)
 
     await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh')
+
 }
 
 export async function remove(context: vscode.ExtensionContext, containerContext: any) {
