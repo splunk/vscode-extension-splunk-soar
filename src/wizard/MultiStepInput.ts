@@ -108,7 +108,9 @@ export class MultiStepInput {
 						}
 					}),
 					input.onDidAccept(function (items){
+						// @ts-ignore-start
 						resolve(input.selectedItems)
+						// @ts-ignore-end
 					}),
 					input.onDidHide(() => {
 						(async () => {

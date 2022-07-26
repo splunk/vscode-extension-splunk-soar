@@ -1,3 +1,4 @@
+ //@ts-nocheck
 import * as vscode from 'vscode'
 import { getClientForActiveEnvironment } from '../../soar/client'
 import { MultiStepInput } from '../../wizard/MultiStepInput'

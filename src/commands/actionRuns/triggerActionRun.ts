@@ -1,3 +1,4 @@
+ //@ts-nocheck
 import { QuickPickItem, window, QuickInputButton, ExtensionContext, Uri, ProgressLocation, env, workspace, commands, ThemeIcon } from 'vscode';
 import { getClientForActiveEnvironment } from '../../soar/client';
 import {MultiStepInput} from '../../wizard/MultiStepInput'
@@ -200,12 +201,12 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 
 	window.withProgress({
 		location: ProgressLocation.Notification,
-		title: `Running ${actionContext.data.action["name"]} with Asset ${state.asset.map(asset => asset.label).join()} on container ${state.container_id}'`,
+		title: `Running ${actionContext.data.action["name"]} with Asset ${state.asset.map((asset: any) => asset.label).join()} on container ${state.container_id}'`,
 		cancellable: false
 	}, async (progress, token) => {
 
 		let targets = [{
-                "assets": state.asset.map(asset => asset.label),
+                "assets": state.asset.map((asset: any) => asset.label),
                 "parameters": state.parameters,
                 "app_id": actionContext.data.app.id
         }]

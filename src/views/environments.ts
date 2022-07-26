@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import { ACTIVE_ENV_KEY, ENV_KEY } from '../commands/environments/environments';
-import { getClientForEnvironment } from '../soar/client';
 
 export class SoarEnvironmentsTreeProvider implements vscode.TreeDataProvider<SoarEnvironmentsTreeItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<SoarEnvironmentsTreeItem | undefined | void> = new vscode.EventEmitter<SoarEnvironmentsTreeItem | undefined | void>();

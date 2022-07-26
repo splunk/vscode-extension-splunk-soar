@@ -4,7 +4,7 @@
 	"description": "The extension for developers building applications for Splunk SOAR. Works with SOAR hosted either on-prem or in Cloud and its goal is to make the app development experience as seamless and efficient as possible on the VS Code editor platform.",
 	"icon": "media/soarcloud.png",
 	"publisher": "Splunk",
-	"version": "0.0.15",
+	"version": "0.0.16",
 	"engines": {
 		"vscode": "^1.67.0"
 	},

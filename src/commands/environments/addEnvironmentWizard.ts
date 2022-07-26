@@ -1,3 +1,4 @@
+ //@ts-nocheck
 import {MultiStepInput} from '../../wizard/MultiStepInput'
 import { ConnectEnvironment } from './environments';
 

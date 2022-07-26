@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 import { addOrReplace, removeIfExists } from '../../utils'
 import { refreshViews } from '../../views/views'
-import { SoarInstancesTreeItem } from '../../views/environments'
+import { Environment, SoarEnvironmentsTreeItem } from '../../views/environments'
 import { getClientForEnvironment, SoarClient } from '../../soar/client'
 import { addEnvironmentWizard } from './addEnvironmentWizard'
 import { IActionContext } from '../actionRuns/actionRuns'
@@ -139,7 +139,7 @@ export function listEnvironments(context: vscode.ExtensionContext): ConfiguredCo
     return environments
 }
 
-export async function openEnvironmentWeb(context: vscode.ExtensionContext, environmentContext: SoarInstancesTreeItem) {
+export async function openEnvironmentWeb(context: vscode.ExtensionContext, environmentContext: Environment) {
     let envKey: string;
 
     if (!environmentContext) {
@@ -156,7 +156,7 @@ export async function openEnvironmentWeb(context: vscode.ExtensionContext, envir
     vscode.env.openExternal(vscode.Uri.parse(environment.url))
 }
 
-export async function environmentVersion(context: vscode.ExtensionContext, environmentContext: SoarInstancesTreeItem) {
+export async function environmentVersion(context: vscode.ExtensionContext, environmentContext: Environment) {
     let envKey: string;
 
     if (!environmentContext) {
@@ -180,7 +180,7 @@ export async function environmentVersion(context: vscode.ExtensionContext, envir
     )
 }
 
-export async function copyPasswordToClipboard(context: vscode.ExtensionContext, environmentContext: SoarInstancesTreeItem) {
+export async function copyPasswordToClipboard(context: vscode.ExtensionContext, environmentContext: Environment) {
     let env: ConfiguredConnectEnvironment = environmentContext.data
 
     let environment = await getEnvironment(context, env.key)

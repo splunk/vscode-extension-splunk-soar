@@ -1,3 +1,4 @@
+//@ts-nocheck
 import * as vscode from 'vscode'
 import { MultiStepInput } from '../../wizard/MultiStepInput';
 import { getClientForActiveEnvironment } from '../../soar/client';
@@ -16,7 +17,7 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, playboo
     interface PlaybookRunState {
         playbook_id: string;
         container_id: string
-        scope: vscode.QuickPickItem;
+        scope: string;
     }
 
     const title = `Run Playbook: ${JSON.stringify(playbookContext.data.playbook.name)}`;
@@ -82,23 +83,22 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, playboo
     async function artifactInput(input: MultiStepInput, state: Partial<PlaybookRunState>){
         let client = await getClientForActiveEnvironment(context)
 
-        let artifacts = (await client.getContainerArtifacts(state.container_id)).data.data
+        let artifacts = (await client.getContainerArtifacts(state.container_id!)).data.data
         
         if (artifacts.length == 0) {
             vscode.window.showErrorMessage("No artifacts found on container. Please re-run playbook with different scope type")
             return
         }
-
-        let artifactPick = await input.showQuickPick({
+        let artifactPick: vscode.QuickPickItem[] = await input.showQuickPick({
             title,
             step: 3,
             totalSteps: totalSteps + 1,
             placeholder: 'Artifact?',
-            items: artifacts.map(artifact => {return {"label": String(artifact["id"]) "description": artifact["name"]}}),
+            items: artifacts.map((artifact: any) => {return {"label": String(artifact["id"]), "description": artifact["name"]}}),
             shouldResume: shouldResume,
             canSelectMany: true
         });
-        state.scope = "[" + artifactPick.map(pick => pick.label).join(",") + "]"
+        state.scope = "[" + artifactPick.map((pick: any) => pick.label).join(",") + "]"
     } 
 
     const state = await collectInputs();

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode'
-import { getClientForActiveEnvironment, getClientForEnvironment } from '../soar/client';
+import { getClientForEnvironment } from '../soar/client';
 
 export class SystemSettingsContentProvider implements vscode.TextDocumentContentProvider {
     private onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>();
