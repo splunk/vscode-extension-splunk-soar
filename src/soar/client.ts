@@ -115,7 +115,7 @@ export class SoarClient {
     }
 
     runPlaybook = async (playbookId:number, scope: string, containerId: string) => {
-        return await this.httpClient.post("playbook_run", {"run": true, "container_id": containerId, "scope": scope, "playbook_id": playbookId})
+        return await this.httpClient.post("playbook_run", {"run": true, "container_id": containerId, "scope": JSON.parse(scope), "playbook_id": playbookId})
     }
 
     getPlaybookRun = async (playbookRunId: string) => {

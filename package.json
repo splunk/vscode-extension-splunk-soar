@@ -762,7 +762,7 @@
 				},
 				{
 					"command": "splunkSoar.playbookRuns.repeat",
-					"when": "view == soarPlaybookRuns && viewItem =~/soarplaybookrun:*/",
+					"when": "view == soarPlaybookRuns && viewItem =~/soarplaybookrun:(failed|success)/",
 					"group": "inline@1"
 				},
 				{

@@ -42,7 +42,7 @@ async function connectSslVerifyInput(input: MultiStepInput, state: Partial<Conne
         ignoreFocusOut: true,
         canSelectMany: false
     });
-    state.sslVerify = sslPick.label === "Yes"
+    state.sslVerify = sslPick[0].label === "Yes"
     return (input: MultiStepInput) => conectUsernameInput(input, state);
 }
 

@@ -6,6 +6,7 @@ export async function processPlaybookRun(progress: any, context: vscode.Extensio
         let client = await getClientForActiveEnvironment(context)
   
         progress.report({ increment: 0 });
+		try {
         let result = await client.runPlaybook(playbookId, scope, containerId)
 		let {playbook_run_id, message} = result.data
 		progress.report({ increment: 10, message: `${message}: Playbook Run ID: ${playbook_run_id}`});
@@ -41,5 +42,8 @@ export async function processPlaybookRun(progress: any, context: vscode.Extensio
 		soarOutput.show()
 		await vscode.commands.executeCommand('splunkSoar.playbookRuns.refresh');
 		await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh')
+		} catch(err) {
+			console.log(err)
+		}	
 
 }

@@ -126,7 +126,7 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 			if (enteredParam instanceof MyButton) {
 				enteredParam = undefined
 			} else {
-				enteredParam = enteredParam.label
+				enteredParam = enteredParam[0].label
 			}
 	
 		} else if (paramInfo["data_type"] === "boolean") {
@@ -146,7 +146,7 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 			if (enteredParam instanceof MyButton) {
 				enteredParam = undefined
 			} else {
-				enteredParam = enteredParam.label
+				enteredParam = enteredParam[0].label
 			}
 		} else {
 

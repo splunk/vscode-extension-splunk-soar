@@ -7,7 +7,7 @@ export async function runPlaybookOnContainer(context: vscode.ExtensionContext, c
     interface PlaybookRunState {
         playbook_id: number;
         container_id: string
-        scope: vscode.QuickPickItem;
+        scope: string;
     }
 
     let containerInfo: any;
@@ -51,7 +51,7 @@ export async function runPlaybookOnContainer(context: vscode.ExtensionContext, c
             shouldResume: shouldResume,
             canSelectMany: false
         });
-        state.playbook_id = Number(playbookPick.description)
+        state.playbook_id = Number(playbookPick[0].description)
         return (input: MultiStepInput) => scopeInput(input, state);
     }
 
@@ -61,12 +61,38 @@ export async function runPlaybookOnContainer(context: vscode.ExtensionContext, c
             step: 2,
             totalSteps: totalSteps,
             placeholder: 'Scope?',
-            items: [{"label": "all", "description": "Run the playbook for only artifacts added to the container since the last time the playbook was run"}, {"label": "new", "description": "Run the playbook against all artifacts in the container"}],
+            items: [{"label": "all", "description": "Run the playbook for only artifacts added to the container since the last time the playbook was run"}, {"label": "new", "description": "Run the playbook against all artifacts in the container"}, {"label": "artifact", "description": "Run the playbook on specific artifact(s)"}],
             shouldResume: shouldResume,
             canSelectMany: false
         });
-        state.scope = scopePick
+        state.scope = scopePick[0].label
+
+        if (state.scope === "artifact") {
+            return (input: MultiStepInput) => artifactInput(input, state);
+        }
+
     }    
+    async function artifactInput(input: MultiStepInput, state: Partial<PlaybookRunState>){
+        let client = await getClientForActiveEnvironment(context)
+
+        let artifacts = (await client.getContainerArtifacts(state.container_id)).data.data
+        
+        if (artifacts.length == 0) {
+            vscode.window.showErrorMessage("No artifacts found on container. Please re-run playbook with different scope type")
+            return
+        }
+
+        let artifactPick = await input.showQuickPick({
+            title,
+            step: 3,
+            totalSteps: totalSteps + 1,
+            placeholder: 'Artifact?',
+            items: artifacts.map(artifact => {return {"label": String(artifact["id"]) "description": artifact["name"]}}),
+            shouldResume: shouldResume,
+            canSelectMany: true
+        });
+        state.scope = "[" + artifactPick.map(pick => pick.label).join(",") + "]"
+    } 
 
     const state = await collectInputs();
 
@@ -75,6 +101,6 @@ export async function runPlaybookOnContainer(context: vscode.ExtensionContext, c
 		title: `Running Playbook'`,
 		cancellable: false
 	}, async (progress, token) => {
-		await processPlaybookRun(progress, context, state.playbook_id, state.container_id, state.scope.label)
+		await processPlaybookRun(progress, context, state.playbook_id, state.container_id, state.scope)
 	})
 }
