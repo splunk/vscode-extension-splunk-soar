@@ -8,6 +8,7 @@ import { ContainerContentProvider } from './containerContentProvider';
 import { NoteContentProvider, NoteMetaContentProvider } from './noteContentProvider';
 import { PlaybookContentProvider, PlaybookCodeContentProvider } from './playbookContentProvider';
 import { PlaybookRunContentProvider, PlaybookRunLogContentProvider } from './playbookRunContentProvider';
+import { SystemSettingsContentProvider } from './systemSettingContentProvider';
 import { VaultFileContentProvider } from './vaultFileContentProvider';
 
 export function registerInspectProviders(context: vscode.ExtensionContext) {
@@ -252,4 +253,15 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
+
+
+	const settingsScheme = "soarenvsetting"
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(settingsScheme, new SystemSettingsContentProvider(context)));
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.environments.inspect', async (environmentContext) => {
+	
+		const uri = vscode.Uri.parse('soarenvsetting:' + environmentContext.data.key + ".json");
+		const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+		await vscode.window.showTextDocument(doc, { preview: false });
+	}))
+
 }

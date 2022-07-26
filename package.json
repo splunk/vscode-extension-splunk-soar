@@ -180,6 +180,11 @@
 				"category": "SOAR Environments"
 			},
 			{
+				"command": "splunkSoar.environments.inspect",
+				"title": "Inspect Settings",
+				"category": "SOAR Environments"
+			},
+			{
 				"command": "splunkSoar.apps.refresh",
 				"title": "Refresh",
 				"icon": "$(refresh)",
@@ -834,6 +839,11 @@
 					"command": "splunkSoar.environments.copyPassword",
 					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
 					"group": "actions@3"
+				},
+				{
+					"command": "splunkSoar.environments.inspect",
+					"when": "view == soarEnvironments && viewItem =~/soarenvironment:*/",
+					"group": "actions@4"
 				},
 				{
 					"command": "splunkSoar.environments.openWeb",
