@@ -366,6 +366,12 @@
 				"category": "SOAR Playbook Runs"
 			},
 			{
+				"command": "splunkSoar.playbookRuns.repeat",
+				"title": "Repeat",
+				"icon": "$(debug-restart)",
+				"category": "SOAR Playbook Runs"
+			},
+			{
 				"command": "splunkSoar.assets.viewWeb",
 				"title": "View in Web UI",
 				"icon": "$(globe)",
@@ -586,6 +592,10 @@
 					"when": "false"
 				},
 				{
+					"command": "splunkSoar.playbookRuns.repeat",
+					"when": "false"
+				},
+				{
 					"command": "splunkSoar.playbooks.downloadBundle",
 					"when": "false"
 				},
@@ -744,6 +754,11 @@
 					"command": "splunkSoar.playbookRuns.logs",
 					"when": "view == soarPlaybookRuns && viewItem =~ /soarplaybookrun:*/",
 					"group": "actions@2"
+				},
+				{
+					"command": "splunkSoar.playbookRuns.repeat",
+					"when": "view == soarPlaybookRuns && viewItem =~/soarplaybookrun:*/",
+					"group": "inline@1"
 				},
 				{
 					"command": "splunkSoar.actionRuns.inspect",

@@ -19,6 +19,7 @@ import { syncScm } from './scm/scm';
 import { installConnector, installFolder } from './apps/deploy';
 import { pinApp, unpinApp } from './apps/pin';
 import { createContainer } from './containers/create';
+import { repeatPlaybookRun } from './playbookRuns/repeat';
 
 export function registerCommands(context: vscode.ExtensionContext) {
 
@@ -211,4 +212,6 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.unpin', (appContext) => { unpinApp(context, appContext)}));
 
 	context.subscriptions.push(vscode.commands.registerCommand("splunkSoar.containers.create", () => {createContainer(context)}))
+
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbookRuns.repeat', (playbookRunContext) => {repeatPlaybookRun(context, playbookRunContext)}))
 }
