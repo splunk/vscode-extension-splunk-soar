@@ -1,9 +1,10 @@
 import * as fs from 'fs'
 import * as ejs from 'ejs'
 const fsPromises = fs.promises;
-import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn, commands } from "vscode";
+import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn, commands, ExtensionContext } from "vscode";
 import path = require('path');
 import { randomUUID } from 'crypto';
+import { getClientForActiveEnvironment } from '../soar/client';
 
 /**
  * This class manages the state and behavior of HelloWorld webview panels.
@@ -32,7 +33,7 @@ export class AppWizardPanel {
    * @param panel A reference to the webview panel
    * @param extensionUri The URI of the directory containing the extension
    */
-  private constructor(panel: WebviewPanel, extensionUri: Uri) {
+  private constructor(panel: WebviewPanel, context: ExtensionContext) {
     this._panel = panel;
 
     // Set an event listener to listen for when the panel is disposed (i.e. when the user closes
@@ -40,10 +41,10 @@ export class AppWizardPanel {
     this._panel.onDidDispose(this.dispose, null, this._disposables);
 
     // Set the HTML content for the webview panel
-    this._panel.webview.html = this._getWebviewContent(this._panel.webview, extensionUri);
+    this._panel.webview.html = this._getWebviewContent(this._panel.webview, context);
 
     // Set an event listener to listen for messages passed from the webview context
-    this._setWebviewMessageListener(this._panel.webview, extensionUri);
+    this._setWebviewMessageListener(this._panel.webview, context);
   }
 
   /**
@@ -52,7 +53,7 @@ export class AppWizardPanel {
    *
    * @param extensionUri The URI of the directory containing the extension.
    */
-  public static render(extensionUri: Uri) {
+  public static render(context: ExtensionContext) {
     if (AppWizardPanel.currentPanel) {
       // If the webview panel already exists reveal it
       AppWizardPanel.currentPanel._panel.reveal(ViewColumn.One);
@@ -72,7 +73,7 @@ export class AppWizardPanel {
         }
       );
 
-      AppWizardPanel.currentPanel = new AppWizardPanel(panel, extensionUri);
+      AppWizardPanel.currentPanel = new AppWizardPanel(panel, context);
     }
   }
 
@@ -105,11 +106,11 @@ export class AppWizardPanel {
    * @returns A template string literal containing the HTML that should be
    * rendered within the webview panel
    */
-  private _getWebviewContent(webview: Webview, extensionUri: Uri) {
-    const toolkitUri = getUri(webview, extensionUri, ["app", "appwizard", "toolkit.js"]);
+  private _getWebviewContent(webview: Webview, context: ExtensionContext) {
+    const toolkitUri = getUri(webview, context.extensionUri, ["app", "appwizard", "toolkit.js"]);
 
-    const mainUri = getUri(webview, extensionUri, ["app", "appwizard", "main.js"]);
-    const styleUri = getUri(webview, extensionUri, ["app", "appwizard", "styles.css"]);
+    const mainUri = getUri(webview, context.extensionUri, ["app", "appwizard", "main.js"]);
+    const styleUri = getUri(webview, context.extensionUri, ["app", "appwizard", "styles.css"]);
 
     console.log(mainUri)
     console.log(styleUri)
@@ -176,7 +177,7 @@ export class AppWizardPanel {
    * @param webview A reference to the extension webview
    * @param context A reference to the extension context
    */
-  private _setWebviewMessageListener(webview: Webview, extensionUri: Uri) {
+  private _setWebviewMessageListener(webview: Webview, context: ExtensionContext) {
     webview.onDidReceiveMessage(
       async (message: any) => {
         const command = message.command;
@@ -197,6 +198,12 @@ export class AppWizardPanel {
                 return
               }
 
+              console.log(context)
+
+              let client = getClientForActiveEnvironment(context)
+
+              let soarVersionResponse = (await (await client).version()).data
+              message.soarVersion = soarVersionResponse["version"]
 
               message.app.appid = randomUUID()
               message.app.name_lower = message.app.name.toLowerCase().replaceAll(' ', '')
@@ -209,7 +216,7 @@ export class AppWizardPanel {
                 console.error(err);
               });
             
-              let templatePath = Uri.joinPath(extensionUri, "resources", "app-template")
+              let templatePath = Uri.joinPath(context.extensionUri, "resources", "app-template")
               console.log(templatePath)
               
               let templateFiles = await fsPromises.readdir(templatePath.fsPath)

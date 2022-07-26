@@ -130,7 +130,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	}))
 
     context.subscriptions.push(vscode.commands.registerCommand("splunkSoar.showAppWizard", async () => {
-		AppWizardPanel.render(context.extensionUri);
+		AppWizardPanel.render(context);
     }));
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbooks.runPlaybook', async (data) => {
