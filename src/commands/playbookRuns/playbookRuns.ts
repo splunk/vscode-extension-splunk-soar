@@ -31,7 +31,7 @@ export async function processPlaybookRun(progress: any, context: vscode.Extensio
 		progress.report({increment: 50, message: `${playbookRun.data.message}`})
 
 		if (playbookRun.data.status === "running") {
-			vscode.window.showErrorMessage("Playbook execution timed out, playbook still running. Will retrieve last known status.")
+			vscode.window.showWarningMessage("Playbook execution polling timed out, playbook still running. Will retrieve last known status.")
 		}
 		
 		progress.report({increment: 75, message: "Collecting Results"})

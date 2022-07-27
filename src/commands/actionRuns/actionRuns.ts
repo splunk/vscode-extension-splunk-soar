@@ -82,7 +82,7 @@ export async function processRunAction(actionName: string, containerId: string, 
         actionRunResult = await client.getActionRun(action_run_id)
     }
     if (actionRunResult.data.status === "running") {
-        vscode.window.showErrorMessage("Action execution timed out, action still running. Will retrieve last known status.")
+        vscode.window.showWarningMessage("Action execution polling timed out, action still running. Will retrieve last known status.")
     }
 
     progress.report({increment: 50, message: `${actionRunResult.data.message}`})
