@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { getClientForActiveEnvironment } from '../soar/client';
+import { SoarPlaybookRun } from '../soar/models';
 
 export class SoarPlaybookRunTreeProvider implements vscode.TreeDataProvider<PlaybookRunTreeItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<PlaybookRunTreeItem | undefined | void> = new vscode.EventEmitter<PlaybookRunTreeItem | undefined | void>();
@@ -38,33 +39,25 @@ export class SoarPlaybookRunTreeProvider implements vscode.TreeDataProvider<Play
 				actionRunFunc = client.listUserPlaybookRuns
 			}
 
-			return actionRunFunc().then(function (res) {
-				let appEntries = res.data["data"]
-				let appTreeItems = appEntries.map((entry: any) => (new PlaybookRun(entry["_pretty_playbook"], { "playbookRun": entry }, vscode.TreeItemCollapsibleState.None)))
-				return appTreeItems
-			}).catch(function(err) {
-				console.error(err)
-			})
-		}
-		else if (element.contextValue.startsWith("soarplaybookrun")) {
-			let newEntries = [new KeyValueItem("Message", element.data["playbookRun"]["message"], vscode.TreeItemCollapsibleState.None),
-			]
+			let playbookRunResponse = await actionRunFunc()
+			let playbookRunEntries = playbookRunResponse.data.data
+			let playbookRunTreeItems = playbookRunEntries.map((entry: SoarPlaybookRun) => (new PlaybookRun(entry["_pretty_playbook"], { "playbookRun": entry }, vscode.TreeItemCollapsibleState.None)))
+			return playbookRunTreeItems
 
-			if (element.data["actionRun"]["_pretty_playbook"]) {
-				newEntries.push(new KeyValueItem("Playbook", element.data["playbookRun"]["_pretty_playbook"], vscode.TreeItemCollapsibleState.None))
-			}
-
-			return Promise.resolve(newEntries)
 		}
 
 		return Promise.resolve([])
 	}
 }
 
+export interface PlaybookRunTreeData {
+	playbookRun: SoarPlaybookRun
+}
+
 export class PlaybookRunTreeItem extends vscode.TreeItem {
 	constructor(
 		public readonly label: string,
-		public readonly data: any,
+		public readonly data: PlaybookRunTreeData,
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
 		public readonly command?: vscode.Command
 	) {
@@ -76,20 +69,9 @@ export class PlaybookRunTreeItem extends vscode.TreeItem {
 	
 }
 
-export class KeyValueItem extends PlaybookRunTreeItem {
-
-	constructor(label: any, data: any, collapsibleState: any, command?: any) {
-		super(label, data, collapsibleState, command)
-		this.description = data
-	}
-
-	contextValue: string = 'soarkeyvalue';
-}
-
-
 export class PlaybookRun extends PlaybookRunTreeItem {
 
-	constructor(label: any, data: any, collapsibleState: any, command?: any) {
+	constructor(label: string, data: PlaybookRunTreeData, collapsibleState: vscode.TreeItemCollapsibleState, command?: vscode.Command) {
 		super(label, data, collapsibleState, command)
 		this.description = `${data["playbookRun"]["id"]} · ${data["playbookRun"]["_pretty_start_time"]} · ${data["playbookRun"]["_pretty_owner"]}`
 
@@ -111,7 +93,7 @@ export class PlaybookRun extends PlaybookRunTreeItem {
 		this.contextValue = `soarplaybookrun:${data["playbookRun"]["status"]}`
 	}
 
-	generateLabel = function(data: any): vscode.MarkdownString {
+	generateLabel = function(data: PlaybookRunTreeData): vscode.MarkdownString {
 		let label = new vscode.MarkdownString(``);
 
 		let playbookId = data["playbookRun"]["playbook"]

@@ -42,16 +42,6 @@ export class SoarActionRunTreeProvider implements vscode.TreeDataProvider<Action
 			let actionRunTreeItems = actionRunEntries.map((entry: SoarActionRun) => (new ActionRun(entry["name"], { "actionRun": entry }, vscode.TreeItemCollapsibleState.None)))
 			return actionRunTreeItems
 		}
-		else if (element.contextValue.startsWith("soaractionrun")) {
-			let actionRunElement: ActionRun = element as ActionRun
-
-			let newEntries = [new KeyValueItem("Message", actionRunElement.data.actionRun.message, vscode.TreeItemCollapsibleState.None),
-			]
-			if (actionRunElement.data.actionRun._pretty_playbook) {
-				newEntries.push(new KeyValueItem("Playbook", actionRunElement.data.actionRun._pretty_playbook, vscode.TreeItemCollapsibleState.None))
-			}
-			return Promise.resolve(newEntries)
-		}
 		return Promise.resolve([])
 	}
 }
@@ -72,16 +62,6 @@ export class ActionRunTreeItem extends vscode.TreeItem {
 	contextValue = 'soaractionruntreeitem';
 	
 }
-
-export class KeyValueItem extends ActionRunTreeItem {
-
-	constructor(label: string, description: string, collapsibleState: vscode.TreeItemCollapsibleState, command?: vscode.Command) {
-		super(label, collapsibleState, command)
-		this.description = description 
-	}
-	contextValue: string = 'soarkeyvalue';
-}
-
 
 export class ActionRun extends ActionRunTreeItem {
 

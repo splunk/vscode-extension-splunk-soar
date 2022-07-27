@@ -67,11 +67,11 @@ export class SoarClient {
     }
 
     listPlaybookRuns = async() => {
-        return await this.httpClient.get("playbook_run", {params: {"pretty": true, "page_size": 0, "sort": "start_time", "order": "desc"}})
+        return await this.httpClient.get<models.SoarCollection<models.SoarPlaybookRun>>("playbook_run", {params: {"pretty": true, "page_size": 0, "sort": "start_time", "order": "desc"}})
     }
 
     listUserPlaybookRuns = async() => {
-        return await this.httpClient.get("playbook_run", {params: {"pretty": true, "page_size": 0, "sort": "start_time", "order": "desc", "_filter_owner__username": `'${this.username}'`}})
+        return await this.httpClient.get<models.SoarCollection<models.SoarPlaybookRun>>("playbook_run", {params: {"pretty": true, "page_size": 0, "sort": "start_time", "order": "desc", "_filter_owner__username": `'${this.username}'`}})
     }
 
     appContent = async (appId: string) => {

@@ -92,6 +92,32 @@ export interface SoarActionRun {
     _pretty_container: string
 }
 
-export interface SoarPlaybook {
+export interface SoarPlaybookRun {
+    id: string,
+    cancelled: string,
+    _pretty_container: string
+    container: number,
+    ip_address: string,
+    log_level: number,
+    message: string,
+    _pretty_owner: string,
+    owner: number,
+    _pretty_playbook:string,
+    playbook: number,
+    start_time: string
+    _pretty_start_time: string,
+    status: string,
+    test_mode: boolean,
+    _pretty_update_time: string
+    update_time: string
+    last_artifact: number
+    misc: {
+        scope: string
+        scope_artifact_ids: string
+    },
+    version: string,
+    _pretty_effective_user: string
+    effective_user: string
+    _pretty_scm_name: string
 }
 
