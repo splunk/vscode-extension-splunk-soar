@@ -6,17 +6,15 @@ export class PlaybookRunContentProvider implements vscode.TextDocumentContentPro
     readonly onDidChange = this.onDidChangeEmitter.event;
 
     constructor(private context: vscode.ExtensionContext) {
-	}
-    
+    }
+
     async provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): Promise<string> {
         let client = await getClientForActiveEnvironment(this.context)
-        return client.getPlaybookRun(uri.path.replace(".json", "")).then(function(res) {
-            let outJSON = JSON.stringify(res.data, null, '\t')
-            return outJSON
-        }).catch(function(err) {
-            console.log(err)
-            return "none"
-        })
+
+        let playbookRunId = uri.path.replace(".json", "")
+        let playbookRunResponse = await client.getPlaybookRun(playbookRunId)
+        let outJSON = JSON.stringify(playbookRunResponse.data, null, '\t')
+        return outJSON
     }
 }
 export class PlaybookRunLogContentProvider implements vscode.TextDocumentContentProvider {
@@ -24,14 +22,14 @@ export class PlaybookRunLogContentProvider implements vscode.TextDocumentContent
     readonly onDidChange = this.onDidChangeEmitter.event;
 
     constructor(private context: vscode.ExtensionContext) {
-	}
-    
+    }
+
     async provideTextDocumentContent(uri: vscode.Uri, token: vscode.CancellationToken): Promise<string> {
         let client = await getClientForActiveEnvironment(this.context)
-        return client.getPlaybookRunLog(uri.path.replace(".json", "")).then(function(res) {
+        return client.getPlaybookRunLog(uri.path.replace(".json", "")).then(function (res) {
             let outJSON = JSON.stringify(res.data, null, '\t')
             return outJSON
-        }).catch(function(err) {
+        }).catch(function (err) {
             console.log(err)
             return "none"
         })

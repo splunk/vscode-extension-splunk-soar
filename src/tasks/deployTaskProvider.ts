@@ -139,7 +139,7 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 				vscode.window.setStatusBarMessage("$(pass-filled) Successfully Uploaded App", 3000)
 				await vscode.commands.executeCommand('splunkSoar.apps.refresh');
 
-				this.writeEmitter.fire(JSON.stringify(res.data));
+				this.writeEmitter.fire(JSON.stringify(res.data) + "\r\n");
 				this.closeEmitter.fire(0);
 				resolve()
 

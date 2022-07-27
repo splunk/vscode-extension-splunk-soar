@@ -1,34 +1,19 @@
 import { AxiosResponse } from 'axios';
 import * as vscode from 'vscode'
 import { getClientForActiveEnvironment } from '../../soar/client';
+import { SoarAction, SoarActionRun, SoarApp } from '../../soar/models';
 
 export interface IActionRun {
-	id: string
-}
-
-export interface IAction {
-	name: string
-}
-
-export interface IActionDefinition {
-	parameters: Object,
-	action: string,
-	identifier: string
-}
-
-export interface IApp {
-	id: string,
-	directory: string,
-	_pretty_asset_count: number
+    id: string
 }
 
 export interface IActionContext {
 	data: {
 		key: string,
-		app: IApp,
-		action: IAction
+		app: SoarApp,
+		action: SoarAction
 		app_json: {
-			actions: IActionDefinition[]
+			actions: SoarAction[]
 		}
 	}
 }
@@ -39,12 +24,6 @@ export interface IParamInfo {
 	data_type: string,
 	description: string,
 	default: string
-}
-
-export interface IActionRunContext {
-	data: {
-		actionRun: IActionRun,
-	}
 }
 
 export async function processRunAction(actionName: string, containerId: string, actionRunTargets: any, progress: vscode.Progress<{message?: string | undefined, increment?: number | undefined}>, context: vscode.ExtensionContext){

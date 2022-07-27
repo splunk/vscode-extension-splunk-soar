@@ -1,12 +1,13 @@
 import { window, ExtensionContext, ProgressLocation} from 'vscode';
 import { getClientForActiveEnvironment } from '../../soar/client';
-import { processRunAction, IActionRunContext } from './actionRuns';
+import { ActionRun } from '../../views/actionRun';
+import { processRunAction } from './actionRuns';
 
-export async function repeatActionRun(context: ExtensionContext, actionRunContext: IActionRunContext) {
+export async function repeatActionRun(context: ExtensionContext, actionRunContext: ActionRun) {
     let client = await getClientForActiveEnvironment(context)
 	let actionRunId = actionRunContext.data["actionRun"]["id"]
 
-	client.getActionRun(actionRunId).then(function(actionRun) {
+	client.getActionRun(String(actionRunId)).then(function(actionRun) {
 		let actionName = actionRun.data["action"]
 		let actionContainer = actionRun.data["container"]
 		let actionRunTargets = actionRun.data["targets"]
@@ -23,7 +24,6 @@ export async function repeatActionRun(context: ExtensionContext, actionRunContex
 	})
 }
 
-
 export async function repeatLastActionRun(context: ExtensionContext) {
 	let client = await getClientForActiveEnvironment(context)
 
@@ -35,7 +35,7 @@ export async function repeatLastActionRun(context: ExtensionContext) {
 	}
 	let actionRun = actionRunResponse.data["data"][0]
 
-	client.getActionRun(actionRun["id"]).then(function(actionRun) {
+	client.getActionRun(String(actionRun["id"])).then(function(actionRun) {
 		let actionName = actionRun.data["action"]
 		let actionContainer = actionRun.data["container"]
 		let actionRunTargets = actionRun.data["targets"]

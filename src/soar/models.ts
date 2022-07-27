@@ -1,3 +1,5 @@
+import { interactiveCalendarGridTemplate } from "@microsoft/fast-foundation"
+
 export interface SoarVersion {
     version: string
 }
@@ -25,6 +27,36 @@ export interface SoarFile {
 export interface SoarPrettyAction {
     description: string,
     name: string
+}
+
+export interface SoarAction {
+    id: number,
+    action: string,
+    _pretty_app: string
+    app: number,
+    description: string,
+    identifier: string,
+    output: SoarActionOutput[],
+    parameters: SoarActionParameters 
+}
+
+export interface SoarActionOutput {
+    data_path: string
+    data_type: string
+}
+
+export interface SoarActionParameters {
+    [key: string]: SoarActionParameter
+}
+
+export interface SoarActionParameter {
+    order: number,
+    primary: boolean,
+    contains: string[],
+    value_list: string[],
+    required: boolean,
+    data_type: string,
+    description: string
 }
 
 export interface SoarApp {

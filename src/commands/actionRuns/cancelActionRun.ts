@@ -1,11 +1,11 @@
 import * as vscode from 'vscode'
 import { getClientForActiveEnvironment } from '../../soar/client'
-import {IActionRunContext} from './actionRuns'
+import { ActionRun } from '../../views/actionRun'
 
-export async function cancelActionRun(context: vscode.ExtensionContext, actionRunContext: IActionRunContext) {
+export async function cancelActionRun(context: vscode.ExtensionContext, actionRunContext: ActionRun) {
     let client = await getClientForActiveEnvironment(context)
     if (actionRunContext) {
-        let actionRunId = actionRunContext.data["actionRun"]["id"]
+        let actionRunId = String(actionRunContext.data["actionRun"]["id"])
         try {
             await client.cancelActionRun(actionRunId)
             await vscode.commands.executeCommand('splunkSoar.actionRuns.refresh');

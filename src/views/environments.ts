@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { ACTIVE_ENV_KEY, ENV_KEY } from '../commands/environments/environments';
+import { ACTIVE_ENV_KEY, ConfiguredConnectEnvironment, ENV_KEY, listEnvironments } from '../commands/environments/environments';
 
 export class SoarEnvironmentsTreeProvider implements vscode.TreeDataProvider<SoarEnvironmentsTreeItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<SoarEnvironmentsTreeItem | undefined | void> = new vscode.EventEmitter<SoarEnvironmentsTreeItem | undefined | void>();
@@ -16,11 +16,11 @@ export class SoarEnvironmentsTreeProvider implements vscode.TreeDataProvider<Soa
 	}
 
 	async getChildren(element?: SoarEnvironmentsTreeItem): Promise<SoarEnvironmentsTreeItem[]> {
-		let environments: any = this.context.globalState.get(ENV_KEY)
-		let activeEnv: any = this.context.globalState.get(ACTIVE_ENV_KEY)
+		let environments: ConfiguredConnectEnvironment[] = listEnvironments(this.context)
+		let activeEnv: string = this.context.globalState.get(ACTIVE_ENV_KEY) || ""
 
 		if (!element) {
-			let environmentsTreeItems = environments.map((entry: any) => (entry["key"] === activeEnv ? new Environment(entry["url"], entry, true, vscode.TreeItemCollapsibleState.None) : new Environment(entry["url"], entry, false, vscode.TreeItemCollapsibleState.None)))
+			let environmentsTreeItems = environments.map((env: ConfiguredConnectEnvironment) => (env.key === activeEnv ? new Environment(env.url, env, true, vscode.TreeItemCollapsibleState.None) : new Environment(env.url, env, false, vscode.TreeItemCollapsibleState.None)))
 			return Promise.resolve(environmentsTreeItems)
 		}
 
@@ -39,7 +39,7 @@ export class EnvironmentInfo extends SoarEnvironmentsTreeItem {
 export class Environment extends SoarEnvironmentsTreeItem {
 	constructor(
 		public readonly label: string,
-		public readonly data: any,
+		public readonly data: ConfiguredConnectEnvironment,
 		public readonly isActive: boolean,
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
 		public readonly command?: vscode.Command

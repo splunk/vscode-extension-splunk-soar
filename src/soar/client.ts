@@ -2,6 +2,7 @@ import { AxiosInstance } from "axios";
 import * as https from 'https'; 
 import * as vscode from 'vscode';
 import { getActiveEnvironment, getEnvironment } from "../commands/environments/environments";
+import { PlaybookRun } from "../views/playbookRun";
 const axios = require('axios').default;
 
 import * as models from './models'
@@ -87,15 +88,15 @@ export class SoarClient {
     }
 
     getAsset = async (assetId: string) => {
-        return await this.httpClient.get(`asset/${assetId}`, {params: {"pretty": true, "_special_app_info": true}})
+        return await this.httpClient.get<models.SoarAsset>(`asset/${assetId}`, {params: {"pretty": true, "_special_app_info": true}})
     }
 
     getApp = async (appId: string) => {
-        return await this.httpClient.get(`app/${appId}`, {params: {"pretty": true}})
+        return await this.httpClient.get<models.SoarApp>(`app/${appId}`, {params: {"pretty": true}})
     }
 
     getAppActions = async (appId: string) => {
-        return await this.httpClient.get(`app/${appId}/actions`, {params: {"pretty": true}})
+        return await this.httpClient.get<models.SoarCollection<models.SoarAction>>(`app/${appId}/actions`, {params: {"pretty": true}})
     }
 
     getAppByAppid = async (appId: string) => {
@@ -122,7 +123,7 @@ export class SoarClient {
     }
 
     getPlaybookRun = async (playbookRunId: string) => {
-        return await this.httpClient.get(`playbook_run/${playbookRunId}`)
+        return await this.httpClient.get<models.SoarPlaybookRun>(`playbook_run/${playbookRunId}`)
     }
 
     getPlaybookRunLog = async (playbookRunId: string) => {

@@ -1,12 +1,13 @@
  //@ts-nocheck
-import { QuickPickItem, window, QuickInputButton, ExtensionContext, Uri, ProgressLocation, env, workspace, commands, ThemeIcon } from 'vscode';
+import { QuickPickItem, window, QuickInputButton, ExtensionContext, ProgressLocation, ThemeIcon } from 'vscode';
 import { getClientForActiveEnvironment } from '../../soar/client';
+import { SoarAction, SoarActionParameter } from '../../soar/models';
+import { SoarActionItem } from '../../views/apps';
 import {MultiStepInput} from '../../wizard/MultiStepInput'
 import { openAppAssetConfiguration } from '../web';
 import { processRunAction } from './actionRuns';
-import { IActionDefinition, IParamInfo, IActionContext } from './actionRuns';
 
-export async function runActionInput(context: ExtensionContext, actionContext: IActionContext) {
+export async function runActionInput(context: ExtensionContext, actionContext: SoarActionItem) {
 	class MyButton implements QuickInputButton {
 		constructor(public iconPath: ThemeIcon, public tooltip: string) { }
 	}
@@ -32,11 +33,12 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
 
 	const title = `Run Action: ${JSON.stringify(actionContext.data.action["name"])}`;
 	let client = await getClientForActiveEnvironment(context)
+	let appActionsResponse = await client.getAppActions(actionContext.data.app.id)
+	let appActions: SoarAction[] = appActionsResponse.data.data
 
-	let appActions: IActionDefinition[] = await (await client.getAppActions(actionContext.data["app"]["id"])).data.data
 
     let actionName = actionContext.data.action["name"]
-    const actionDefinition = appActions.find((action: IActionDefinition) => action.action == actionName);
+    const actionDefinition = appActions.find((action: SoarAction) => action.action == actionName);
 	if (actionDefinition == undefined) {
 		window.showErrorMessage("Run Action failed: Could not find action definition in app metadata")
 		return
@@ -44,7 +46,7 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
     const actionParameters = actionDefinition.parameters
     const parameterList = Object.entries(actionParameters).filter(actionParam => {
 		let actionParamData = actionParam[1]
-		return actionParamData["data_type"] !== "ph"
+		return actionParamData["data_type"] !== "ph"  // Filter out placeholder parameters
 	})
 
     const totalSteps = parameterList.length + 2;
@@ -96,7 +98,7 @@ export async function runActionInput(context: ExtensionContext, actionContext: I
     }
 
     async function pickParam(input: MultiStepInput, state: Partial<State>, actionParamIndex: number){
-        let [paramName, paramInfo]: [string, IParamInfo] = parameterList[actionParamIndex]
+        let [paramName, paramInfo]: [string, SoarActionParameter] = parameterList[actionParamIndex]
 		let enteredParam;
 
 		if (state.parameters == undefined){
