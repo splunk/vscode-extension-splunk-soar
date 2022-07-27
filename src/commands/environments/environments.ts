@@ -110,7 +110,7 @@ export async function activateEnvironment(context: vscode.ExtensionContext, envi
     }
 }
 
-export function getActiveEnvironment(context: vscode.ExtensionContext) {
+export async function getActiveEnvironment(context: vscode.ExtensionContext) {
     let activeKey: string = context.globalState.get(ACTIVE_ENV_KEY)!
     return getEnvironment(context, activeKey)
 }
@@ -172,12 +172,12 @@ export async function environmentVersion(context: vscode.ExtensionContext, envir
     let environment = await getEnvironment(context, envKey)
     let client = new SoarClient(environment.url, environment.username, environment.password, environment.sslVerify)
 
-    client.version().then(
-        function(response) {
-            let {version} = response.data
-            vscode.window.showInformationMessage(`SOAR Version: ${version}`)
-        }
-    )
+    let response = await client.version().catch((err) => {
+        return Promise.reject(err)
+    })
+    let {version} = response.data
+
+    vscode.window.showInformationMessage(`SOAR Version: ${version}`)
 }
 
 export async function copyPasswordToClipboard(context: vscode.ExtensionContext, environmentContext: Environment) {

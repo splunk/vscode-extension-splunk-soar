@@ -51,7 +51,7 @@ export class SoarClient {
     }
 
     listAppAssets = async (appId: string) => {
-        return await this.httpClient.get("asset", {params: {"pretty": true, "page_size": 0, "_filter_app": `"${appId}"`}})
+        return await this.httpClient.get<models.SoarCollection<models.SoarAsset>>("asset", {params: {"pretty": true, "page_size": 0, "_filter_app": `"${appId}"`}})
     }
 
     listActionRuns = async() => {
@@ -75,7 +75,7 @@ export class SoarClient {
     }
 
     appContent = async (appId: string) => {
-        return await this.httpClient.get(`app/${appId}?json`)
+        return await this.httpClient.get<models.SoarAppContent>(`app/${appId}?json`)
     }
 
     installApp = async(appContent: string) => {
