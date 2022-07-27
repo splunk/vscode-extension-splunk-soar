@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { getClientForActiveEnvironment } from '../soar/client';
+import { SoarActionRun } from '../soar/models';
 
 export class SoarActionRunTreeProvider implements vscode.TreeDataProvider<ActionRunTreeItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<ActionRunTreeItem | undefined | void> = new vscode.EventEmitter<ActionRunTreeItem | undefined | void>();
@@ -36,39 +37,36 @@ export class SoarActionRunTreeProvider implements vscode.TreeDataProvider<Action
 			if (ownOnly) {
 				actionRunFunc = client.listUserActionRuns
 			}
-
-			return actionRunFunc().then(function (res) {
-				let appEntries = res.data["data"]
-				let appTreeItems = appEntries.map((entry: any) => (new ActionRun(entry["name"], { "actionRun": entry }, vscode.TreeItemCollapsibleState.None)))
-				return appTreeItems
-			}).catch(function(err) {
-				console.error(err)
-			})
+			let actionRunResponse = await actionRunFunc()
+			let actionRunEntries = actionRunResponse.data.data
+			let actionRunTreeItems = actionRunEntries.map((entry: SoarActionRun) => (new ActionRun(entry["name"], { "actionRun": entry }, vscode.TreeItemCollapsibleState.None)))
+			return actionRunTreeItems
 		}
 		else if (element.contextValue.startsWith("soaractionrun")) {
-			let newEntries = [new KeyValueItem("Message", element.data["actionRun"]["message"], vscode.TreeItemCollapsibleState.None),
+			let actionRunElement: ActionRun = element as ActionRun
+
+			let newEntries = [new KeyValueItem("Message", actionRunElement.data.actionRun.message, vscode.TreeItemCollapsibleState.None),
 			]
-
-			if (element.data["actionRun"]["_pretty_playbook"]) {
-				newEntries.push(new KeyValueItem("Playbook", element.data["actionRun"]["_pretty_playbook"], vscode.TreeItemCollapsibleState.None))
+			if (actionRunElement.data.actionRun._pretty_playbook) {
+				newEntries.push(new KeyValueItem("Playbook", actionRunElement.data.actionRun._pretty_playbook, vscode.TreeItemCollapsibleState.None))
 			}
-
 			return Promise.resolve(newEntries)
 		}
-
 		return Promise.resolve([])
 	}
+}
+
+interface ActionRunItemData {
+	actionRun: SoarActionRun
 }
 
 export class ActionRunTreeItem extends vscode.TreeItem {
 	constructor(
 		public readonly label: string,
-		public readonly data: any,
 		public readonly collapsibleState: vscode.TreeItemCollapsibleState,
 		public readonly command?: vscode.Command
 	) {
 		super(label, collapsibleState);
-		this.data = data
 	}
 
 	contextValue = 'soaractionruntreeitem';
@@ -77,19 +75,21 @@ export class ActionRunTreeItem extends vscode.TreeItem {
 
 export class KeyValueItem extends ActionRunTreeItem {
 
-	constructor(label: any, data: any, collapsibleState: any, command?: any) {
-		super(label, data, collapsibleState, command)
-		this.description = data
+	constructor(label: string, description: string, collapsibleState: vscode.TreeItemCollapsibleState, command?: vscode.Command) {
+		super(label, collapsibleState, command)
+		this.description = description 
 	}
-
 	contextValue: string = 'soarkeyvalue';
 }
 
 
 export class ActionRun extends ActionRunTreeItem {
 
-	constructor(label: any, data: any, collapsibleState: any, command?: any) {
-		super(label, data, collapsibleState, command)
+	data: ActionRunItemData;
+
+	constructor(label: string, data: ActionRunItemData, collapsibleState: vscode.TreeItemCollapsibleState, command?: vscode.Command) {
+		super(label, collapsibleState, command)
+		this.data = data
 		this.description = `${data["actionRun"]["id"]} · ${data["actionRun"]["_pretty_create_time"]} · ${data["actionRun"]["_pretty_owner"]}`
 
 		if (data["actionRun"]["status"] == "failed") {
@@ -113,7 +113,7 @@ export class ActionRun extends ActionRunTreeItem {
 
 	iconPath = new vscode.ThemeIcon("pass", new vscode.ThemeColor("testing.iconPassed"))
 
-	generateLabel = function(data: any): vscode.MarkdownString {
+	generateLabel = function(data: ActionRunItemData): vscode.MarkdownString {
 		let label = new vscode.MarkdownString(``);
 		let actionRunId = data["actionRun"]["id"]
 		let actionRunMessage = data["actionRun"]["message"]

@@ -55,19 +55,19 @@ export class SoarClient {
     }
 
     listActionRuns = async() => {
-        return await this.httpClient.get("action_run", {params: {"pretty": true, "page_size": 0, "sort": "create_time", "order": "desc"}})
+        return await this.httpClient.get<models.SoarCollection<models.SoarActionRun>>("action_run", {params: {"pretty": true, "page_size": 0, "sort": "create_time", "order": "desc"}})
+    }
+
+    listUserActionRuns = async() => {
+        return await this.httpClient.get<models.SoarCollection<models.SoarActionRun>>("action_run", {params: {"pretty": true, "page_size": 0, "sort": "create_time", "order": "desc", "_filter_owner__username": `'${this.username}'`}})
+    }
+
+    getLastUserActionRun = async() => {
+        return await this.httpClient.get<models.SoarCollection<models.SoarActionRun>>("action_run", {params: {"pretty": true, "page_size": 1, "sort": "create_time", "order": "desc", "_filter_owner__username": `'${this.username}'`}})
     }
 
     listPlaybookRuns = async() => {
         return await this.httpClient.get("playbook_run", {params: {"pretty": true, "page_size": 0, "sort": "start_time", "order": "desc"}})
-    }
-
-    listUserActionRuns = async() => {
-        return await this.httpClient.get("action_run", {params: {"pretty": true, "page_size": 0, "sort": "create_time", "order": "desc", "_filter_owner__username": `'${this.username}'`}})
-    }
-
-    getLastUserActionRun = async() => {
-        return await this.httpClient.get("action_run", {params: {"pretty": true, "page_size": 1, "sort": "create_time", "order": "desc", "_filter_owner__username": `'${this.username}'`}})
     }
 
     listUserPlaybookRuns = async() => {

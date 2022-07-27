@@ -62,7 +62,34 @@ export interface SoarAsset {
 }
 
 export interface SoarActionRun {
-
+    id: number,
+    action: string,
+    cancelled: string,
+    close_time: string,
+    comment: string,
+    container: number,
+    creator: number,
+    due_time: string,
+    exec_delay_secs: number,
+    ip_address: string,
+    message: string,
+    name: string
+    owner: number
+    playbook: number | null
+    playbook_run: number | null
+    status: string
+    type: string
+    update_time: string
+    version: number
+    node_guid: string
+    _pretty_update_time: string
+    _pretty_playbook: string
+    _pretty_owner: string
+    _pretty_due_time: string,
+    _pretty_creator: string,
+    _pretty_create_time: string,
+    _pretty_close_time: string,
+    _pretty_container: string
 }
 
 export interface SoarPlaybook {
