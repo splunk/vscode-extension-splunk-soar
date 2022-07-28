@@ -29,7 +29,7 @@ export async function installConnector(context: vscode.ExtensionContext, actionC
     const appFile = fs.readFileSync(outPath, { encoding: 'base64' })
     try {
         let res = await client.installApp(appFile)
-        uploadDispose.dispose
+        uploadDispose.dispose()
         vscode.window.setStatusBarMessage("$(pass-filled) Successfully Uploaded App", 3000)
         console.log(res)
     } catch (error) {
