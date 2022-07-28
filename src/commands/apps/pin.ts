@@ -54,3 +54,9 @@ export async function listPinnedApps(context: vscode.ExtensionContext) {
     pinnedApps = pinnedApps.filter(entry => entry.environment == env.key)
     return pinnedApps
 }
+
+export async function removePinnedAppsForEnv(context: vscode.ExtensionContext, envKey: string) {
+    let pinnedApps: PinnedApp[] = context.globalState.get(PINNED_APPS_KEY) || []
+    let newPinnedApps = pinnedApps.filter((app: PinnedApp) => {app.environment != envKey})
+    context.globalState.update(PINNED_APPS_KEY, newPinnedApps)
+}

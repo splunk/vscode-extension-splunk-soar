@@ -5,6 +5,7 @@ import { Environment, SoarEnvironmentsTreeItem } from '../../views/environments'
 import { getClientForEnvironment, SoarClient } from '../../soar/client'
 import { addEnvironmentWizard } from './addEnvironmentWizard'
 import { IActionContext } from '../actionRuns/actionRuns'
+import { removePinnedAppsForEnv } from '../apps/pin'
 
 export const ENV_KEY = "splunkSOAR.environments"
 export const ACTIVE_ENV_KEY = "splunkSOAR.activeEnvironment"
@@ -47,13 +48,12 @@ export async function addEnvironment(context: vscode.ExtensionContext) {
     if (newEnvironments.length === 1) {
         try {
             await activateEnvironment(context, {"data": newEnvironments[0]})
-            await refreshViews()
         } catch (error) {
             vscode.window.showWarningMessage("Added environment but could not activate it.")
         }
+    } else {
+        await refreshViews()
     }
-
-    await vscode.commands.executeCommand('splunkSoar.environments.refresh');
 }
 
 export async function removeEnvironment(context: vscode.ExtensionContext, actionContext: IActionContext) {
@@ -74,6 +74,8 @@ export async function removeEnvironment(context: vscode.ExtensionContext, action
     }
 
     context.globalState.update(ENV_KEY, newEnvironments)
+
+    await removePinnedAppsForEnv(context, key)
     await refreshViews()
 }
 
@@ -95,7 +97,6 @@ export async function activateEnvironment(context: vscode.ExtensionContext, envi
         let response = await client.version()
         context.globalState.update(ACTIVE_ENV_KEY, envKey)
         vscode.commands.executeCommand('setContext', 'splunkSoar.environments.hasActive', true);
-        await refreshViews()    
     } catch (error: any) {
         const {response} = error
 
@@ -108,6 +109,7 @@ export async function activateEnvironment(context: vscode.ExtensionContext, envi
         vscode.window.showErrorMessage(errorMsg)
         throw new Error(errorMsg)
     }
+    await refreshViews()
 }
 
 export async function getActiveEnvironment(context: vscode.ExtensionContext) {
