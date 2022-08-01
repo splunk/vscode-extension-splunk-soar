@@ -91,6 +91,8 @@ By right-clicking on each run users can:
 
 Once the operation has completed, results will be displayed in the OUTPUT terminal.
 
+To re-execute the playbook keeping the same parameters and context, simply click on the refresh icon for that specific action in Playbook Runs View.
+
 By right-clicking on each playbook users can:
 * Inspect the playbook,
 * View the playbook code,
