@@ -164,7 +164,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	let disposableContainerWatcherClear = vscode.commands.registerCommand('splunkSoar.containerWatcher.clear', () => { clear(context) });
 	context.subscriptions.push(disposableContainerWatcherClear);
 
-	let disposableContainerWatcherRemove = vscode.commands.registerCommand('splunkSoar.containerWatcher.remove', async (containerContext: any) => { remove(context, containerContext) });
+	let disposableContainerWatcherRemove = vscode.commands.registerCommand('splunkSoar.containerWatcher.unwatch', async (containerContext: any) => { remove(context, containerContext) });
 	context.subscriptions.push(disposableContainerWatcherRemove);
 	
 	let disposableContainerWatcherDelete = vscode.commands.registerCommand('splunkSoar.containers.delete', async (containerContext: any) => { deleteContainer(context, containerContext) });

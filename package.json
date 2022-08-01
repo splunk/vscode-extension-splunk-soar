@@ -456,8 +456,8 @@
 				"category": "SOAR Containers"
 			},
 			{
-				"command": "splunkSoar.containerWatcher.remove",
-				"title": "Remove",
+				"command": "splunkSoar.containerWatcher.unwatch",
+				"title": "Unwatch",
 				"icon": "$(close)",
 				"category": "SOAR Containers"
 			},
@@ -933,12 +933,12 @@
 					"group": "inline"
 				},
 				{
-					"command": "splunkSoar.containerWatcher.remove",
+					"command": "splunkSoar.containerWatcher.unwatch",
 					"when": "view == soarContainerWatcher && viewItem == soarcontainer",
 					"group": "inline@1"
 				},
 				{
-					"command": "splunkSoar.containerWatcher.remove",
+					"command": "splunkSoar.containerWatcher.unwatch",
 					"when": "view == soarContainerWatcher && viewItem == soarcontainer",
 					"group": "actions@2"
 				},
