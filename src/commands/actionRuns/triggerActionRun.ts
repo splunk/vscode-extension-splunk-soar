@@ -75,7 +75,8 @@ export async function runActionInput(context: ExtensionContext, actionContext: S
 			items: assets,
 			activeItem: typeof state.asset !== 'string' ? state.asset : undefined,
 			canSelectMany: true,
-			shouldResume: shouldResume
+			shouldResume: shouldResume,
+			ignoreFocusOut: true,
 		});
 		state.asset = pick;
 		return (input: MultiStepInput) => pickContainer(input, state);
@@ -89,7 +90,8 @@ export async function runActionInput(context: ExtensionContext, actionContext: S
 			value: state.container_id || '',
 			prompt: `Container ID`,
 			shouldResume: shouldResume,
-            validate: validateContainerExists
+            validate: validateContainerExists,
+			ignoreFocusOut: true
 		});
 
         if (parameterList.length > 0) {
@@ -122,6 +124,7 @@ export async function runActionInput(context: ExtensionContext, actionContext: S
 				items: values,
 				activeItem: typeof state.parameters[0][paramName] !== 'string' ? state.parameters[0][paramName] : undefined,
 				shouldResume: shouldResume,
+				ignoreFocusOut: true,
 				canSelectMany: false,
 				buttons: showSkip ? [skipParamButton] : [] 
 			});
@@ -140,6 +143,7 @@ export async function runActionInput(context: ExtensionContext, actionContext: S
 				totalSteps: totalSteps,
 				placeholder: `Pick a value for ${paramName}`,
 				items: values,
+				ignoreFocusOut: true,
 				activeItem: typeof state.parameters[0][paramName] !== 'string' ? state.parameters[0][paramName] : undefined,
 				shouldResume: shouldResume,
 				canSelectMany: false,

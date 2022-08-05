@@ -22,6 +22,7 @@ export interface QuickPickParameters<T extends vscode.QuickPickItem> {
 	placeholder: string;
 	buttons?: vscode.QuickInputButton[];
 	canSelectMany: boolean;
+	ignoreFocusOut: boolean;
 	shouldResume: () => Thenable<boolean>;
 }
 
@@ -76,7 +77,7 @@ export class MultiStepInput {
 		}
 	}
 
-	async showQuickPick<T extends vscode.QuickPickItem, P extends QuickPickParameters<T>>({ title, step, totalSteps, items, activeItem, placeholder, buttons, canSelectMany, shouldResume }: P) {
+	async showQuickPick<T extends vscode.QuickPickItem, P extends QuickPickParameters<T>>({ title, step, totalSteps, items, activeItem, placeholder, buttons, canSelectMany, ignoreFocusOut, shouldResume }: P) {
 		const disposables: vscode.Disposable[] = [];
 		try {
 			return await new Promise<T | (P extends { buttons: (infer I)[] } ? I : never)>((resolve, reject) => {
@@ -87,6 +88,8 @@ export class MultiStepInput {
 				input.placeholder = placeholder;
 				input.items = items;
 				input.canSelectMany = canSelectMany;
+				input.ignoreFocusOut = ignoreFocusOut!;
+
 				if (activeItem) {
 					input.activeItems = [activeItem];
 				}
