@@ -1,6 +1,7 @@
+import { AxiosResponse } from 'axios';
 import * as vscode from 'vscode';
-import { getClientForActiveEnvironment } from '../soar/client';
-import { SoarActionRun } from '../soar/models';
+import { getClientForActiveEnvironment, SoarClient } from '../soar/client';
+import { SoarActionRun, SoarAppRun, SoarCollection } from '../soar/models';
 
 export class SoarActionRunTreeProvider implements vscode.TreeDataProvider<ActionRunTreeItem> {
 	private _onDidChangeTreeData: vscode.EventEmitter<ActionRunTreeItem | undefined | void> = new vscode.EventEmitter<ActionRunTreeItem | undefined | void>();
@@ -22,7 +23,7 @@ export class SoarActionRunTreeProvider implements vscode.TreeDataProvider<Action
 	}
 
 	async getChildren(element?: ActionRunTreeItem): Promise<ActionRunTreeItem[]> {
-		let client;
+		let client: SoarClient;
 		try {
 			client = await getClientForActiveEnvironment(this.context)
 		} catch(error) {
@@ -39,15 +40,45 @@ export class SoarActionRunTreeProvider implements vscode.TreeDataProvider<Action
 			}
 			let actionRunResponse = await actionRunFunc()
 			let actionRunEntries = actionRunResponse.data.data
-			let actionRunTreeItems = actionRunEntries.map((entry: SoarActionRun) => (new ActionRun(entry["name"], { "actionRun": entry }, vscode.TreeItemCollapsibleState.None)))
+
+			let actionRunTreeItems = actionRunEntries.map((entry: SoarActionRun) => {
+
+				let isExpandable = entry._pretty_has_app_runs
+				let expandableState = isExpandable ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None
+
+				return new ActionRun(entry["name"], { "actionRun": entry, "appRun": undefined}, expandableState)
+			
+			})
 			return actionRunTreeItems
+		} else {
+			// We're in an action run
+
+			let actionRun = element as ActionRun
+			let actionRunId = actionRun.data.actionRun.id
+			let appRunResponse = await client.getActionRunAppRuns(String(actionRunId))
+			let appRuns = appRunResponse.data.data
+
+			let individualAppRunResponses = await Promise.allSettled(appRuns.map((entry: SoarAppRun) => {
+				return client.getAppRun(String(entry.id))
+			}))
+
+			let appRunTreeItems = individualAppRunResponses.filter((res) => res.status == "fulfilled").map((responsePromise) => {
+				if (responsePromise.status == "fulfilled") {
+					let appRun = responsePromise.value.data as SoarAppRun
+
+					return new AppRunTreeItem(String(appRun.id), {"appRun": responsePromise.value.data, "actionRun": actionRun.data.actionRun}, vscode.TreeItemCollapsibleState.None, { 'command': 'splunkSoar.appRuns.output', 'title': "Inspect", "arguments": [{ "data": { "appRun": appRun } }]})
+				}
+			})
+
+			console.log(appRunTreeItems)
+			return Promise.resolve(appRunTreeItems)
 		}
-		return Promise.resolve([])
 	}
 }
 
 interface ActionRunItemData {
 	actionRun: SoarActionRun
+	appRun: SoarAppRun | undefined
 }
 
 export class ActionRunTreeItem extends vscode.TreeItem {
@@ -60,8 +91,36 @@ export class ActionRunTreeItem extends vscode.TreeItem {
 	}
 
 	contextValue = 'soaractionruntreeitem';
-	
 }
+
+export class AppRunTreeItem extends ActionRunTreeItem {
+	data: ActionRunItemData;
+
+	constructor(label: string, data: ActionRunItemData, collapsibleState: vscode.TreeItemCollapsibleState, command?: vscode.Command) {
+		super(label, collapsibleState, command)
+		this.data = data
+		this.description = data.appRun?._pretty_asset
+		
+		if (data.appRun?.status == "failed") {
+			this.iconPath = new vscode.ThemeIcon("error", new vscode.ThemeColor("testing.iconFailed"))
+		}
+		/*console.log(data.appRun?.status)
+		if (data.appRun?.status == "failed") {
+			this.iconPath = new vscode.ThemeIcon("error", new vscode.ThemeColor("testing.iconFailed"))
+		} else if (data.appRun?.status == "success") {
+			this.iconPath = new vscode.ThemeIcon("pass", new vscode.ThemeColor("testing.iconPassed"))
+		} else (data.appRun?.status == "running" || data.appRun?.status == "pending") {
+			this.iconPath = new vscode.ThemeIcon("watch", new vscode.ThemeColor("testing.iconQueued"))
+		}*/
+	}
+
+
+	contextValue: string = 'soarapprun';
+
+	iconPath = new vscode.ThemeIcon("pass", new vscode.ThemeColor("testing.iconPassed"))
+
+}
+
 
 export class ActionRun extends ActionRunTreeItem {
 

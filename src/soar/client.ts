@@ -170,7 +170,7 @@ export class SoarClient {
     }
 
     getActionRunAppRuns = async (actionRunId: string) => {
-        return await this.httpClient.get(`action_run/${actionRunId}/app_runs?pretty=true`)
+        return await this.httpClient.get<models.SoarCollection<models.SoarAppRun>>(`action_run/${actionRunId}/app_runs?pretty=true`)
     }
 
     getAppRun = async (appRunId: string) => {

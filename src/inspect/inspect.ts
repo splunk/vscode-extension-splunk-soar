@@ -1,20 +1,111 @@
+import { AxiosResponse } from 'axios';
 import * as vscode from 'vscode'
-import { ActionRunAppRunContentProvider, ActionRunContentProvider } from './actionRunContentProvider';
-import { AppContentProvider } from './appContentProvider';
+import { getClientForActiveEnvironment } from '../soar/client';
+import { PlaybookRun } from '../views/playbookRun';
 import { AppFileContentProvider } from './appFileContentProvider';
-import { ArtifactContentProvider } from './artifactContentProvider';
-import { AssetContentProvider } from './assetContentProvider';
-import { ContainerContentProvider } from './containerContentProvider';
-import { NoteContentProvider, NoteMetaContentProvider } from './noteContentProvider';
-import { PlaybookContentProvider, PlaybookCodeContentProvider } from './playbookContentProvider';
-import { PlaybookRunContentProvider, PlaybookRunLogContentProvider } from './playbookRunContentProvider';
+import { SoarContent, SoarContentProvider } from './soarContentProvider';
 import { SystemSettingsContentProvider } from './systemSettingContentProvider';
-import { VaultFileContentProvider } from './vaultFileContentProvider';
 
 export function registerInspectProviders(context: vscode.ExtensionContext) {
 
-	const assetScheme = "soarasset"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(assetScheme, new AssetContentProvider(context)));
+	const processJSONContent = (res: AxiosResponse) => { return JSON.stringify(res.data, null, '\t')} 
+
+	let playbookRunContent: SoarContent = {
+		scheme: "soarplaybookrun", 
+		prefix: "playbook-run_", 
+		getContentFunName: "getPlaybookRun", 
+		processContent: processJSONContent
+	}
+
+	let playbookRunLogContent: SoarContent = {
+		scheme: "soarplaybookrunlog", 
+		prefix: "playbook-run-log_", 
+		getContentFunName: "getPlaybookRunLog", 
+		processContent: processJSONContent
+	}
+
+	let assetContent: SoarContent = {
+		scheme: "soarasset", 
+		prefix: "asset_", 
+		getContentFunName: "getAsset", 
+		processContent: processJSONContent
+	}
+
+	let appContent: SoarContent = {
+		scheme: "soarapp", 
+		prefix: "app_", 
+		getContentFunName: "getApp", 
+		processContent: processJSONContent
+	}
+
+	let containerContent: SoarContent = {
+		scheme: "soarcontainer", 
+		prefix: "container_", 
+		getContentFunName: "getContainer", 
+		processContent: processJSONContent
+	}
+
+	let actionRunContent: SoarContent = {
+		scheme: "soaractionrun",
+		prefix: "action-run_",
+		getContentFunName: "getActionRun",
+		processContent: processJSONContent
+	}
+
+	let appRunContent: SoarContent = {
+		scheme: "soarapprun",
+		prefix: "app-run_",
+		getContentFunName: "getAppRun",
+		processContent: processJSONContent
+	}
+
+	let playbookContent: SoarContent = {
+		scheme: "soarplaybook",
+		prefix: "playbook_",
+		getContentFunName: "getPlaybook",
+		processContent: processJSONContent
+	}
+
+	let artifactContent: SoarContent = {
+		scheme: "soarartifact",
+		prefix: "artifact_",
+		getContentFunName: "getArtifact",
+		processContent: processJSONContent
+	}
+
+	let noteMetaContent: SoarContent = {
+		scheme: "soarnotemeta",
+		prefix: "note_meta_",
+		getContentFunName: "getNote",
+		processContent: processJSONContent
+	}
+
+	let noteContent: SoarContent = {
+		scheme: "soarnote",
+		"prefix": "note_",
+		getContentFunName: "getNote",
+		processContent: (res) => {return res.data.content}
+	}
+
+	let vaultFileContent: SoarContent = {
+		scheme: "soarvaultfile",
+		prefix: "vault_file_",
+		getContentFunName: "getVaultDocument",
+		processContent: processJSONContent
+	}
+
+	let playbookCodeContent: SoarContent = {
+		scheme: "soarplaybookcode",
+		"prefix": "",
+		getContentFunName: "getPlaybook",
+		processContent: (res) => {return res.data.python},
+	}
+
+	let contents = [appContent, assetContent, playbookRunLogContent, playbookRunContent, containerContent, actionRunContent, appRunContent, playbookContent, vaultFileContent, noteContent, playbookCodeContent]
+
+	for (let content of contents) {
+		context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(content.scheme, new SoarContentProvider(context, content)));
+	}
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.assets.inspect', async (assetId) => {
 		if (!assetId) {
@@ -24,14 +115,11 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 
 		if (assetId) {
-			const uri = vscode.Uri.parse('soarasset:' + assetId + ".json");
-			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			const uri = vscode.Uri.parse(`${assetContent.scheme}:${assetContent.prefix}${assetId}.json`);
+			const doc = await vscode.workspace.openTextDocument(uri);
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
-
-	const appScheme = "soarapp"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(appScheme, new AppContentProvider(context)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.inspect', async (appId) => {
 		if (!appId) {
@@ -41,14 +129,12 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 
 		if (appId) {
-			const uri = vscode.Uri.parse('soarapp:' + appId + ".json");
+			const uri = vscode.Uri.parse(`${appContent.scheme}:${appContent.prefix}${appId}.json`);
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
 
-	const containerScheme = "soarcontainer"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(containerScheme, new ContainerContentProvider(context)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.containers.inspect', async (containerId) => {
 		if (!containerId) {
@@ -58,14 +144,11 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 
 		if (containerId) {
-			const uri = vscode.Uri.parse('soarcontainer:' + containerId + ".json");
+			const uri = vscode.Uri.parse(`${containerContent.scheme}:${containerContent.prefix}${containerId}.json`);
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
-
-	const actionRunScheme = "soaractionrun"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(actionRunScheme, new ActionRunContentProvider(context)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.actionRuns.inspect', async (actionRunId) => {
 		if (!actionRunId) {
@@ -75,60 +158,54 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 
 		if (actionRunId) {
-			const uri = vscode.Uri.parse('soaractionrun:' + actionRunId + ".json");
+			const uri = vscode.Uri.parse(`${actionRunContent.scheme}:${actionRunContent.prefix}${actionRunId}.json`);
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
 
-	const actionRunAppRunScheme = "soaractionrunapprun"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(actionRunAppRunScheme, new ActionRunAppRunContentProvider(context)));
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.appRuns.inspect', async (appRunContext) => {
 
-	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.actionRuns.inspectAppRun', async (actionRunId) => {
-		if (!actionRunId) {
-			actionRunId = await vscode.window.showInputBox({ placeHolder: 'Action Run ID' });
-		} else if (actionRunId.hasOwnProperty("data")) {
-			actionRunId = String(actionRunId.data["actionRun"]["id"])
-		}
+		let appRunId = appRunContext.data.appRun.id
 
-		if (actionRunId) {
-			const uri = vscode.Uri.parse('soaractionrunapprun:' + actionRunId + ".json");
+		if (appRunId) {
+			const uri = vscode.Uri.parse(`${appRunContent.scheme}:${appRunContent.prefix}${appRunId}.json`);
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
 
-	const playbookRunScheme = "soarplaybookrun"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(playbookRunScheme, new PlaybookRunContentProvider(context)));
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.appRuns.output', async (appRunContext) => {
+
+		let appRunId = appRunContext.data.appRun.id
+		let client = await getClientForActiveEnvironment(context)
+
+		let appRun = client.getAppRun(appRunId)
+
+		let out = vscode.window.createOutputChannel("SOAR")
+		out.clear()
+		out.appendLine(JSON.stringify((await appRun).data, null, '\t'))
+		out.show()
+	}));
 
 
-	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbookRuns.inspect', async (playbookRunId) => {
-		if (!playbookRunId) {
-			playbookRunId = await vscode.window.showInputBox({ placeHolder: 'Playbook Run ID' });
-		} else if (playbookRunId.hasOwnProperty("data")) {
-			playbookRunId = String(playbookRunId.data["playbookRun"]["id"])
-		}
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbookRuns.inspect', async (playbookRunContext: PlaybookRun) => {
+		let playbookRunId = String(playbookRunContext.data.playbookRun.id)
 
 		if (playbookRunId) {
-			const uri = vscode.Uri.parse('soarplaybookrun:' + playbookRunId + ".json");
-			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			const uri = vscode.Uri.parse(`${playbookRunContent.scheme}:${playbookRunContent.prefix}${playbookRunId}.json`);
+			const doc = await vscode.workspace.openTextDocument(uri);
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
 
-	const playbookRunLogScheme = "soarplaybookrunlog"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(playbookRunLogScheme, new PlaybookRunLogContentProvider(context)));
 
-	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbookRuns.logs', async (playbookRunId) => {
-		if (!playbookRunId) {
-			playbookRunId = await vscode.window.showInputBox({ placeHolder: 'Playbook Run ID' });
-		} else if (playbookRunId.hasOwnProperty("data")) {
-			playbookRunId = String(playbookRunId.data["playbookRun"]["id"])
-		}
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbookRuns.logs', async (playbookRunContext: PlaybookRun) => {
+		let playbookRunId = String(playbookRunContext.data.playbookRun.id)
 
 		if (playbookRunId) {
-			const uri = vscode.Uri.parse('soarplaybookrunlog:' + playbookRunId + ".json");
-			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			const uri = vscode.Uri.parse(`${playbookRunLogContent.scheme}:${playbookRunLogContent.prefix}${playbookRunId}.json`);
+			const doc = await vscode.workspace.openTextDocument(uri);
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
@@ -150,12 +227,6 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 	}));
 
-	const playbookScheme = "soarplaybook"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(playbookScheme, new PlaybookContentProvider(context)));
-
-	const playbookCodeScheme = "soarplaybookcode"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(playbookCodeScheme, new PlaybookCodeContentProvider(context)));
-
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbooks.viewCode', async (playbookId) => {
 		if (!playbookId) {
 			playbookId = await vscode.window.showInputBox({ placeHolder: 'Playbook ID' });
@@ -164,7 +235,8 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 
 		if (playbookId) {
-			const uri = vscode.Uri.parse('soarplaybookcode:' + playbookId + ".py");
+			const uri = vscode.Uri.parse(`${playbookCodeContent.scheme}:${playbookCodeContent.prefix}${playbookId}.py`);
+
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
@@ -179,14 +251,11 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 
 		if (playbookId) {
-			const uri = vscode.Uri.parse('soarplaybook:' + playbookId + ".json");
+			const uri = vscode.Uri.parse(`${playbookContent.scheme}:${playbookContent.prefix}${playbookId}.json`);
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
-
-	const artifactScheme = "soarartifact"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(artifactScheme, new ArtifactContentProvider(context)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.artifacts.inspect', async (artifactId) => {
 		if (!artifactId) {
@@ -196,14 +265,12 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 
 		if (artifactId) {
-			const uri = vscode.Uri.parse('soarartifact:' + artifactId + ".json");
+			const uri = vscode.Uri.parse(`${artifactContent.scheme}:${artifactContent.prefix}${artifactId}.json`);
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
 
-	const noteScheme = "soarnote"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(noteScheme, new NoteContentProvider(context)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.notes.preview', async (noteId) => {
 		if (!noteId) {
@@ -213,15 +280,13 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 
 		if (noteId) {
-			const uri = vscode.Uri.parse('soarnote:' + noteId + ".md");
+			const uri = vscode.Uri.parse(`${noteContent.scheme}:${noteContent.prefix}${noteId}.md`);
+
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 			await vscode.commands.executeCommand('markdown.showPreviewToSide')
 		}
 	}));
-
-	const noteMetaScheme = "soarnotemeta"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(noteMetaScheme, new NoteMetaContentProvider(context)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.notes.inspect', async (noteId) => {
 		if (!noteId) {
@@ -231,14 +296,11 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 
 		if (noteId) {
-			const uri = vscode.Uri.parse('soarnotemeta:' + noteId + ".json");
+			const uri = vscode.Uri.parse(`${noteMetaContent.scheme}:${noteMetaContent.prefix}${noteId}.json`);
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
 	}));
-
-	const vaultFileScheme = "soarvaultfile"
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(vaultFileScheme, new VaultFileContentProvider(context)));
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.vaultFile.inspect', async (docId) => {
 		if (!docId) {
@@ -248,7 +310,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		}
 
 		if (docId) {
-			const uri = vscode.Uri.parse('soarvaultfile:' + docId + ".json");
+			const uri = vscode.Uri.parse(`${vaultFileContent.scheme}:${vaultFileContent.prefix}${docId}.json`);
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
@@ -258,7 +320,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 	const settingsScheme = "soarenvsetting"
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(settingsScheme, new SystemSettingsContentProvider(context)));
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.environments.inspect', async (environmentContext) => {
-	
+
 		const uri = vscode.Uri.parse('soarenvsetting:' + environmentContext.data.key + ".json");
 		const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 		await vscode.window.showTextDocument(doc, { preview: false });

@@ -125,7 +125,7 @@ export interface SoarActionRun {
 }
 
 export interface SoarPlaybookRun {
-    id: string,
+    id: number,
     cancelled: string,
     _pretty_container: string
     container: number,
@@ -153,3 +153,32 @@ export interface SoarPlaybookRun {
     _pretty_scm_name: string
 }
 
+export interface SoarAppRun {
+    id: number
+    action: string
+    _pretty_action_run: string
+    action_run: number
+    _pretty_asset: string
+    _pretty_app: string
+    app: number
+    app_name: string
+    app_version: string
+    _pretty_container: string
+    container: number,
+    _pretty_end_time: string
+    end_time: string
+    exception_occured: boolean
+    message: string
+    playbook_run: number | null
+    _pretty_start_time: string
+    start_time: string
+    status: string
+    version: number
+    _pretty_effective_user: string
+    effective_user: number
+    node_guid: string
+    _pretty_automation_broker: string
+    automation_broker: number | null
+    _pretty_app_directory: string
+    _pretty_has_widget: boolean
+}
