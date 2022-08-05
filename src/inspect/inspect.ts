@@ -184,7 +184,6 @@ export function registerInspectProviders(context: vscode.ExtensionContext, outpu
 		let appRun = await client.getAppRun(appRunId)
 
 		outputChannel.clear()
-
 		outputChannel.appendLine("=========== Connector Summary (summary) ===========")
 		outputChannel.appendLine(JSON.stringify(appRun.data.result_summary, null, '\t'))
 		outputChannel.appendLine("=========== Command Result (action_result) ===========")
@@ -217,7 +216,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext, outpu
 			time: string
 		}
 
-		let outMessages = logResponse.data.data.reverse().map((entry: PlaybookRunLogEntry) => {return `<${entry.message_type}> ${entry.time}: ${entry.message}`})
+		let outMessages = logResponse.data.data.reverse().map((entry: PlaybookRunLogEntry) => {return `<${entry.message_type}>[${entry.time}]: ${entry.message}`})
 
 		outputChannel.clear()
 		for (let msg of outMessages) {

@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import * as vscode from 'vscode'
 import { getClientForActiveEnvironment } from '../../soar/client';
-import { SoarAction, SoarActionRun, SoarApp } from '../../soar/models';
+import { SoarAction, SoarActionRun, SoarApp, SoarAppRun } from '../../soar/models';
 
 export interface IActionRun {
     id: string
@@ -71,7 +71,21 @@ export async function processRunAction(actionName: string, containerId: string, 
     progress.report({increment: 75, message: "Collecting Results"})
 
     outputChannel.clear()
-    outputChannel.append(JSON.stringify(appRunsResult.data, null, 4))
+    let appRunOutput = appRunsResult.data.data.map((appRun: SoarAppRun) => {
+        return `
+        =========== App Run: ${appRun.id} ===========
+        Start: ${appRun.start_time}
+        End: ${appRun.end_time}
+
+        App: ${appRun.app_name}
+        Action: ${appRun.action}
+        Asset: ${appRun._pretty_asset}
+
+        ${appRun.message}
+        `
+    }).join("\n")
+
+    outputChannel.append(appRunOutput)
     outputChannel.show()
 
     await vscode.commands.executeCommand('splunkSoar.actionRuns.refresh');

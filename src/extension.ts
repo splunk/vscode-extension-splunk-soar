@@ -6,6 +6,7 @@ import { registerInspectProviders } from './inspect/inspect';
 import { registerCodeLenses } from './codelens/codelens';
 import { DeployTaskProvider } from './tasks/deployTaskProvider';
 import { ACTIVE_ENV_KEY } from './commands/environments/environments';
+import outputLinkProvider from './providers/outputLinkProvider';
 
 let deployTaskProvider: vscode.Disposable | undefined;
 
@@ -19,8 +20,10 @@ export function activate(context: vscode.ExtensionContext) {
 	} else {
         vscode.commands.executeCommand('setContext', 'splunkSoar.environments.hasActive', true);
 	}
+	let soarOutputLang = "soar-output-lang"
+	let soarOutput = vscode.window.createOutputChannel("SOAR", soarOutputLang);
 
-	let soarOutput = vscode.window.createOutputChannel("SOAR");
+	vscode.languages.registerDocumentLinkProvider({language: soarOutputLang}, outputLinkProvider)
 
 	registerCommands(context, soarOutput)
 	registerTreeViews(context)

@@ -28,28 +28,16 @@ export async function processPlaybookRun(progress: any, context: vscode.Extensio
 		}
 
 
-		progress.report({increment: 50, message: `${playbookRun.data.message}`})
+		progress.report({increment: 50, message: `Last Status: ${playbookRun.data.status}`})
 
 		if (playbookRun.data.status === "running") {
 			vscode.window.showWarningMessage("Playbook execution polling timed out, playbook still running. Will retrieve last known status.")
 		}
 		
-		progress.report({increment: 75, message: "Collecting Results"})
+		progress.report({increment: 90, message: "Collecting Results"})
 
-		outputChannel.clear()
+		await vscode.commands.executeCommand("splunkSoar.playbookRuns.logs", {"data": {"playbookRun": playbookRun.data}})
 
-		interface PlaybookRunLogEntry {
-			message: string,
-			message_type: number,
-			time: string
-		}
-
-		let outMessages = JSON.parse(playbookRun.data.message).data.map((entry: PlaybookRunLogEntry) => {return `<${entry.message_type}> ${entry.time}: ${entry.message}`})
-
-		for (let msg of outMessages) {
-			outputChannel.appendLine(msg)
-		}
-		outputChannel.show()
 		await vscode.commands.executeCommand('splunkSoar.playbookRuns.refresh');
 		await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh')
 		} catch(err) {
