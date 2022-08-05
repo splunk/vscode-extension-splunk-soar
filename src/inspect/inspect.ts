@@ -1,4 +1,5 @@
 import { AxiosResponse } from 'axios';
+import { OutputQuoteStyle } from 'terser';
 import * as vscode from 'vscode'
 import { getClientForActiveEnvironment } from '../soar/client';
 import { PlaybookRun } from '../views/playbookRun';
@@ -6,7 +7,7 @@ import { AppFileContentProvider } from './appFileContentProvider';
 import { SoarContent, SoarContentProvider } from './soarContentProvider';
 import { SystemSettingsContentProvider } from './systemSettingContentProvider';
 
-export function registerInspectProviders(context: vscode.ExtensionContext) {
+export function registerInspectProviders(context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel) {
 
 	const processJSONContent = (res: AxiosResponse) => { return JSON.stringify(res.data, null, '\t')} 
 
@@ -180,12 +181,15 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 		let appRunId = appRunContext.data.appRun.id
 		let client = await getClientForActiveEnvironment(context)
 
-		let appRun = client.getAppRun(appRunId)
+		let appRun = await client.getAppRun(appRunId)
 
-		let out = vscode.window.createOutputChannel("SOAR")
-		out.clear()
-		out.appendLine(JSON.stringify((await appRun).data, null, '\t'))
-		out.show()
+		outputChannel.clear()
+
+		outputChannel.appendLine("=========== Connector Summary (summary) ===========")
+		outputChannel.appendLine(JSON.stringify(appRun.data.result_summary, null, '\t'))
+		outputChannel.appendLine("=========== Command Result (action_result) ===========")
+		outputChannel.appendLine(JSON.stringify(appRun.data.result_data[0], null, '\t'))
+		outputChannel.show()
 	}));
 
 
@@ -203,11 +207,25 @@ export function registerInspectProviders(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbookRuns.logs', async (playbookRunContext: PlaybookRun) => {
 		let playbookRunId = String(playbookRunContext.data.playbookRun.id)
 
-		if (playbookRunId) {
-			const uri = vscode.Uri.parse(`${playbookRunLogContent.scheme}:${playbookRunLogContent.prefix}${playbookRunId}.json`);
-			const doc = await vscode.workspace.openTextDocument(uri);
-			await vscode.window.showTextDocument(doc, { preview: false });
+		let client = await getClientForActiveEnvironment(context)
+
+		let logResponse = await client.getPlaybookRunLog(String(playbookRunId)) 
+
+		interface PlaybookRunLogEntry {
+			message: string,
+			message_type: number,
+			time: string
 		}
+
+		let outMessages = logResponse.data.data.reverse().map((entry: PlaybookRunLogEntry) => {return `<${entry.message_type}> ${entry.time}: ${entry.message}`})
+
+		outputChannel.clear()
+		for (let msg of outMessages) {
+			outputChannel.appendLine(msg)
+		}
+
+		outputChannel.show()
+
 	}));
 
 

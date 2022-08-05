@@ -41,7 +41,7 @@ export class SoarPlaybookRunTreeProvider implements vscode.TreeDataProvider<Play
 
 			let playbookRunResponse = await actionRunFunc()
 			let playbookRunEntries = playbookRunResponse.data.data
-			let playbookRunTreeItems = playbookRunEntries.map((entry: SoarPlaybookRun) => (new PlaybookRun(entry["_pretty_playbook"], { "playbookRun": entry }, vscode.TreeItemCollapsibleState.None)))
+			let playbookRunTreeItems = playbookRunEntries.map((entry: SoarPlaybookRun) => (new PlaybookRun(entry["_pretty_playbook"], { "playbookRun": entry }, vscode.TreeItemCollapsibleState.None, { 'command': 'splunkSoar.playbookRuns.logs', 'title': "Logs", "arguments": [{ "data": { "playbookRun": entry } }] })))
 			return playbookRunTreeItems
 
 		}

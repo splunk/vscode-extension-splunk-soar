@@ -2,7 +2,7 @@ import * as vscode from 'vscode'
 import { getClientForActiveEnvironment } from '../../soar/client';
 import {wait} from '../actionRuns/actionRuns'
 
-export async function processPlaybookRun(progress: any, context: vscode.ExtensionContext, playbookId: number, containerId: string, scope: string) {
+export async function processPlaybookRun(progress: any, context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel, playbookId: number, containerId: string, scope: string) {
         let client = await getClientForActiveEnvironment(context)
   
         progress.report({ increment: 0 });
@@ -36,10 +36,20 @@ export async function processPlaybookRun(progress: any, context: vscode.Extensio
 		
 		progress.report({increment: 75, message: "Collecting Results"})
 
-		let soarOutput = vscode.window.createOutputChannel("Splunk SOAR: Action Run");
-		soarOutput.clear()
-		soarOutput.append(playbookRun.data.message)
-		soarOutput.show()
+		outputChannel.clear()
+
+		interface PlaybookRunLogEntry {
+			message: string,
+			message_type: number,
+			time: string
+		}
+
+		let outMessages = JSON.parse(playbookRun.data.message).data.map((entry: PlaybookRunLogEntry) => {return `<${entry.message_type}> ${entry.time}: ${entry.message}`})
+
+		for (let msg of outMessages) {
+			outputChannel.appendLine(msg)
+		}
+		outputChannel.show()
 		await vscode.commands.executeCommand('splunkSoar.playbookRuns.refresh');
 		await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh')
 		} catch(err) {

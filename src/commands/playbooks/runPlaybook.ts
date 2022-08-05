@@ -13,7 +13,7 @@ export interface IPlaybookContext {
     }
 }
 
-export async function runPlaybookInput(context: vscode.ExtensionContext, playbookContext: IPlaybookContext) {
+export async function runPlaybookInput(context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel, playbookContext: IPlaybookContext) {
     interface PlaybookRunState {
         playbook_id: string;
         container_id: string
@@ -108,6 +108,6 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, playboo
 		title: `Running ${playbookContext.data.playbook["name"]}'`,
 		cancellable: false
 	}, async (progress, token) => {
-		await processPlaybookRun(progress, context, parseInt(state.playbook_id), state.container_id, state.scope)
+		await processPlaybookRun(progress, context, outputChannel, parseInt(state.playbook_id), state.container_id, state.scope)
 	})
 }

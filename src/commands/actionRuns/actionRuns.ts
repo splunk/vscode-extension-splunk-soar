@@ -26,7 +26,7 @@ export interface IParamInfo {
 	default: string
 }
 
-export async function processRunAction(actionName: string, containerId: string, actionRunTargets: any, progress: vscode.Progress<{message?: string | undefined, increment?: number | undefined}>, context: vscode.ExtensionContext){
+export async function processRunAction(actionName: string, containerId: string, actionRunTargets: any, progress: vscode.Progress<{message?: string | undefined, increment?: number | undefined}>, context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel){
     let client = await getClientForActiveEnvironment(context)
     progress.report({ increment: 0 });
 
@@ -70,10 +70,9 @@ export async function processRunAction(actionName: string, containerId: string, 
     
     progress.report({increment: 75, message: "Collecting Results"})
 
-    let soarOutput = vscode.window.createOutputChannel("Splunk SOAR: Action Run");
-    soarOutput.clear()
-    soarOutput.append(JSON.stringify(appRunsResult.data, null, 4))
-    soarOutput.show()
+    outputChannel.clear()
+    outputChannel.append(JSON.stringify(appRunsResult.data, null, 4))
+    outputChannel.show()
 
     await vscode.commands.executeCommand('splunkSoar.actionRuns.refresh');
     await vscode.commands.executeCommand('splunkSoar.containerWatcher.refresh')

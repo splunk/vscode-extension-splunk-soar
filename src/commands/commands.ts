@@ -21,7 +21,7 @@ import { pinApp, unpinApp } from './apps/pin';
 import { createContainer } from './containers/create';
 import { repeatPlaybookRun } from './playbookRuns/repeat';
 
-export function registerCommands(context: vscode.ExtensionContext) {
+export function registerCommands(context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel) {
 
 	let disposableOpenWebApps = vscode.commands.registerCommand('splunkSoar.openWebApps', async () => { openWebApps(context) });
 	context.subscriptions.push(disposableOpenWebApps);
@@ -64,7 +64,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.actionRuns.repeat', async (data) => {
 		if (data) {
-			repeatActionRun(context, data).catch(console.error)
+			repeatActionRun(context, outputChannel, data).catch(console.error)
 		} else {
 			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
 		}
@@ -117,7 +117,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.runAction', async (data) => {
 		if (data) {
-			runActionInput(context, data).catch(console.error)
+			runActionInput(context, outputChannel, data).catch(console.error)
 		} else {
 			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
 		}
@@ -137,7 +137,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbooks.runPlaybook', async (data) => {
 		if (data) {
-			runPlaybookInput(context, data).catch(console.error)
+			runPlaybookInput(context, outputChannel, data).catch(console.error)
 		} else {
 			vscode.window.showInformationMessage("Please call this method solely from the inline context menu in the SOAR App View")
 		}
@@ -203,7 +203,7 @@ export function registerCommands(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposableConfigureAsset);
 
 
-	let disposableRepeatLastActionRun = vscode.commands.registerCommand('splunkSoar.actionRuns.repeatLast', async () => { repeatLastActionRun(context) });
+	let disposableRepeatLastActionRun = vscode.commands.registerCommand('splunkSoar.actionRuns.repeatLast', async () => { repeatLastActionRun(context, outputChannel) });
 	context.subscriptions.push( disposableRepeatLastActionRun);
 
 
@@ -213,5 +213,5 @@ export function registerCommands(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand("splunkSoar.containers.create", () => {createContainer(context)}))
 
-	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbookRuns.repeat', (playbookRunContext) => {repeatPlaybookRun(context, playbookRunContext)}))
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbookRuns.repeat', (playbookRunContext) => {repeatPlaybookRun(context, playbookRunContext, outputChannel)}))
 }

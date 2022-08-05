@@ -1,9 +1,9 @@
-import { window, ExtensionContext, ProgressLocation} from 'vscode';
+import { window, ExtensionContext, ProgressLocation, OutputChannel} from 'vscode';
 import { getClientForActiveEnvironment } from '../../soar/client';
 import { ActionRun } from '../../views/actionRun';
 import { processRunAction } from './actionRuns';
 
-export async function repeatActionRun(context: ExtensionContext, actionRunContext: ActionRun) {
+export async function repeatActionRun(context: ExtensionContext, outputChannel: OutputChannel, actionRunContext: ActionRun) {
     let client = await getClientForActiveEnvironment(context)
 	let actionRunId = actionRunContext.data["actionRun"]["id"]
 
@@ -17,14 +17,14 @@ export async function repeatActionRun(context: ExtensionContext, actionRunContex
 			title: `Repeating ${actionName}`,
 			cancellable: false
 		}, async (progress, token) => {
-			await processRunAction(actionName, actionContainer, actionRunTargets, progress, context)
+			await processRunAction(actionName, actionContainer, actionRunTargets, progress, context, outputChannel)
 	})
 	}).catch(err => {
 		console.log(err)
 	})
 }
 
-export async function repeatLastActionRun(context: ExtensionContext) {
+export async function repeatLastActionRun(context: ExtensionContext, outputChannel: OutputChannel) {
 	let client = await getClientForActiveEnvironment(context)
 
 	let actionRunResponse = await client.getLastUserActionRun()
@@ -45,7 +45,7 @@ export async function repeatLastActionRun(context: ExtensionContext) {
 			title: `Repeating ${actionName}`,
 			cancellable: false
 		}, async (progress, token) => {
-			await processRunAction(actionName, actionContainer, actionRunTargets, progress, context)
+			await processRunAction(actionName, actionContainer, actionRunTargets, progress, context, outputChannel)
 	})
 	}).catch(err => {
 		console.log(err)

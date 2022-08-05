@@ -20,9 +20,11 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.executeCommand('setContext', 'splunkSoar.environments.hasActive', true);
 	}
 
-	registerCommands(context)
+	let soarOutput = vscode.window.createOutputChannel("SOAR");
+
+	registerCommands(context, soarOutput)
 	registerTreeViews(context)
-	registerInspectProviders(context)
+	registerInspectProviders(context, soarOutput)
 	registerCodeLenses(context)
 
 	if (!rootPath) {

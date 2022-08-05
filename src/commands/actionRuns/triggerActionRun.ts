@@ -7,7 +7,7 @@ import {MultiStepInput} from '../../wizard/MultiStepInput'
 import { openAppAssetConfiguration } from '../web';
 import { processRunAction } from './actionRuns';
 
-export async function runActionInput(context: ExtensionContext, actionContext: SoarActionItem) {
+export async function runActionInput(context: ExtensionContext, outputChannel: vscode.OutputChannel, actionContext: SoarActionItem) {
 	class MyButton implements QuickInputButton {
 		constructor(public iconPath: ThemeIcon, public tooltip: string) { }
 	}
@@ -216,6 +216,6 @@ export async function runActionInput(context: ExtensionContext, actionContext: S
                 "parameters": state.parameters,
                 "app_id": actionContext.data.app.id
         }]
-		await processRunAction(actionName, state.container_id, targets, progress, context)
+		await processRunAction(actionName, state.container_id, targets, progress, context, outputChannel)
 	})
 }
