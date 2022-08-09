@@ -6,6 +6,7 @@ import * as fs from 'fs'
 import { getClientForActiveEnvironment } from '../soar/client';
 import ignore from 'ignore'
 import { directoryContainsApp } from '../commands/apps/deploy';
+import { group } from 'console';
 
 interface CustomBuildTaskDefinition extends vscode.TaskDefinition {
 	cwd?: string
@@ -48,10 +49,13 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 			};
 		}
 
-		return new vscode.Task(definition, vscode.TaskScope.Workspace, `soarapp`,
+		let task = new vscode.Task(definition, vscode.TaskScope.Workspace, `soarapp`,
             DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
 				return new CustomBuildTaskTerminal(this.workspaceRoot, definition?.cwd ? definition.cwd : '.', this.context);
 			}));
+		
+		task.group =  {"isDefault": true, "id": "build"}
+		return task
 	}
 }
 

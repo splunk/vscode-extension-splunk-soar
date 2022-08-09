@@ -65,12 +65,12 @@ export class SoarActionRunTreeProvider implements vscode.TreeDataProvider<Action
 			let appRunTreeItems = individualAppRunResponses.filter((res) => res.status == "fulfilled").map((responsePromise) => {
 				if (responsePromise.status == "fulfilled") {
 					let appRun = responsePromise.value.data as SoarAppRun
-
 					return new AppRunTreeItem(String(appRun.id), {"appRun": responsePromise.value.data, "actionRun": actionRun.data.actionRun}, vscode.TreeItemCollapsibleState.None, { 'command': 'splunkSoar.appRuns.output', 'title': "Inspect", "arguments": [{ "data": { "appRun": appRun } }]})
 				}
 			})
 
 			console.log(appRunTreeItems)
+			// @ts-ignore:next-line 
 			return Promise.resolve(appRunTreeItems)
 		}
 	}

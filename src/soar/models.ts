@@ -121,7 +121,8 @@ export interface SoarActionRun {
     _pretty_creator: string,
     _pretty_create_time: string,
     _pretty_close_time: string,
-    _pretty_container: string
+    _pretty_container: string,
+    _pretty_has_app_runs: boolean
 }
 
 export interface SoarPlaybookRun {
