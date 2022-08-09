@@ -1,0 +1,8 @@
+{
+  "label": "Basics",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "This section describes basic operations that the VS Code Extension for Splunk SOAR supports."
+  }
+}
