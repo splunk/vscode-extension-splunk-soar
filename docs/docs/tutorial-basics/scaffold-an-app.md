@@ -7,3 +7,7 @@ sidebar_position: 10
 :::info
 
 The embedded App Wizard is still in an experimental stage. Using the Wizard within SOAR in recommended.
+
+:::
+
+![App Wizard](/img/app_wizard.png)

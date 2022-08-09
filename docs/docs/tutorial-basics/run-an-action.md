@@ -5,8 +5,6 @@ import ReactPlayer from 'react-player'
 
 # Run an Action
 
-## Triggering an Action Run
-
 <ReactPlayer width="100%" height="auto" controls url='/video/run_action.webm' />
 
 ## Reviewing the Results

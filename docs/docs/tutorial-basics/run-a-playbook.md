@@ -1,55 +1,17 @@
 ---
 sidebar_position: 4 
 ---
+import ReactPlayer from 'react-player'
+import runPlaybookVideo from '@site/static/video/run_playbook.webm';
+
 
 # Run a Playbook
 
-Documents are **groups of pages** connected through:
 
-- a **sidebar**
-- **previous/next navigation**
-- **versioning**
+<ReactPlayer width="100%" height="auto" controls url={runPlaybookVideo} />
 
-## Create your first Doc
+## Triggering a Playbook Run
 
-Create a Markdown file at `docs/hello.md`:
+## Reviewing Results
 
-```md title="docs/hello.md"
-# Hello
 
-This is my **first Docusaurus document**!
-```
-
-A new document is now available at [http://localhost:3000/docs/hello](http://localhost:3000/docs/hello).
-
-## Configure the Sidebar
-
-Docusaurus automatically **creates a sidebar** from the `docs` folder.
-
-Add metadata to customize the sidebar label and position:
-
-```md title="docs/hello.md" {1-4}
----
-sidebar_label: 'Hi!'
-sidebar_position: 3
----
-
-# Hello
-
-This is my **first Docusaurus document**!
-```
-
-It is also possible to create your sidebar explicitly in `sidebars.js`:
-
-```js title="sidebars.js"
-module.exports = {
-  tutorialSidebar: [
-    {
-      type: 'category',
-      label: 'Tutorial',
-      // highlight-next-line
-      items: ['hello'],
-    },
-  ],
-};
-```

@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # Commands
 
-![Download this document](/img/soar_cmd_actions.png)
+![Download this document](/img/soar_commands.png)
 
 ## Command Palette
 
