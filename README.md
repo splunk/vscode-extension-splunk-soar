@@ -113,21 +113,9 @@ More specific documentation can be found in the wiki hosted on the public reposi
 https://github.com/splunk/vscode-extension-splunk-soar/wiki
 
 ## Contributing
-### Requirements
-* `yarn` or `npm` installed
-* Open this repo in a clean VS Code workspace
 
-### Running the Extension
-* Install the dependencies on the first run by executing in Terminal
-```bash
-$ npm install
-# or
-$ yarn install
-```
-* Run the `Run Extension (vscode-extension-splunk-soar)` target in the `Run and Debug` view. This will:
-    * Start a task `npm: watch` to compile the code
-        > NOTE: click on `Debug Anyway` when prompted by a warning popup
-    * Run the extension in a new VS Code window
+Please review our [Contribution Guide](./CONTRIBUTING.md)
+
 
 ## Support & License
 
