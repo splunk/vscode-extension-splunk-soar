@@ -7,11 +7,8 @@ import runPlaybookVideo from '@site/static/video/run_playbook.webm';
 
 # Run a Playbook
 
-
 <ReactPlayer width="100%" height="auto" controls url={runPlaybookVideo} />
 
-## Triggering a Playbook Run
 
-## Reviewing Results
 
 
