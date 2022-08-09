@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Browsing SOAR
 
-The VS Code Extension for Splunk SOAR packages a number of custom views to browse connected SOAR environments and retrieve information about them.
+The VS Code Extension for Splunk SOAR packages a number of custom views to browse connected SOAR environments and retrieve information about them. Most objects support an **Inspect** command that shows the object in JSON format within a virtual, read-only document.
 
 ## Environments
 

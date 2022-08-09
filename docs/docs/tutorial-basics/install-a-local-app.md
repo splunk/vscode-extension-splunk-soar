@@ -23,6 +23,7 @@ used with keybindings and offers the best developer experience after initial set
 
 <ReactPlayer width="100%" height="auto" controls url={configureTaskVideo} />
 
+The extension provides a custom SOAR App Build Task that allows to install a local app to the configured SOAR instance via REST API. This procedure works for both on-prem and cloud SOAR. The task will transparently create a tar bundle of the app code and upload it to the instance.
 
 ## Editor Bar
 
