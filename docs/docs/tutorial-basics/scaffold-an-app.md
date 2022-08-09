@@ -10,4 +10,7 @@ The embedded App Wizard is still in an experimental stage. Using the Wizard with
 
 :::
 
+
+The App Wizard can be accessed from the Command Palette with the Command **SOAR Apps: Open App Wizard** or from the Apps view menu bar.
+
 ![App Wizard](/img/app_wizard.png)
