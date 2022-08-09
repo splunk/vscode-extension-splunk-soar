@@ -6,9 +6,9 @@ import downloadAppVideo from '@site/static/video/download_app_bundle.webm';
 
 # Download an App
 
-:::note
+:::info
 
-The same action is also available for Playbooks
+A corresponding command is available for playbooks!
 
 :::
 

@@ -5,6 +5,9 @@ import ReactPlayer from 'react-player'
 
 # Run an Action
 
+The VS Code Extension for SOAR allows to trigger action runs from within the editor. This is a key feature that significantly speeds up development and testing.
+The action is triggered on the active instance and we 
+
 <ReactPlayer width="100%" height="auto" controls url='/video/run_action.webm' />
 
 ## Reviewing the Results

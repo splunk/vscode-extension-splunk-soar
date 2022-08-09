@@ -49,13 +49,13 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      announcementBar: {
+      /*announcementBar: {
         "id": "open_source",
         content: "The VS Code Extension for Splunk SOAR has been <a href=\"https://github.com/splunk/vscode-extension-splunk-soar\">released on Github</a> 🎉",
         "backgroundColor": "#3993FF",
         "textColor": "#000000",
         isCloseable: false
-      },
+      },*/
       colorMode: {
         disableSwitch: true,
         defaultMode: "dark"

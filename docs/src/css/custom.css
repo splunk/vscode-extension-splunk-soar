@@ -1,7 +1,5 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * This is a SplunkUI Prisma override for the default Docusaurus theme. Dark-mode-only for now.
  */
 
 /* You can override the default Infima variables here. */
@@ -16,26 +14,63 @@
   --ifm-code-font-size: 95%;
   --ifm-background-color: #eee
 
+
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
 html[data-theme='dark'] {
-  --ifm-color-primary: #3993FF;
-  --ifm-color-primary-dark: #21af90;
-  --ifm-color-primary-darker: #1fa588;
-  --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  --ifm-color-primary: #3993ff;
+  --ifm-color-primary-dark: #1a82ff;
+  --ifm-color-primary-darker: #0a79ff;
+  --ifm-color-primary-darkest: #0063da;
+  --ifm-color-primary-light: #58a4ff;
+  --ifm-color-primary-lighter: #68adff;
+  --ifm-color-primary-lightest: #97c6ff;
+  --ifm-color-content: #fafafa;
+
   --ifm-background-color: #111215;
   --ifm-background-surface-color: #08090a;
-  --ifm-navbar-sidebar-color: #ddd;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
-  --ifm-color-content: #fafafa;
+  --ifm-color-info-dark: #61cafa;
+  --ifm-color-secondary-dark: #2cbda3;
+
+  --ifm-table-stripe-background: none;
 }
+
+
+/* Alerts */
+.alert--info {
+  --ifm-color-info-contrast-background: #1e2024
+
+}
+
+.alert--secondary {
+  --ifm-color-secondary-contrast-background: #1e2024
+ 
+}
+
+/* Announcement Bar */
+
+div[class^='announcementBarContent'] {
+
+  background-color: #2cbda3;
+}
+
+/* Footer */
 .footer--dark {
   --ifm-footer-background-color: #1a1c20;
+}
+
+/* Table */
+table {
+  --ifm-table-border-width: 0
+}
+table thead {
+  background-color: #27202f;
+}
+
+table thead tr {
+  border: 0;
 }
 
 /*
