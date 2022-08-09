@@ -24,6 +24,8 @@
 	],
 	"activationEvents": [
 		"onCommand:splunkSoar.apps.installBundle",
+		"onCommand:splunkSoar.apps.installConnector",
+		"onCommand:splunkSoar.apps.installFolder",
 		"onCommand:splunk-soar.openWeb",
 		"onCommand:splunkSoar.containers.inspect",
 		"onCommand:splunkSoar.assets.inspect",
