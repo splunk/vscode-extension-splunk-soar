@@ -102,7 +102,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext, outpu
 		processContent: (res) => {return res.data.python},
 	}
 
-	let contents = [appContent, assetContent, playbookRunLogContent, playbookRunContent, containerContent, actionRunContent, appRunContent, playbookContent, vaultFileContent, noteContent, playbookCodeContent]
+	let contents = [appContent, assetContent, playbookRunLogContent, playbookRunContent, containerContent, actionRunContent, appRunContent, playbookContent, vaultFileContent, noteContent, playbookCodeContent, noteMetaContent]
 
 	for (let content of contents) {
 		context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(content.scheme, new SoarContentProvider(context, content)));
