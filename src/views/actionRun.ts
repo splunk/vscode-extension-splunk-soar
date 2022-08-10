@@ -101,17 +101,33 @@ export class AppRunTreeItem extends ActionRunTreeItem {
 		this.data = data
 		this.description = data.appRun?._pretty_asset
 		
+		this.tooltip = this.generateLabel(data)
+		this.tooltip.isTrusted = true
+		this.tooltip.supportHtml = true
+		this.tooltip.supportThemeIcons = true
+
 		if (data.appRun?.status == "failed") {
 			this.iconPath = new vscode.ThemeIcon("error", new vscode.ThemeColor("testing.iconFailed"))
 		}
-		/*console.log(data.appRun?.status)
-		if (data.appRun?.status == "failed") {
-			this.iconPath = new vscode.ThemeIcon("error", new vscode.ThemeColor("testing.iconFailed"))
-		} else if (data.appRun?.status == "success") {
-			this.iconPath = new vscode.ThemeIcon("pass", new vscode.ThemeColor("testing.iconPassed"))
-		} else (data.appRun?.status == "running" || data.appRun?.status == "pending") {
-			this.iconPath = new vscode.ThemeIcon("watch", new vscode.ThemeColor("testing.iconQueued"))
-		}*/
+	}
+
+	generateLabel = function(data: ActionRunItemData): vscode.MarkdownString {
+		let label = new vscode.MarkdownString(``);
+		let appRunId = data["appRun"]!["id"]
+		let actionRunMessage = data["appRun"]!["message"]
+		let actionRunTime = data["appRun"]!["_pretty_start_time"]
+
+		label.appendMarkdown(`**${data["appRun"]!["action"]} (${actionRunTime})**\n\n`)
+		label.appendMarkdown(`${actionRunMessage}`)
+		label.appendText('\n\n')
+		label.appendMarkdown('---')
+		label.appendText('\n\n')
+
+		label.appendMarkdown(`**App Run**: `)
+		label.appendMarkdown(`[$(git-commit) \`${appRunId}\`](command:splunkSoar.appRuns.inspect?${appRunId}) \n\n`)
+
+		return label
+
 	}
 
 

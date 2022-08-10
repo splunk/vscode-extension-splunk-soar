@@ -182,4 +182,5 @@ export interface SoarAppRun {
     automation_broker: number | null
     _pretty_app_directory: string
     _pretty_has_widget: boolean
+    result_data: Object
 }

@@ -166,8 +166,13 @@ export function registerInspectProviders(context: vscode.ExtensionContext, outpu
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.appRuns.inspect', async (appRunContext) => {
+		let appRunId
 
-		let appRunId = appRunContext.data.appRun.id
+		if (appRunContext.hasOwnProperty('data')) {
+			appRunId = appRunContext.data.appRun.id
+		} else {
+			appRunId = String(appRunContext)
+		}
 
 		if (appRunId) {
 			const uri = vscode.Uri.parse(`${appRunContent.scheme}:${appRunContent.prefix}${appRunId}.json`);
