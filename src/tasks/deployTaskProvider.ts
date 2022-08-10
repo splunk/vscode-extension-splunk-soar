@@ -5,7 +5,7 @@ import * as tar from 'tar'
 import * as fs from 'fs'
 import { getClientForActiveEnvironment } from '../soar/client';
 import ignore from 'ignore'
-import { directoryContainsApp } from '../commands/apps/deploy';
+import { directoryContainsApp, validateApp } from '../commands/apps/deploy';
 import { group } from 'console';
 
 interface CustomBuildTaskDefinition extends vscode.TaskDefinition {
@@ -99,7 +99,10 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 				vscode.window.showErrorMessage("Could not find SOAR App for deploy task")
 				return
 			}
-            let tmpDir = os.tmpdir()
+
+			let validationResult = validateApp(appPath)
+			this.writeEmitter.fire(validationResult + "\r\n")
+			let tmpDir = os.tmpdir()
 
             let outPath = tmpDir + "/tmpapp.tgz"
             

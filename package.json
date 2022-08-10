@@ -5,7 +5,7 @@
 	"icon": "media/soarcloud.png",
 	"publisher": "Splunk",
 	"license": "Apache-2.0",
-	"version": "0.0.16",
+	"version": "0.0.17",
 	"engines": {
 		"vscode": "^1.67.0"
 	},
@@ -22,6 +22,16 @@
 		"python",
 		"splunk"
 	],
+	"capabilities": {
+		"virtualWorkspaces": {
+			"supported": false,
+			"description": "Using the VS Code Extension for Splunk SOAR is not possible in virtual workspaces."
+		},
+		"untrustedWorkspaces": {
+			"supported": false,
+			"description": "The extension requires workspace trust because it loads configuration files and code from the workspace and executes it."
+		}
+	},
 	"activationEvents": [
 		"onCommand:splunkSoar.apps.installBundle",
 		"onCommand:splunkSoar.apps.installConnector",

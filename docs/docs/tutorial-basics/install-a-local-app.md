@@ -25,6 +25,28 @@ used with keybindings and offers the best developer experience after initial set
 
 The extension provides a custom SOAR App Build Task that allows to install a local app to the configured SOAR instance via REST API. This procedure works for both on-prem and cloud SOAR. The task will transparently create a tar bundle of the app code and upload it to the instance.
 
+
+The example `.vscode/tasks.json` below configures the `soarapp` build task as default and indicates that the Checkphish app is not at the root of the workspace but in the `checkphish` subfolder.
+
+```
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "soarapp",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [],
+			"label": "soarapp: Checkphish",
+			"cwd": "./checkphish"
+		}
+	]
+}
+```
+
+
 ## Editor Bar
 
 <ReactPlayer width="100%" height="auto" controls url={installEditorBarVideo} />

@@ -6,8 +6,9 @@ import * as fs from 'fs'
 import ignore from 'ignore'
 
 import { getClientForActiveEnvironment } from '../../soar/client'
+import { SoarApp } from '../../soar/models'
 
-export async function installConnector(context: vscode.ExtensionContext, actionContext: any) {
+export async function installConnector(context: vscode.ExtensionContext, actionContext: any, outputChannel: vscode.OutputChannel) {
     let client = await getClientForActiveEnvironment(context)
 
     let connFile = actionContext.path
@@ -29,6 +30,7 @@ export async function installConnector(context: vscode.ExtensionContext, actionC
     const appFile = fs.readFileSync(outPath, { encoding: 'base64' })
     try {
         let res = await client.installApp(appFile)
+        outputChannel.appendLine(JSON.stringify(res.data))
         uploadDispose.dispose()
         vscode.window.setStatusBarMessage("$(pass-filled) Successfully Uploaded App", 3000)
         console.log(res)
@@ -38,7 +40,7 @@ export async function installConnector(context: vscode.ExtensionContext, actionC
     }
 }
 
-export async function installFolder(context: vscode.ExtensionContext, actionContext: any) {
+export async function installFolder(context: vscode.ExtensionContext, actionContext: any, outputChannel: vscode.OutputChannel) {
     let client = await getClientForActiveEnvironment(context)
     let appFolder = actionContext.path
 
@@ -51,6 +53,7 @@ export async function installFolder(context: vscode.ExtensionContext, actionCont
         return
     }
     let packageDispose = vscode.window.setStatusBarMessage("$(loading~spin) Packaging App...")
+
     await packageApp(appFolder, outPath)
     packageDispose.dispose()
     let uploadDispose = vscode.window.setStatusBarMessage("$(loading~spin) Uploading App...")
@@ -58,11 +61,13 @@ export async function installFolder(context: vscode.ExtensionContext, actionCont
     const appFile = fs.readFileSync(outPath, { encoding: 'base64' })
     try {
         let res = await client.installApp(appFile)
+        outputChannel.appendLine(JSON.stringify(res.data))
         uploadDispose.dispose()
         vscode.window.setStatusBarMessage("$(pass-filled) Successfully Uploaded App", 3000)
         console.log(res)
     } catch (error) {
-        console.log(error)
+        outputChannel.appendLine(JSON.stringify(error))
+        outputChannel.show()
         vscode.window.showErrorMessage("Failed to upload and install app")
         uploadDispose.dispose()
     }
@@ -112,11 +117,63 @@ export function directoryContainsApp(dirPath: string) {
     }
 
     var appMetadata = JSON.parse(fs.readFileSync(metadataJSON, 'utf-8'))
-    console.log(appMetadata)
-    let keys = ["appid", "name", "logo", "logo_dark", "main_module", "package_name"]
-    if (!keys.every(key => appMetadata.hasOwnProperty(key))) {
+    return looksLikeAppJSON(appMetadata)
+}
+
+export function looksLikeAppJSON(candidate: Object) {
+    let keys = ['appid', 'name', 'description', 'publisher', 'package_name', 'type',
+    'license', 'main_module', 'app_version', 'product_vendor',
+    'product_name', 'product_version_regex', 'min_phantom_version', 'logo', 'configuration', 'actions']
+
+    if (!keys.every(key => candidate.hasOwnProperty(key))) {
         return false
     }
 
     return true
+}
+
+export function validateAction(action: any) {
+
+}
+
+export function validateApp(dirPath: string) {
+    let output = []
+
+    let dirName = path.basename(dirPath)
+
+
+    let metadataJSON = path.join(dirPath, `${dirName}.json`)
+    if (!fs.existsSync(metadataJSON)) {
+        return false
+    }
+
+    output.push("Validating App JSON")
+    output.push(`Working on ${metadataJSON}`)
+
+    if (looksLikeAppJSON(metadataJSON)) {
+        output.push("Looks like an App JSON")
+    }
+    output.push("Processing App JSON")
+
+    var appMetadata = JSON.parse(fs.readFileSync(metadataJSON, 'utf-8'))
+    
+    output.push("Processing actions")
+
+    for (let action of appMetadata.actions) {
+        output.push(`========== ${action.action} (${action.identifier}) ===========`)
+
+        let actionDataPaths = action.output.map((out: any) => out.data_path).sort()
+        let requiredDataPaths = ['action_result.data', 'action_result.summary', 'action_result.status', 'action_result.message']
+
+
+        var missingPaths = requiredDataPaths.filter(item => actionDataPaths.indexOf(item) == -1);
+        if (missingPaths.length > 0) {
+            output.push("Following required data paths not in output list")
+            output.push(missingPaths.map(entry => "\t" + entry).join("\n\r"))
+        }
+
+
+    }
+
+    return output.join("\r\n")
 }

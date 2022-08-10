@@ -192,10 +192,10 @@ export function registerCommands(context: vscode.ExtensionContext, outputChannel
 	let disposableScmSyncForce = vscode.commands.registerCommand('splunkSoar.scm.syncForce', async (repoContext: any) => { syncScm(context, repoContext, true)});
 	context.subscriptions.push(disposableScmSyncForce);
 
-	let disposableInstallConnector = vscode.commands.registerCommand('splunkSoar.apps.installConnector', async (actionContext) => { installConnector(context, actionContext) });
+	let disposableInstallConnector = vscode.commands.registerCommand('splunkSoar.apps.installConnector', async (actionContext) => { installConnector(context, actionContext, outputChannel) });
 	context.subscriptions.push(disposableInstallConnector);
 
-	let disposableInstallFolder = vscode.commands.registerCommand('splunkSoar.apps.installFolder', async (actionContext) => { installFolder(context, actionContext) });
+	let disposableInstallFolder = vscode.commands.registerCommand('splunkSoar.apps.installFolder', async (actionContext) => { installFolder(context, actionContext, outputChannel) });
 	context.subscriptions.push(disposableInstallFolder);
 
 
