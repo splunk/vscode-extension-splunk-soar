@@ -22,10 +22,12 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 	let soarOutputLang = "soar-output-lang"
 	let soarOutput = vscode.window.createOutputChannel("SOAR", soarOutputLang);
+	let soarLogOutput = vscode.window.createOutputChannel("SOAR Log", soarOutputLang); 
+
 
 	vscode.languages.registerDocumentLinkProvider({language: soarOutputLang}, outputLinkProvider)
 
-	registerCommands(context, soarOutput)
+	registerCommands(context, soarOutput, soarLogOutput)
 	registerTreeViews(context)
 	registerInspectProviders(context, soarOutput)
 	registerCodeLenses(context)
@@ -35,7 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	// Task Provider
-	deployTaskProvider = vscode.tasks.registerTaskProvider(DeployTaskProvider.CustomBuildScriptType, new DeployTaskProvider(rootPath, context));
+	deployTaskProvider = vscode.tasks.registerTaskProvider(DeployTaskProvider.CustomBuildScriptType, new DeployTaskProvider(rootPath, context, soarLogOutput));
 }
 
 export function deactivate() {

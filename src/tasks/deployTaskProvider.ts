@@ -1,12 +1,10 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import * as os from 'os'
-import * as tar from 'tar'
-import * as fs from 'fs'
-import { getClientForActiveEnvironment } from '../soar/client';
-import ignore from 'ignore'
-import { directoryContainsApp, validateApp } from '../commands/apps/deploy';
-import { group } from 'console';
+
+import { packageApp, uploadApp } from '../commands/apps/deploy';
+import { directoryContainsApp, validateApp } from '../commands/apps/validate';
+
 
 interface CustomBuildTaskDefinition extends vscode.TaskDefinition {
 	cwd?: string
@@ -18,8 +16,9 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 
 	private sharedState: string | undefined;
 
-	constructor(private workspaceRoot: string, private context: vscode.ExtensionContext) { 
+	constructor(private workspaceRoot: string, private context: vscode.ExtensionContext, private outputChannel: vscode.OutputChannel) { 
 		this.context = context
+		this.outputChannel = outputChannel
 	}
 
 	public async provideTasks(): Promise<vscode.Task[]> {
@@ -51,7 +50,7 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 
 		let task = new vscode.Task(definition, vscode.TaskScope.Workspace, `soarapp`,
             DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
-				return new CustomBuildTaskTerminal(this.workspaceRoot, definition?.cwd ? definition.cwd : '.', this.context);
+				return new CustomBuildTaskTerminal(this.workspaceRoot, definition?.cwd ? definition.cwd : '.', this.context, this.outputChannel);
 			}));
 		
 		task.group =  {"isDefault": true, "id": "build"}
@@ -59,7 +58,7 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 	}
 }
 
-class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
+export class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 	private writeEmitter = new vscode.EventEmitter<string>();
 	onDidWrite: vscode.Event<string> = this.writeEmitter.event;
 	private closeEmitter = new vscode.EventEmitter<number>();
@@ -68,10 +67,12 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 	private fileWatcher: vscode.FileSystemWatcher | undefined;
 
 	private cwd: string
+	private outputChannel: vscode.OutputChannel
 
-	constructor(private workspaceRoot: string, cwd: string, private context: vscode.ExtensionContext) {
+	constructor(private workspaceRoot: string, cwd: string, private context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel) {
 		this.cwd = cwd
 		this.context = context
+		this.outputChannel = outputChannel
 	}
 
 	open(initialDimensions: vscode.TerminalDimensions | undefined): void {
@@ -87,10 +88,8 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 
 	private async doBuild(): Promise<void> {
 		return new Promise<void>(async (resolve) => {
-			let client = await getClientForActiveEnvironment(this.context)
 
             // tar working directory to temporary directory, get base64 repr, post to api, wait for response.
-			let packageDispose = vscode.window.setStatusBarMessage("$(loading~spin) Packaging App...")
 			this.writeEmitter.fire('Starting build...\r\n');
 
 			let appPath = path.join(this.workspaceRoot, this.cwd)
@@ -102,55 +101,34 @@ class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 
 			let validationResult = validateApp(appPath)
 			this.writeEmitter.fire(validationResult + "\r\n")
+
 			let tmpDir = os.tmpdir()
 
             let outPath = tmpDir + "/tmpapp.tgz"
-            
-
-			let excludeFilesPath = path.join(appPath, 'exclude_files.txt')
-
-			let excludedFilePatterns: string[] = []
-			if (fs.existsSync(excludeFilesPath)) {
-				excludedFilePatterns = fs.readFileSync(excludeFilesPath).toString().replace(/\r\n/g,'\n').split('\n');
-			}
-	
-            const filterFiles = (filepath: any, entry: any) => {
-				filepath = filepath.substring(filepath.indexOf('/') + 1)
-				if(excludedFilePatterns) {
-					const ig = ignore().add(excludedFilePatterns)
-					console.log(ig.ignores(filepath), filepath)
-					if(ig.ignores(filepath)) {
-						return false
-					}
-				}
-
-                if (filepath.includes("venv") || filepath.includes("__pycache__") || filepath.includes(".git") || filepath.includes(".mypy_cache") || filepath.includes(".DS_Store") || filepath.includes("./.pytest_cache") || filepath.includes(".vscode")) {
-                    return false
-                }
-                return true
-            }
-
 			let base = path.basename(appPath) 
 			this.writeEmitter.fire(`Packaging app located in: ${base}\r\n`)
-
-			let result = await tar.create({file: outPath, gzip: true, cwd: path.join(appPath, "../"), filter: filterFiles}, [base])
+			let packageDispose = vscode.window.setStatusBarMessage("$(loading~spin) Packaging App...")
+			let packageLocation = await packageApp(appPath, outPath)            
 			packageDispose.dispose()
+	
+			this.writeEmitter.fire(`Local App Bundle: ${packageLocation}\r\n`);
 
 			let uploadDispose = vscode.window.setStatusBarMessage("$(loading~spin) Uploading App...")
-			this.writeEmitter.fire(`Local App Bundle: ${outPath}\r\n`);
 
 			try {
-				const appFile = fs.readFileSync(outPath, {encoding: 'base64'})
-				let res = await client.installApp(appFile)
+				let res = await uploadApp(this.context, this.outputChannel, packageLocation)
 				uploadDispose.dispose()
 				vscode.window.setStatusBarMessage("$(pass-filled) Successfully Uploaded App", 3000)
 				await vscode.commands.executeCommand('splunkSoar.apps.refresh');
 
-				this.writeEmitter.fire(JSON.stringify(res.data) + "\r\n");
-				this.closeEmitter.fire(0);
+				if (res) {
+					this.writeEmitter.fire(JSON.stringify(res.data) + "\r\n");
+					this.closeEmitter.fire(0);	
+				}
 				resolve()
 
 			} catch(err: any) {
+				uploadDispose.dispose()
 				vscode.window.setStatusBarMessage("$(error) Error uploading app", 3000)
 				vscode.window.showErrorMessage(JSON.stringify(err))
 				this.writeEmitter.fire(JSON.stringify(err.message));

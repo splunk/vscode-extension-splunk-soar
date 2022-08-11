@@ -4,75 +4,69 @@ import * as os from 'os'
 import * as tar from 'tar'
 import * as fs from 'fs'
 import ignore from 'ignore'
-
 import { getClientForActiveEnvironment } from '../../soar/client'
-import { SoarApp } from '../../soar/models'
+import { directoryContainsApp, validateApp } from './validate'
+import axios, { AxiosError, AxiosResponse } from 'axios'
+import { CustomBuildTaskTerminal, DeployTaskProvider } from '../../tasks/deployTaskProvider'
 
-export async function installConnector(context: vscode.ExtensionContext, actionContext: any, outputChannel: vscode.OutputChannel) {
-    let client = await getClientForActiveEnvironment(context)
 
+export async function installFromConnector(context: vscode.ExtensionContext, actionContext: any, outputChannel: vscode.OutputChannel) {
     let connFile = actionContext.path
     let appFolder = path.dirname(connFile)
+    //installApp(context, outputChannel, appFolder)
+    
+    let definition = {
+        type: DeployTaskProvider.CustomBuildScriptType,
+    };
 
-    if (!directoryContainsApp(appFolder)) {
-        vscode.window.showErrorMessage("Could not find SOAR App in selected folder")
-        return
-    }
 
-    let tmpDir = os.tmpdir()
-    let outPath = tmpDir + "/tmpapp.tgz"
+    let task = new vscode.Task(definition, vscode.TaskScope.Workspace, `connector install`,
+    DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
+        return new CustomBuildTaskTerminal(appFolder, '.', context, outputChannel);
+    }));
 
-    let packageDispose = vscode.window.setStatusBarMessage("$(loading~spin) Packaging App...")
-    await packageApp(appFolder, outPath)
-    packageDispose.dispose()
-
-    let uploadDispose = vscode.window.setStatusBarMessage("$(loading~spin) Uploading App...")
-    const appFile = fs.readFileSync(outPath, { encoding: 'base64' })
-    try {
-        let res = await client.installApp(appFile)
-        outputChannel.appendLine(JSON.stringify(res.data))
-        uploadDispose.dispose()
-        vscode.window.setStatusBarMessage("$(pass-filled) Successfully Uploaded App", 3000)
-        console.log(res)
-    } catch (error) {
-        vscode.window.showErrorMessage("Failed to upload and install app")
-        uploadDispose.dispose()
-    }
+    task.problemMatchers = [
+        "soarappproblem"
+    ]
+    await vscode.tasks.executeTask(task)
 }
 
-export async function installFolder(context: vscode.ExtensionContext, actionContext: any, outputChannel: vscode.OutputChannel) {
-    let client = await getClientForActiveEnvironment(context)
+export async function installFromFolder(context: vscode.ExtensionContext, actionContext: any, outputChannel: vscode.OutputChannel) {
     let appFolder = actionContext.path
 
-    let tmpDir = os.tmpdir()
-    let outPath = tmpDir + "/tmpapp.tgz"
+    let definition = {
+        type: DeployTaskProvider.CustomBuildScriptType,
+    };
 
 
-    if (!directoryContainsApp(appFolder)) {
-        vscode.window.showErrorMessage("Could not find SOAR App in selected folder")
-        return
-    }
-    let packageDispose = vscode.window.setStatusBarMessage("$(loading~spin) Packaging App...")
+    let task = new vscode.Task(definition, vscode.TaskScope.Workspace, `folder install`,
+    DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
+        return new CustomBuildTaskTerminal(appFolder, '.', context, outputChannel);
+    }));
 
-    await packageApp(appFolder, outPath)
-    packageDispose.dispose()
-    let uploadDispose = vscode.window.setStatusBarMessage("$(loading~spin) Uploading App...")
+    task.problemMatchers = [
+        "soarappproblem"
+    ]
+    await vscode.tasks.executeTask(task)
+}
 
-    const appFile = fs.readFileSync(outPath, { encoding: 'base64' })
+export async function uploadApp(context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel, appPath: string) {
+    let client = await getClientForActiveEnvironment(context)
+
+    const appFile = fs.readFileSync(appPath, { encoding: 'base64' })
     try {
         let res = await client.installApp(appFile)
         outputChannel.appendLine(JSON.stringify(res.data))
-        uploadDispose.dispose()
         vscode.window.setStatusBarMessage("$(pass-filled) Successfully Uploaded App", 3000)
         console.log(res)
-    } catch (error) {
-        outputChannel.appendLine(JSON.stringify(error))
-        outputChannel.show()
-        vscode.window.showErrorMessage("Failed to upload and install app")
-        uploadDispose.dispose()
+        return res
+    } catch (error: unknown) {
+        if (axios.isAxiosError(error) && error.response) {
+            vscode.window.showErrorMessage("Failed to upload and install app")
+            return error.request
+        }
     }
 }
-
 
 export async function packageApp(appPath: string, outPath: string) {
     let excludeFilesPath = path.join(appPath, 'exclude_files.txt')
@@ -104,76 +98,4 @@ export async function packageApp(appPath: string, outPath: string) {
     console.log(`Packaging app located in: ${outPath}\r\n`)
 
     return outPath
-}
-
-export function directoryContainsApp(dirPath: string) {
-    // This function heuristically determines whether a given folder contains a SOAR app, mainly based on the insight that there needs to be a metadata file named after the folder.
-    let dirName = path.basename(dirPath)
-
-    // Check whether there is a metadata file
-    let metadataJSON = path.join(dirPath, `${dirName}.json`)
-    if (!fs.existsSync(metadataJSON)) {
-        return false
-    }
-
-    var appMetadata = JSON.parse(fs.readFileSync(metadataJSON, 'utf-8'))
-    return looksLikeAppJSON(appMetadata)
-}
-
-export function looksLikeAppJSON(candidate: Object) {
-    let keys = ['appid', 'name', 'description', 'publisher', 'package_name', 'type',
-    'license', 'main_module', 'app_version', 'product_vendor',
-    'product_name', 'product_version_regex', 'min_phantom_version', 'logo', 'configuration', 'actions']
-
-    if (!keys.every(key => candidate.hasOwnProperty(key))) {
-        return false
-    }
-
-    return true
-}
-
-export function validateAction(action: any) {
-
-}
-
-export function validateApp(dirPath: string) {
-    let output = []
-
-    let dirName = path.basename(dirPath)
-
-
-    let metadataJSON = path.join(dirPath, `${dirName}.json`)
-    if (!fs.existsSync(metadataJSON)) {
-        return false
-    }
-
-    output.push("Validating App JSON")
-    output.push(`Working on ${metadataJSON}`)
-
-    if (looksLikeAppJSON(metadataJSON)) {
-        output.push("Looks like an App JSON")
-    }
-    output.push("Processing App JSON")
-
-    var appMetadata = JSON.parse(fs.readFileSync(metadataJSON, 'utf-8'))
-    
-    output.push("Processing actions")
-
-    for (let action of appMetadata.actions) {
-        output.push(`========== ${action.action} (${action.identifier}) ===========`)
-
-        let actionDataPaths = action.output.map((out: any) => out.data_path).sort()
-        let requiredDataPaths = ['action_result.data', 'action_result.summary', 'action_result.status', 'action_result.message']
-
-
-        var missingPaths = requiredDataPaths.filter(item => actionDataPaths.indexOf(item) == -1);
-        if (missingPaths.length > 0) {
-            output.push("Following required data paths not in output list")
-            output.push(missingPaths.map(entry => "\t" + entry).join("\n\r"))
-        }
-
-
-    }
-
-    return output.join("\r\n")
 }

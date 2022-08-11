@@ -16,12 +16,12 @@ import { add, clear, deleteContainer, remove } from './containers/containerWatch
 import { deleteArtifact } from './artifacts/delete';
 import { runPlaybookOnContainer } from './containers/runPlaybook';
 import { syncScm } from './scm/scm';
-import { installConnector, installFolder } from './apps/deploy';
+import { installFromConnector, installFromFolder } from './apps/deploy';
 import { pinApp, unpinApp } from './apps/pin';
 import { createContainer } from './containers/create';
 import { repeatPlaybookRun } from './playbookRuns/repeat';
 
-export function registerCommands(context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel) {
+export function registerCommands(context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel, logOutputChannel: vscode.OutputChannel) {
 
 	let disposableOpenWebApps = vscode.commands.registerCommand('splunkSoar.openWebApps', async () => { openWebApps(context) });
 	context.subscriptions.push(disposableOpenWebApps);
@@ -192,10 +192,10 @@ export function registerCommands(context: vscode.ExtensionContext, outputChannel
 	let disposableScmSyncForce = vscode.commands.registerCommand('splunkSoar.scm.syncForce', async (repoContext: any) => { syncScm(context, repoContext, true)});
 	context.subscriptions.push(disposableScmSyncForce);
 
-	let disposableInstallConnector = vscode.commands.registerCommand('splunkSoar.apps.installConnector', async (actionContext) => { installConnector(context, actionContext, outputChannel) });
+	let disposableInstallConnector = vscode.commands.registerCommand('splunkSoar.apps.installConnector', async (actionContext) => { installFromConnector(context, actionContext, logOutputChannel) });
 	context.subscriptions.push(disposableInstallConnector);
 
-	let disposableInstallFolder = vscode.commands.registerCommand('splunkSoar.apps.installFolder', async (actionContext) => { installFolder(context, actionContext, outputChannel) });
+	let disposableInstallFolder = vscode.commands.registerCommand('splunkSoar.apps.installFolder', async (actionContext) => { installFromFolder(context, actionContext, logOutputChannel) });
 	context.subscriptions.push(disposableInstallFolder);
 
 
