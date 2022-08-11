@@ -48,6 +48,7 @@ class AppValidator {
         this.output.push("Starting App JSON validation\n")
 
         this.validateActions()
+        this.validatePackageName()
         return this.output
     }
 
@@ -58,6 +59,15 @@ class AppValidator {
             this.output.push("\n")
             this.incrementLine()
         }
+    }
+
+    validatePackageName() {
+        this.incrementLine()
+
+        if (!this.appJSON.package_name.startsWith("phantom_")) {
+            this.output.push(validationMessage(this.metaFileLocation, this.line, this.col, "warning", `package_name property should start with "phantom_"`))
+        }
+        this.output.push("\n")
     }
 
     incrementLine() {
