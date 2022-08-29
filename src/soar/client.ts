@@ -48,7 +48,7 @@ export class SoarClient {
     }
 
     listApps = async () => {
-        return await this.httpClient.get<models.SoarCollection<models.SoarApp>>("app", {params: {"page_size": 500, "pretty": true, "sort": "name"}})
+        return await this.httpClient.get<models.SoarCollection<models.SoarApp>>("app", {params: {"page_size": 0, "pretty": true, "sort": "name"}})
     }
 
     listAppAssets = async (appId: string) => {
@@ -68,7 +68,7 @@ export class SoarClient {
     }
 
     listPlaybookRuns = async() => {
-        return await this.httpClient.get<models.SoarCollection<models.SoarPlaybookRun>>("playbook_run", {params: {"pretty": true, "page_size": 0, "sort": "start_time", "order": "desc"}})
+        return await this.httpClient.get<models.SoarCollection<models.SoarPlaybookRun>>("playbook_run", {params: {"pretty": true, "page_size": 100, "sort": "start_time", "order": "desc"}})
     }
 
     listUserPlaybookRuns = async() => {
