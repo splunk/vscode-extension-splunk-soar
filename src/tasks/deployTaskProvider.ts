@@ -54,6 +54,8 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 			}));
 		
 		task.group =  {"isDefault": false, "id": "build"}
+		task.problemMatchers = ["$soarappproblem"]
+
 		return task
 	}
 }
