@@ -48,7 +48,9 @@
 		"onView:soarPlaybookRuns",
 		"onView:soarContainerWatcher",
 		"onCommand:workbench.action.tasks.runTask",
-		"onWebviewPanel:soarOnboarding"
+		"onWebviewPanel:soarOnboarding",
+		"workspaceContains:**/exclude_files.txt",
+		"workspaceContains:**/*_connector.py"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -56,7 +58,7 @@
 			{
 				"name": "soarappproblem",
 				"owner": "soar",
-				"fileLocation": "autoDetect",
+				"fileLocation": "relative",
 				"pattern": {
 					"regexp": "^(.*?):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
 					"file": 1,
@@ -553,7 +555,8 @@
 				{
 					"id": "soarContainerWatcher",
 					"name": "Container Watcher",
-					"icon": "media/soarcloud.png"
+					"icon": "media/soarcloud.png",
+					"when": "splunkSoar.environments.hasActive"
 				}
 			],
 			"splunk-soar": [

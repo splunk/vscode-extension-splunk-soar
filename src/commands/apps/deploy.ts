@@ -62,6 +62,7 @@ export async function uploadApp(context: vscode.ExtensionContext, outputChannel:
         return res
     } catch (error: unknown) {
         if (axios.isAxiosError(error) && error.response) {
+            console.log(error)
             vscode.window.showErrorMessage("Failed to upload and install app")
             return error.request
         }

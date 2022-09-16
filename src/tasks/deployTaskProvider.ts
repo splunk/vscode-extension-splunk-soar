@@ -53,7 +53,7 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 				return new CustomBuildTaskTerminal(this.workspaceRoot, definition?.cwd ? definition.cwd : '.', this.context, this.outputChannel);
 			}));
 		
-		task.group =  {"isDefault": true, "id": "build"}
+		task.group =  {"isDefault": false, "id": "build"}
 		return task
 	}
 }
@@ -93,10 +93,14 @@ export class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 			this.writeEmitter.fire('Starting build...\r\n');
 
 			let appPath = path.join(this.workspaceRoot, this.cwd)
-
-			if (!directoryContainsApp(appPath)) {
-				vscode.window.showErrorMessage("Could not find SOAR App for deploy task")
-				return
+			
+			try {
+				if (!directoryContainsApp(appPath)) {
+					vscode.window.showErrorMessage("Could not find SOAR App for deploy task")
+					return
+				}
+			} catch (e: any) {
+				vscode.window.showErrorMessage(String(e))
 			}
 
 			let validationResult = validateApp(appPath)

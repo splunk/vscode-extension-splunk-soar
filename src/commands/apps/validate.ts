@@ -12,24 +12,37 @@ function validationMessage(filename: string, line: number, col: number, level: s
 
 class AppValidator {
     appPath: string
+    appJSONContent: string
     line: number = 1
     col: number = 1
     appJSON: any = null
+    dirName: string
     output: string[] = []
     metaFileLocation: string
 
     constructor(appPath: string) {
         this.appPath = appPath
-        let dirName = path.basename(this.appPath)
-        this.metaFileLocation = path.join(this.appPath, `${dirName}.json`)
+        this.appJSONContent = ""
+        this.dirName = path.basename(this.appPath)
+        this.metaFileLocation = path.join(this.appPath, `${this.dirName}.json`)
         if (!fs.existsSync(this.metaFileLocation)) {
             this.appJSON == null
         }
-    
-        this.appJSON = JSON.parse(fs.readFileSync(this.metaFileLocation, 'utf-8'))
     }
 
     containsApp() {
+        
+        if (!fs.existsSync(this.metaFileLocation)) {
+            throw new Error(`Could not find App Metadata JSON - Expected location: ${this.metaFileLocation}`)
+        }
+        try {
+            this.appJSONContent = fs.readFileSync(this.metaFileLocation, 'utf-8')
+            this.appJSON = JSON.parse(this.appJSONContent)
+        } catch (e: any) {
+            throw new Error(`Could not parse App Metadata JSON at ${this.metaFileLocation}: ${e.message}`)
+        }
+
+
         return AppValidator.looksLikeAppJSON(this.appJSON)
     }
 
@@ -65,7 +78,7 @@ class AppValidator {
         this.incrementLine()
 
         if (!this.appJSON.package_name.startsWith("phantom_")) {
-            this.output.push(validationMessage(this.metaFileLocation, this.line, this.col, "warning", `package_name property should start with "phantom_"`))
+            this.output.push(validationMessage(`${this.dirName}.json`, this.line, this.col, "warning", `package_name property should start with "phantom_"`))
         }
         this.output.push("\n")
     }
@@ -76,13 +89,49 @@ class AppValidator {
     }
 
     _validateAction(action: any) {
+
+        if (action.type === "test" || action.type === "ingest") {
+            return
+        }
+
         let actionDataPaths = action.output.map((out: any) => out.data_path).sort()
         let requiredDataPaths = ['action_result.data', 'action_result.summary', 'action_result.status', 'action_result.message']
-        var missingPaths = requiredDataPaths.filter(item => actionDataPaths.indexOf(item) == -1);
+        let missingPaths = requiredDataPaths
+        
+        for (let path of actionDataPaths) {
+            for (let requiredPath of requiredDataPaths) {
+                if (path.startsWith(requiredPath)) {
+                    missingPaths = missingPaths.filter(item => item !== requiredPath)
+                }
+            }
+            
+        }
+
+        console.log(missingPaths)
+            
         if (missingPaths.length > 0) {
+
+            let identifier = action.action
+
+            let regex = `"action": "${identifier}"`
+            let findRegex = new RegExp(regex, "gim")
+           
+            console.log(findRegex)
+
+            let line = this.line
+            let col = this.col
+
+            findOccurrences(findRegex, this.appJSONContent).forEach(result => {
+                line = result.lineNumber
+                col = result.column
+            }
+            );
+            
+
             missingPaths.map(missingPath => {
                 this.col++
-                let newMessage = validationMessage(this.metaFileLocation, this.line, this.col, "warning", `action ${action.action} missing required data path ${missingPath}`)
+                col++
+                let newMessage = validationMessage(`${this.dirName}.json`, line, col, "warning", `action ${action.action} missing required data path ${missingPath}`)
                 this.output.push(newMessage)
             })
         }
@@ -100,3 +149,31 @@ export function validateApp(dirPath: string) {
     let output = appValidator.validate()
     return output.join("\r\n")
 }
+
+
+function lineNumberByIndex(index: any, string: any) {
+    const re = /^[\S\s]/gm;
+    let line = 0,
+      match;
+    let lastRowIndex = 0;
+    while ((match = re.exec(string))) {
+      if (match.index > index) break;
+      lastRowIndex = match.index;
+      line++;
+    }
+    return [Math.max(line - 1, 0), lastRowIndex];
+  }
+  
+const findOccurrences = (needle: any, haystack: any) => {
+    let match;
+    const result = [];
+    while ((match = needle.exec(haystack))) {
+      const pos = lineNumberByIndex(needle.lastIndex, haystack);
+      result.push({
+        match,
+        lineNumber: pos[0],
+        column: needle.lastIndex - pos[1] - match[0].length
+      });
+    }
+    return result;
+};
