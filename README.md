@@ -1,11 +1,18 @@
 # Splunk SOAR Extension for VS Code
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/splunk/vscode-extension-splunk-soar/CI)
+
+[![Slack](https://img.shields.io/badge/Slack-sooar__app__dev-green?logo=slack)](https://splunk-usergroups.slack.com/archives/C03FYT64AJZ)
+
+
 The extension for developers building applications for Splunk SOAR. Works with SOAR hosted either on-prem or in Cloud and its goal is to make the app development experience as seamless and efficient as possible on the [VS Code](https://code.visualstudio.com/) editor platform.
 
 During setup, the extension is configured to connect to the SOAR platform. This allows the extension to pull information from SOAR and allows the developer to perform common operations such as browsing of remote objects, running actions and managing resulting action runs.
 
 The screenshots below are taken from the [Visual Studio Code](https://github.com/microsoft/vscode) environment
 where the extension is installed successfully.
+
+Browse the full [documentation](https://splunk.github.io/vscode-extension-splunk-soar/).
 
 ## Features
 * Browse apps and assets configured on the connected SOAR instance via [Tree View](https://github.com/splunk/vscode-extension-splunk-soar/wiki/features#inspect-soar-objects)
@@ -108,9 +115,8 @@ Execution logs can be displayed by:
 * clicking on "Logs"
 
 ## Documentation
-More specific documentation can be found in the wiki hosted on the public repository.
 
-https://github.com/splunk/vscode-extension-splunk-soar/wiki
+The documentation is located on https://splunk.github.io/vscode-extension-splunk-soar/ and hosted via Github Pages.
 
 ## Contributing
 
