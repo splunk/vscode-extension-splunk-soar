@@ -9,7 +9,7 @@ const config = {
   title: 'VS Code Extension for Splunk SOAR',
   tagline: 'Dinosaurs are cool',
   url: 'https://splunk.github.io/',
-  baseUrl: '/',
+  baseUrl: '/vscode-extension-splunk-soar/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   trailingSlash: true,
