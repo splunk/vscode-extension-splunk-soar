@@ -17,10 +17,10 @@ jobs:
       - run: npm install
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: npx vsce package --target ${{ env.target }}
+      - run: npx vsce package --target ${{ github.run_id }}
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ env.target }}
+          name: ${{ github.run_id }}
           path: "*.vsix"
 
   publish:
