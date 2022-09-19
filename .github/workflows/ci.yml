@@ -28,7 +28,9 @@ jobs:
     needs: build
     if: success() && startsWith( github.ref, 'refs/tags/')
     steps:
-      - uses: actions/download-artifact@v2
-      - run: npx vsce publish --packagePath $(find . -iname *.vsix)
+      - uses: actions/download-artifact@v3
+        with:
+          name: vscode-splunk-soar.vsix
+      - run: npx vsce publish --packagePath $(find . type f -iname '*.vsix')
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
