@@ -66,7 +66,30 @@ const config = {
           alt: 'My Site Logo',
           src: 'img/soarcloud.png',
         },
+
         items: [
+            {
+              type: 'docSidebar',
+              position: 'left',
+              sidebarId: 'tutorialSidebar',
+              label: 'User Guide',
+            },
+            {
+              type: 'docSidebar',
+              position: 'left',
+              sidebarId: 'categorySidebar',
+              label: 'Developer Guide',
+            },
+            {
+              href: 'https://github.com/splunk/vscode-extension-splunk-soar',
+              position: 'right',
+              label: "Github"
+            },
+            {
+              href: 'https://marketplace.visualstudio.com/items?itemName=Splunk.vscode-splunk-soar',
+              position: 'right',
+              label: "Azure Marketplace"
+            }
         ],
       },
       footer: {
@@ -90,7 +113,7 @@ const config = {
             items: [
               {
                 label: 'Azure Marketplace',
-                to: '/',
+                to: 'https://marketplace.visualstudio.com/items?itemName=Splunk.vscode-splunk-soar',
               },
               {
                 label: 'GitHub',
