@@ -7,6 +7,12 @@ import addEnvironmentVideo from '@site/static/video/add_environment.webm';
 
 # Connect an Environment
 
+:::caution
+
+Only local users are supported at this time. SAML users can't be used for connecting the extension.
+
+:::
+
 The extension can only be used in conjunction with a remote environment.
 
 1. Open the Splunk SOAR view from the sidebar 
@@ -14,6 +20,7 @@ The extension can only be used in conjunction with a remote environment.
 3. Type info such as SOAR URL and credentials to the appearing step-by-step interactive dialog.
 
 Once all information is entered, the extension will try to connect and activate your environment. If that is successful, the other extension panels will become visible and populate. 
+
 
 
 <ReactPlayer width="100%" height="auto" controls url={addEnvironmentVideo} />
