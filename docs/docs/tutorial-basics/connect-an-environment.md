@@ -22,5 +22,4 @@ The extension can only be used in conjunction with a remote environment.
 Once all information is entered, the extension will try to connect and activate your environment. If that is successful, the other extension panels will become visible and populate. 
 
 
-
 <ReactPlayer width="100%" height="auto" controls url={addEnvironmentVideo} />
