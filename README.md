@@ -1,8 +1,7 @@
 # Splunk SOAR Extension for VS Code
 
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/splunk/vscode-extension-splunk-soar/CI)
-
-[![Slack](https://img.shields.io/badge/Slack-sooar__app__dev-green?logo=slack)](https://splunk-usergroups.slack.com/archives/C03FYT64AJZ)
+[![Slack](https://img.shields.io/badge/Slack-soar__app__dev-blue?logo=slack)](https://splunk-usergroups.slack.com/archives/C03FYT64AJZ)
 
 
 The extension for developers building applications for Splunk SOAR. Works with SOAR hosted either on-prem or in Cloud and its goal is to make the app development experience as seamless and efficient as possible on the [VS Code](https://code.visualstudio.com/) editor platform.
