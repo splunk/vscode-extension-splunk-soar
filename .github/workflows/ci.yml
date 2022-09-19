@@ -31,6 +31,6 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: vscode-splunk-soar.vsix
-      - run: npx vsce publish --packagePath $(find . type f -iname '*.vsix')
+      - run: npx vsce publish --packagePath $(find . -type f -iname '*.vsix')
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
