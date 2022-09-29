@@ -2,12 +2,17 @@ import * as vscode from 'vscode'
 import { getClientForActiveEnvironment } from '../../soar/client';
 import {wait} from '../actionRuns/actionRuns'
 
-export async function processPlaybookRun(progress: any, context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel, playbookId: number, containerId: string, scope: string) {
+export async function processPlaybookRun(progress: any, context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel, playbookId: number, containerId: string, scope: string, inputs?: any) {
         let client = await getClientForActiveEnvironment(context)
   
         progress.report({ increment: 0 });
 		try {
-        let result = await client.runPlaybook(playbookId, scope, containerId)
+		let result;
+		if (inputs) {
+			result = await client.runInputPlaybook(playbookId, scope, containerId, inputs)
+		} else {
+			result = await client.runPlaybook(playbookId, scope, containerId)
+		}
 		let {playbook_run_id, message} = result.data
 		progress.report({ increment: 10, message: `${message}: Playbook Run ID: ${playbook_run_id}`});
 		

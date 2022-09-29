@@ -18,10 +18,18 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, outputC
         playbook_id: string;
         container_id: string
         scope: string;
+        inputs: any
     }
 
     const title = `Run Playbook: ${JSON.stringify(playbookContext.data.playbook.name)}`;
-    const totalSteps = 2;
+ 
+    const isInputPlaybook = playbookContext.data.playbook.playbook_type === "data"
+    const inputSpec = playbookContext.data.playbook.input_spec
+
+    let totalSteps = 2;
+    if (isInputPlaybook) {
+        totalSteps += inputSpec.length
+    }
 
     async function collectInputs() {
         const state = {
@@ -63,6 +71,35 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, outputC
 
     }
 
+    /* For input playbooks only*/
+    async function pickParam(input: MultiStepInput, state: Partial<PlaybookRunState>, paramIndex: number) {
+        const param = inputSpec[paramIndex]
+        const paramName = param["name"]
+        const paramDescription = param["description"]
+
+        if (state.inputs == undefined) {
+            state.inputs = {}
+        }
+
+        const enteredParam = await input.showInputBox({
+            title,
+            step: 3 + paramIndex,
+            totalSteps: totalSteps,
+            value: '',
+            prompt: `${paramName}: ${paramDescription}`,
+            shouldResume: shouldResume,
+            validate: () => {return undefined}
+        })
+
+        if (enteredParam !== undefined) {
+            state.inputs[paramName] = enteredParam
+        }
+
+        if (paramIndex < inputSpec.length - 1) {
+            return (input: MultiStepInput) => pickParam(input, state, paramIndex + 1)
+        }
+    }
+
     async function scopeInput(input: MultiStepInput, state: Partial<PlaybookRunState>){
         let scopePick = await input.showQuickPick({
             title,
@@ -77,6 +114,10 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, outputC
 
         if (state.scope === "artifact") {
             return (input: MultiStepInput) => artifactInput(input, state);
+        } else {
+            if (isInputPlaybook) {
+                return (input: MultiStepInput) => pickParam(input, state, 0)
+            }
         }
 
     }    
@@ -91,14 +132,18 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, outputC
         }
         let artifactPick: vscode.QuickPickItem[] = await input.showQuickPick({
             title,
-            step: 3,
-            totalSteps: totalSteps + 1,
+            step: 2,
+            totalSteps: totalSteps,
             placeholder: 'Artifact?',
             items: artifacts.map((artifact: any) => {return {"label": String(artifact["id"]), "description": artifact["name"]}}),
             shouldResume: shouldResume,
             canSelectMany: true
         });
         state.scope = "[" + artifactPick.map((pick: any) => pick.label).join(",") + "]"
+    
+        if (isInputPlaybook) {
+            return (input: MultiStepInput) => pickParam(input, state, 0)
+        }
     } 
 
     const state = await collectInputs();
@@ -107,7 +152,7 @@ export async function runPlaybookInput(context: vscode.ExtensionContext, outputC
 		location: vscode.ProgressLocation.Notification,
 		title: `Running ${playbookContext.data.playbook["name"]}'`,
 		cancellable: false
-	}, async (progress, token) => {
-		await processPlaybookRun(progress, context, outputChannel, parseInt(state.playbook_id), state.container_id, state.scope)
+	}, async (progress, token) => {        
+		await processPlaybookRun(progress, context, outputChannel, parseInt(state.playbook_id), state.container_id, state.scope, state.inputs)
 	})
 }

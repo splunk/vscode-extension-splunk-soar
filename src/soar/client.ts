@@ -122,6 +122,13 @@ export class SoarClient {
         return await this.httpClient.post("playbook_run", {"run": true, "container_id": containerId, "scope": scope, "playbook_id": playbookId})
     }
 
+    runInputPlaybook = async (playbookId: number, scope: string, containerId: string, inputs: Object) => {
+        if (scope.startsWith("[")) {
+            scope = JSON.parse(scope)
+        }
+        return await this.httpClient.post("playbook_run", {"run": true, "container_id": containerId, "scope": scope, "playbook_id": playbookId, "inputs": inputs})
+    }
+
     getPlaybookRun = async (playbookRunId: string) => {
         return await this.httpClient.get<models.SoarPlaybookRun>(`playbook_run/${playbookRunId}`)
     }
