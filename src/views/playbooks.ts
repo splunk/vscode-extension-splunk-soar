@@ -79,11 +79,12 @@ export class SoarPlaybookTreeProvider implements vscode.TreeDataProvider<Playboo
                 return Promise.resolve([])
 			})
 		}
+
 		if (element.contextValue.startsWith("soarrepo")) {
 			let playbookTreeItems: any = []
 
 			for (const playbook of element.data.playbooks) {
-				playbookTreeItems.push(new PlaybookTreeItem(playbook.name, {"playbook": playbook}, vscode.TreeItemCollapsibleState.None))
+				playbookTreeItems.push(new PlaybookItem(playbook.name, {"playbook": playbook}, vscode.TreeItemCollapsibleState.None))
 			}
 			return playbookTreeItems
 		}
@@ -105,15 +106,28 @@ export class PlaybookTreeItem extends vscode.TreeItem {
 		super(label, collapsibleState);
 		this.data = data
         this.description = ``
-		/*if (data.playbook.active) {
-			this.description += "active"
-			this.iconPath = new vscode.ThemeIcon("file-code", new vscode.ThemeColor("testing.iconPassed"))
-		}*/
+	}
+	contextValue = "playbooktreeitem"	
+}
+
+
+export class PlaybookItem extends PlaybookTreeItem {
+	constructor(
+		public readonly label: string,
+		public readonly data: any,
+		public readonly collapsibleState: vscode.TreeItemCollapsibleState,	
+	) {
+		super(label, collapsibleState, data);
+		this.data = data
+		this.contextValue = `soarplaybook`
+		
+		const isInputPlaybook = this.data["playbook"]["playbook_type"] == "data"
+		const isActive = this.data["playbook"]["active"]
+		const activeColor = isActive ?  new vscode.ThemeColor("testing.iconPassed") : undefined
+  
+		this.iconPath = isInputPlaybook ? new vscode.ThemeIcon("bracket", activeColor) : this.iconPath = new vscode.ThemeIcon("bracket-dot", activeColor)
 
 	}
-    iconPath = new vscode.ThemeIcon("file-code")
-	contextValue = 'soarplaybook';
-	
 }
 
 export class RepoTreeItem extends PlaybookTreeItem {
