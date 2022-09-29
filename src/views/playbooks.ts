@@ -105,7 +105,6 @@ export class PlaybookTreeItem extends vscode.TreeItem {
 	) {
 		super(label, collapsibleState);
 		this.data = data
-        this.description = ``
 	}
 	contextValue = "playbooktreeitem"	
 }
@@ -120,6 +119,7 @@ export class PlaybookItem extends PlaybookTreeItem {
 		super(label, collapsibleState, data);
 		this.data = data
 		this.contextValue = `soarplaybook`
+        this.description = `${data.playbook.id}`
 		
 		const isInputPlaybook = this.data["playbook"]["playbook_type"] == "data"
 		const isActive = this.data["playbook"]["active"]
