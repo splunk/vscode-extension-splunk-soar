@@ -1,4 +1,5 @@
 import * as vscode from 'vscode'
+import { listEnvironments } from '../commands/environments/environments';
 import { SoarActionRunTreeProvider } from './actionRun';
 import { SoarAppsTreeProvider } from './apps';
 import { SoarContainerWatcherTreeProvider } from './containerWatcher';
@@ -6,6 +7,7 @@ import { SoarEnvironmentsTreeProvider } from './environments';
 import { SoarHelpTreeProvider } from './help';
 import { SoarPlaybookRunTreeProvider } from './playbookRun';
 import { SoarPlaybookTreeProvider } from './playbooks';
+import { treeViewStore } from '../stores';
 
 export function registerTreeViews(context: vscode.ExtensionContext) {
 
@@ -14,12 +16,22 @@ export function registerTreeViews(context: vscode.ExtensionContext) {
 	vscode.commands.registerCommand('splunkSoar.environments.refresh', () => soarEnvironmentsTreeProvider.refresh());
 
     const soarAppsTreeProvider = new SoarAppsTreeProvider(context)
-	vscode.window.registerTreeDataProvider('soarApps', soarAppsTreeProvider)
+	const soarAppsTreeView = vscode.window.createTreeView("soarApps", {
+		treeDataProvider: soarAppsTreeProvider,
+		"canSelectMany": false
+	})
+	treeViewStore.add("soarApps", soarAppsTreeView)
+
+	soarAppsTreeView.badge = {tooltip: "Connected Environments", value: listEnvironments(context).length}
+
 	vscode.commands.registerCommand('splunkSoar.apps.refresh', () => soarAppsTreeProvider.refresh());
 
 	const soarActionRunsTreeProvider = new SoarActionRunTreeProvider(context)
-	vscode.window.registerTreeDataProvider('soarActionRuns', soarActionRunsTreeProvider)
 	vscode.commands.registerCommand('splunkSoar.actionRuns.refresh', () => soarActionRunsTreeProvider.refresh());
+
+	vscode.window.createTreeView("soarActionRuns", {
+		treeDataProvider: soarActionRunsTreeProvider
+	})
 
 	const soarPlaybookRunsTreeProvider = new SoarPlaybookRunTreeProvider(context)
 	vscode.window.registerTreeDataProvider('soarPlaybookRuns', soarPlaybookRunsTreeProvider)
@@ -38,7 +50,11 @@ export function registerTreeViews(context: vscode.ExtensionContext) {
 
 }
 
-export async function refreshViews() {
+export async function refreshViews(context: vscode.ExtensionContext) {
+
+	let numEnvironments = listEnvironments(context).length
+	treeViewStore.get("soarApps").badge = {"tooltip": "Connected Environments", value: numEnvironments}
+
 	await vscode.commands.executeCommand('splunkSoar.environments.refresh');
     await vscode.commands.executeCommand('splunkSoar.apps.refresh');
     await vscode.commands.executeCommand('splunkSoar.actionRuns.refresh');

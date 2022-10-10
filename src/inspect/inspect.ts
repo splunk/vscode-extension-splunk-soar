@@ -3,6 +3,7 @@ import { OutputQuoteStyle } from 'terser';
 import * as vscode from 'vscode'
 import { getClientForActiveEnvironment } from '../soar/client';
 import { PlaybookRun } from '../views/playbookRun';
+import { promptContainerId } from '../wizard/prompts';
 import { AppFileContentProvider } from './appFileContentProvider';
 import { SoarContent, SoarContentProvider } from './soarContentProvider';
 import { SystemSettingsContentProvider } from './systemSettingContentProvider';
@@ -139,7 +140,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext, outpu
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.containers.inspect', async (containerId) => {
 		if (!containerId) {
-			containerId = await vscode.window.showInputBox({ placeHolder: 'Container ID' });
+			containerId = await promptContainerId(context)
 		} else {
 			containerId = String(containerId.data[1].value.data["id"])
 		}

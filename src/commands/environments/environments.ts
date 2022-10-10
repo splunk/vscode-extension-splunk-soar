@@ -52,7 +52,7 @@ export async function addEnvironment(context: vscode.ExtensionContext) {
             vscode.window.showWarningMessage("Added environment but could not activate it.")
         }
     } else {
-        await refreshViews()
+        await refreshViews(context)
     }
 }
 
@@ -76,7 +76,7 @@ export async function removeEnvironment(context: vscode.ExtensionContext, action
     context.globalState.update(ENV_KEY, newEnvironments)
 
     await removePinnedAppsForEnv(context, key)
-    await refreshViews()
+    await refreshViews(context)
 }
 
 export async function activateEnvironment(context: vscode.ExtensionContext, environmentContext: IActionContext) {
@@ -109,7 +109,7 @@ export async function activateEnvironment(context: vscode.ExtensionContext, envi
         vscode.window.showErrorMessage(errorMsg)
         throw new Error(errorMsg)
     }
-    await refreshViews()
+    await refreshViews(context)
 }
 
 export async function getActiveEnvironment(context: vscode.ExtensionContext) {

@@ -5,7 +5,8 @@ export class SoarEnvironmentsTreeProvider implements vscode.TreeDataProvider<Soa
 	private _onDidChangeTreeData: vscode.EventEmitter<SoarEnvironmentsTreeItem | undefined | void> = new vscode.EventEmitter<SoarEnvironmentsTreeItem | undefined | void>();
 	readonly onDidChangeTreeData: vscode.Event<SoarEnvironmentsTreeItem | undefined | void> = this._onDidChangeTreeData.event;
 
-	constructor(private context: vscode.ExtensionContext) {}
+	constructor(private context: vscode.ExtensionContext) {
+	}
 
 	refresh() {
 		this._onDidChangeTreeData.fire();

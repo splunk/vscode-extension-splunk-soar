@@ -4,6 +4,7 @@ import { getClientForActiveEnvironment } from '../../soar/client';
 import { SoarAction, SoarActionParameter } from '../../soar/models';
 import { SoarActionItem } from '../../views/apps';
 import {MultiStepInput} from '../../wizard/MultiStepInput'
+import { validateContainerExists } from '../../wizard/prompts';
 import { openAppAssetConfiguration } from '../web';
 import { processRunAction } from './actionRuns';
 
@@ -90,7 +91,7 @@ export async function runActionInput(context: ExtensionContext, outputChannel: v
 			value: state.container_id || '',
 			prompt: `Container ID`,
 			shouldResume: shouldResume,
-            validate: validateContainerExists,
+            validate: (in_str) => validateContainerExists(context, in_str),
 			ignoreFocusOut: true
 		});
 
@@ -190,17 +191,6 @@ export async function runActionInput(context: ExtensionContext, outputChannel: v
 
 	async function validateNameIsUnique(name: string) {
 		return name === 'vscode' ? 'Name not unique' : undefined;
-	}
-
-	async function validateContainerExists(containerId: string) {
-		let client = await getClientForActiveEnvironment(context)
-
-		try {
-			await client.getContainer(containerId)
-			return undefined
-		} catch {
-			return 'Container was not found in Splunk SOAR. Please enter a valid ID.'
-		}
 	}
 
 	const state = await collectInputs();

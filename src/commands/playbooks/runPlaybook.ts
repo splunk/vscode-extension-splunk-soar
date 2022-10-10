@@ -3,6 +3,7 @@ import * as vscode from 'vscode'
 import { MultiStepInput } from '../../wizard/MultiStepInput';
 import { getClientForActiveEnvironment } from '../../soar/client';
 import { processPlaybookRun } from '../playbookRuns/playbookRuns';
+import { validateContainerExists } from '../../wizard/prompts';
 
 export interface IPlaybookContext {
     data: {
@@ -24,17 +25,6 @@ export function shouldResume() {
     return new Promise<boolean>((resolve, reject) => {
         // noop
     });
-}
-
-async function validateContainerExists(context, containerId: string) {
-    let client = await getClientForActiveEnvironment(context)
-
-    try {
-        await client.getContainer(containerId)
-        return undefined
-    } catch {
-        return 'Container was not found in Splunk SOAR. Please enter a valid ID.'
-    }
 }
 
 export async function pickContainer(dialogContext: DialogContext, input: MultiStepInput, state: Partial<PlaybookRunState>, next: CallableFunction) {
