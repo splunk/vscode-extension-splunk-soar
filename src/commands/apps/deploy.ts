@@ -54,19 +54,11 @@ export async function uploadApp(context: vscode.ExtensionContext, outputChannel:
     let client = await getClientForActiveEnvironment(context)
 
     const appFile = fs.readFileSync(appPath, { encoding: 'base64' })
-    try {
-        let res = await client.installApp(appFile)
-        outputChannel.appendLine(JSON.stringify(res.data))
-        vscode.window.setStatusBarMessage("$(pass-filled) Successfully Uploaded App", 3000)
-        console.log(res)
-        return res
-    } catch (error: unknown) {
-        if (axios.isAxiosError(error) && error.response) {
-            console.log(error)
-            vscode.window.showErrorMessage("Failed to upload and install app")
-            return error.request
-        }
-    }
+    let res = await client.installApp(appFile)
+    outputChannel.appendLine(JSON.stringify(res.data))
+    vscode.window.setStatusBarMessage("$(pass-filled) Successfully Uploaded App", 3000)
+    console.log(res)
+    return res
 }
 
 export async function packageApp(appPath: string, outPath: string) {
