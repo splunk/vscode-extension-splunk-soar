@@ -100,7 +100,7 @@ const config = {
             items: [
               {
                 label: 'Report an Issue',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                href: 'https://github.com/splunk/vscode-extension-splunk-soar/issues',
               },
               {
                 label: 'Splunk Community Slack',
