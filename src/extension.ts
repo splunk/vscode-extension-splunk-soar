@@ -36,6 +36,11 @@ export function activate(context: vscode.ExtensionContext) {
 		return
 	}
 
+	vscode.workspace.onDidChangeConfiguration(() => {
+        vscode.commands.executeCommand('splunkSoar.apps.refresh')
+		vscode.commands.executeCommand('splunkSoar.playbooks.refresh')
+    })
+
 	// Task Provider
 	deployTaskProvider = vscode.tasks.registerTaskProvider(DeployTaskProvider.CustomBuildScriptType, new DeployTaskProvider(rootPath, context, soarLogOutput));
 }

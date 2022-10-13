@@ -20,6 +20,7 @@ import { installFromConnector, installFromFolder } from './apps/deploy';
 import { pinApp, unpinApp } from './apps/pin';
 import { createContainer } from './containers/create';
 import { repeatPlaybookRun } from './playbookRuns/repeat';
+import { showAll, showOnlyConfigured } from './apps/show';
 
 export function registerCommands(context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel, logOutputChannel: vscode.OutputChannel) {
 
@@ -214,4 +215,8 @@ export function registerCommands(context: vscode.ExtensionContext, outputChannel
 	context.subscriptions.push(vscode.commands.registerCommand("splunkSoar.containers.create", () => {createContainer(context)}))
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbookRuns.repeat', (playbookRunContext) => {repeatPlaybookRun(context, playbookRunContext, outputChannel)}))
+
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.showConfiguredOnly', () => {showOnlyConfigured(context)}))
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.showAll', () => {showAll(context)}))
+
 }

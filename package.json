@@ -232,6 +232,16 @@
 				"category": "SOAR Apps"
 			},
 			{
+				"command": "splunkSoar.apps.showAll",
+				"title": "Show All Apps",
+				"category": "SOAR Apps"
+			},
+			{
+				"command": "splunkSoar.apps.showConfiguredOnly",
+				"title": "Show only configured Apps",
+				"category": "SOAR Apps"
+			},
+			{
 				"command": "splunkSoar.apps.installBundle",
 				"title": "SOAR: Install App Bundle",
 				"icon": "$(cloud-upload)",
@@ -708,6 +718,14 @@
 					"command": "splunkSoar.showAppWizard",
 					"when": "view == soarApps",
 					"group": "navigation"
+				},
+				{
+					"command": "splunkSoar.apps.showAll",
+					"when": "view == soarApps"
+				},
+				{
+					"command": "splunkSoar.apps.showConfiguredOnly",
+					"when": "view == soarApps"
 				},
 				{
 					"command": "splunkSoar.apps.installBundle",
