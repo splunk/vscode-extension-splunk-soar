@@ -3,6 +3,7 @@
 'use strict';
 
 const path = require('path');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
@@ -45,4 +46,47 @@ const extensionConfig = {
     level: "log", // enables logging required for problem matchers
   },
 };
-module.exports = [ extensionConfig ];
+
+
+const webViewConfig = {
+  entry: {
+   appwizard: "./app/src/appWizard/index.js",
+   playbookviewer: "./app/src/playbookViewer/index.js"
+  },
+  output: {
+    path: path.resolve(__dirname, 'app', 'build'),
+    filename: '[name].js'
+  },
+  resolve: {
+    // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
+    extensions: ['.ts', '.js', '.jsx','css']
+  },
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: 'ts-loader'
+          }
+        ]
+      },
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: { loader: 'babel-loader' }
+    }
+    ]
+  }
+}
+module.exports = [ extensionConfig, webViewConfig ];

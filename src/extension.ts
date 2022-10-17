@@ -7,6 +7,8 @@ import { registerCodeLenses } from './codelens/codelens';
 import { DeployTaskProvider } from './tasks/deployTaskProvider';
 import { ACTIVE_ENV_KEY } from './commands/environments/environments';
 import outputLinkProvider from './providers/outputLinkProvider';
+import { VisualPlaybookViewerProvider } from './editors/visualPlaybookViewer';
+import { vsCodeOption } from '@vscode/webview-ui-toolkit';
 
 let deployTaskProvider: vscode.Disposable | undefined;
 
@@ -43,6 +45,16 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Task Provider
 	deployTaskProvider = vscode.tasks.registerTaskProvider(DeployTaskProvider.CustomBuildScriptType, new DeployTaskProvider(rootPath, context, soarLogOutput));
+
+	// Custom Editor Provider
+	const visualPlaybookViewer = new VisualPlaybookViewerProvider(context)
+
+	vscode.window.registerCustomEditorProvider(VisualPlaybookViewerProvider.viewType, visualPlaybookViewer, {
+		webviewOptions: {
+			retainContextWhenHidden: true
+		}
+	})
+
 }
 
 export function deactivate() {

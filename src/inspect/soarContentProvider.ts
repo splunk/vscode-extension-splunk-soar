@@ -32,6 +32,7 @@ export class SoarContentProvider implements vscode.TextDocumentContentProvider {
 
         // @ts-expect-error
         let contentResponse = await client[this.soarContent.getContentFunName](argument)
+        console.log(uri)
         return this.soarContent.processContent(contentResponse)
     }
 }

@@ -107,13 +107,13 @@ export class AppWizardPanel {
    * rendered within the webview panel
    */
   private _getWebviewContent(webview: Webview, context: ExtensionContext) {
-    const toolkitUri = getUri(webview, context.extensionUri, ["app", "appwizard", "toolkit.js"]);
+    //const toolkitUri = getUri(webview, context.extensionUri, ["app", "appwizard", "toolkit.js"]);
 
-    const mainUri = getUri(webview, context.extensionUri, ["app", "appwizard", "main.js"]);
-    const styleUri = getUri(webview, context.extensionUri, ["app", "appwizard", "styles.css"]);
+    const mainUri = getUri(webview, context.extensionUri, ["app", "build", "appwizard.js"]);
+    //const styleUri = getUri(webview, context.extensionUri, ["app", "appwizard", "styles.css"]);
 
-    console.log(mainUri)
-    console.log(styleUri)
+    //console.log(mainUri)
+    //console.log(styleUri)
 
     // Tip: Install the es6-string-html VS Code extension to enable code highlighting below
     return `
@@ -122,13 +122,12 @@ export class AppWizardPanel {
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <script type="module" src="${toolkitUri}"></script>
           <script type="module" src="${mainUri}"></script>
-          <link rel="stylesheet" href="${styleUri}">
           <title>App Wizard</title>
         </head>
         <body id="webview-body">
-        <header>
+        <div id="root"></div>
+        <!-- <header>
           <h1>SOAR App Wizard</h1>
           </header>
           <section id="notes-form">
@@ -149,8 +148,6 @@ export class AppWizardPanel {
               <vscode-option>endpoint</vscode-option>
             </vscode-dropdown>
             </div>
-        
-            <!--
             <div class="tags-container">
             <div>
             Light Mode Logo
@@ -161,10 +158,11 @@ export class AppWizardPanel {
             Dark Mode Logo
             <input type="file" id="myFile" name="filename">
             </div>
-            </div>-->
+            </div>
 
             <vscode-button id="submit-button">Create</vscode-button>
-          </section>
+          </section> -->
+        
         </body>
       </html>
     `;

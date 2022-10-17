@@ -17,3 +17,12 @@ export function removeIfExists(array, key, value) {
 
 
 export const zip = (a, b) => a.map((k, i) => [k, b[i]]);
+
+export function getNonce() {
+	let text = '';
+	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	for (let i = 0; i < 32; i++) {
+		text += possible.charAt(Math.floor(Math.random() * possible.length));
+	}
+	return text;
+}
