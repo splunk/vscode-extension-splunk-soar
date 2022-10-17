@@ -397,6 +397,16 @@
 				"category": "SOAR Containers"
 			},
 			{
+				"command": "splunkSoar.playbooks.activate",
+				"title": "Set to Active...",
+				"category": "SOAR Playbooks"
+			},
+			{
+				"command": "splunkSoar.playbooks.deactivate",
+				"title": "Deactivate",
+				"category": "SOAR Playbooks"
+			},
+			{
 				"command": "splunkSoar.playbooks.downloadBundle",
 				"title": "Download Bundle",
 				"icon": "$(cloud-download)",
@@ -665,6 +675,14 @@
 					"when": "false"
 				},
 				{
+					"command": "splunkSoar.playbooks.activate",
+					"when": "false"
+				},
+				{
+					"command": "splunkSoar.playbooks.deactivate",
+					"when": "false"
+				},
+				{
 					"command": "splunkSoar.playbookRuns.cancel",
 					"when": "false"
 				},
@@ -850,28 +868,38 @@
 				},
 				{
 					"command": "splunkSoar.playbooks.runPlaybook",
-					"when": "view == soarPlaybooks && viewItem == soarplaybook",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive)/",
 					"group": "inline@1"
 				},
 				{
 					"command": "splunkSoar.playbooks.inspect",
-					"when": "view == soarPlaybooks && viewItem == soarplaybook",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive)/",
 					"group": "actions@1"
 				},
 				{
 					"command": "splunkSoar.playbooks.viewCode",
-					"when": "view == soarPlaybooks && viewItem == soarplaybook",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive)/",
 					"group": "actions@2"
 				},
 				{
 					"command": "splunkSoar.playbooks.downloadBundle",
-					"when": "view == soarPlaybooks && viewItem == soarplaybook",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive)/",
 					"group": "actions@3"
 				},
 				{
 					"command": "splunkSoar.playbooks.viewWeb",
-					"when": "view == soarPlaybooks && viewItem == soarplaybook",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive)/",
 					"group": "web@1"
+				},
+				{
+					"command": "splunkSoar.playbooks.activate",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(inactive)/",
+					"group": "actions@4"
+				},
+				{
+					"command": "splunkSoar.playbooks.deactivate",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active)/",
+					"group": "actions@4"
 				},
 				{
 					"command": "splunkSoar.environments.remove",

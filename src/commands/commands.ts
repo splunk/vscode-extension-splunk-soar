@@ -21,6 +21,7 @@ import { pinApp, unpinApp } from './apps/pin';
 import { createContainer } from './containers/create';
 import { repeatPlaybookRun } from './playbookRuns/repeat';
 import { showAll, showOnlyConfigured } from './apps/show';
+import { activate, deactivate } from './playbooks/activeState';
 
 export function registerCommands(context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel, logOutputChannel: vscode.OutputChannel) {
 
@@ -62,6 +63,10 @@ export function registerCommands(context: vscode.ExtensionContext, outputChannel
 
 	let disposablePlaybooks = vscode.commands.registerCommand('splunkSoar.playbooks.viewListWeb', async () => { openWebPlaybooks(context) });
 	context.subscriptions.push(disposablePlaybooks);
+
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbooks.activate', (playbookContext) => {activate(context, playbookContext)}))
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbooks.deactivate', (playbookContext) => {deactivate(context, playbookContext)}))
+
 
     context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.actionRuns.repeat', async (data) => {
 		if (data) {
@@ -218,5 +223,6 @@ export function registerCommands(context: vscode.ExtensionContext, outputChannel
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.showConfiguredOnly', () => {showOnlyConfigured(context)}))
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.apps.showAll', () => {showAll(context)}))
+
 
 }

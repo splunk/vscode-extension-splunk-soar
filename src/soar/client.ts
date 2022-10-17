@@ -107,6 +107,17 @@ export class SoarClient {
         return await this.httpClient.get(`playbook/${playbookId}`, {params: {"pretty": true}})
     }
 
+    setPlaybookActiveState = async (playbookId: string, activeState: boolean, cancelRuns?: boolean) => {
+        let payload: any = {"active": activeState}
+
+        if (cancelRuns !== undefined) {
+            payload["cancel_runs"] = cancelRuns
+        }
+
+        return await this.httpClient.post(`playbook/${playbookId}`, payload)
+        
+    }
+
     listPlaybooks = async () => {
         return await this.httpClient.get("playbook", {params: {"page_size": 500, "pretty": true, "sort": "name"}})
     }
