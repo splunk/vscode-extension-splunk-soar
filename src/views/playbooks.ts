@@ -118,7 +118,7 @@ export class PlaybookItem extends PlaybookTreeItem {
 	) {
 		super(label, collapsibleState, data);
 		this.data = data
-		this.contextValue = `soarplaybook:inactive`
+		this.contextValue = `soarplaybook:inactive:`
         this.description = `${data.playbook.id}`
 		
 		const isInputPlaybook = this.data["playbook"]["playbook_type"] == "data"
@@ -126,7 +126,13 @@ export class PlaybookItem extends PlaybookTreeItem {
 		const activeColor = isActive ?  new vscode.ThemeColor("testing.iconPassed") : undefined
 
 		if (isActive) {
-			this.contextValue = "soarplaybook:active"
+			this.contextValue = "soarplaybook:active:"
+		}
+
+		if (this.data["playbook"]["is_modern"]) {
+			this.contextValue += "modern"
+		} else {
+			this.contextValue += "classic"
 		}
 
 

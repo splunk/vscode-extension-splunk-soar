@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { VSCodeBadge } from '@vscode/webview-ui-toolkit/react'
-import SoarFlow from './SoarFlow';
 import './PlaybookViewer.css'
+import { Flow } from './Flow';
 
 export default function PlaybookViewer() {
 
@@ -19,7 +19,7 @@ export default function PlaybookViewer() {
     let content = JSON.stringify(playbook)
 
     if (content != "{}") {
-        content = <SoarFlow playbook={playbook}></SoarFlow>
+        content = <Flow playbook={playbook}></Flow>
     }
 
     return (
@@ -27,7 +27,7 @@ export default function PlaybookViewer() {
         <header className='playbookViewer'>
             <h1>SOAR Playbook Viewer <VSCodeBadge>experimental</VSCodeBadge></h1>
         </header>
-        <section style={{height: "100vh"}}>
+        <section style={{height: "95vh"}}>
             {content}
         </section>
         </>

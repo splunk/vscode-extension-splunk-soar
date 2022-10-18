@@ -1,4 +1,49 @@
 .playbookViewer {
-    height: 100%;
+    height: 90%;
     width: 100%;
+}
+
+.layoutflow {
+flex-grow: 1;
+position: relative;
+height: 100%;
+background-color: var(--vscode-editor-background);
+}
+
+.layoutflow .controls {
+position: absolute;
+right: 10px;
+top: 10px;
+z-index: 10;
+font-size: 12px;
+}
+
+.layoutflow .controls button:first-child {
+margin-right: 10px;
+}
+
+
+.soarNodeLabel {
+  color: var(--vscode-panelTitle-activeForeground);
+}
+
+
+.soarNode {
+  padding: 5px;
+  padding-top: 10px;
+  align-items: center;
+  height: auto;
+  border-radius: 4px;
+  color: var(--vscode-panelTitle-activeForeground);
+  background-color: var(--vscode-panel-background);
+  font-size: 12px;
+  width: 200px;
+  text-align: center;
+  overflow-wrap: break-word;
+  min-height: 48px;
+  cursor: pointer;
+  z-index: 1000;
+  font-weight: bold;
+  border: 1px solid var(--vscode-panelTitle-activeBorder);
+  font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\',\'Segoe UI Symbol\'
 }

@@ -160,6 +160,9 @@ export class VisualPlaybookViewerPanel {
   private _setWebviewMessageListener(webview: Webview, context: ExtensionContext) {
     webview.onDidReceiveMessage(
       async (message: any) => {
+
+        console.log(message)
+
       },
       undefined,
       this._disposables

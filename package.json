@@ -885,52 +885,52 @@
 				},
 				{
 					"command": "splunkSoar.playbooks.runPlaybook",
-					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive)/",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive):*/",
 					"group": "inline@1"
 				},
 				{
 					"command": "splunkSoar.playbooks.inspect",
-					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive)/",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive):*/",
 					"group": "actions@1"
 				},
 				{
 					"command": "splunkSoar.playbooks.showVisualPlaybookViewer",
-					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive)/",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive):modern/",
 					"group": "actions@2"
 				},
 				{
 					"command": "splunkSoar.playbooks.viewCode",
-					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive)/",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive):*/",
 					"group": "actions@3"
 				},
 				{
 					"command": "splunkSoar.playbooks.downloadBundle",
-					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive)/",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive):*/",
 					"group": "actions@4"
 				},
 				{
 					"command": "splunkSoar.playbooks.viewWeb",
-					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive)/",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active|inactive):*/",
 					"group": "web@1"
 				},
 				{
 					"command": "splunkSoar.playbooks.activate",
-					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(inactive)/",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(inactive):*/",
 					"group": "actions@4"
 				},
 				{
 					"command": "splunkSoar.playbooks.deactivate",
-					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active)/",
+					"when": "view == soarPlaybooks && viewItem =~ /soarplaybook:(active):*/",
 					"group": "actions@4"
 				},
 				{
 					"command": "splunkSoar.environments.remove",
-					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
+					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)",
 					"group": "actions@2"
 				},
 				{
 					"command": "splunkSoar.environments.remove",
-					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
+					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)",
 					"group": "inline"
 				},
 				{
@@ -1189,6 +1189,7 @@
 		"ignore": "^5.2.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
+		"react-icons": "^4.6.0",
 		"reactflow": "^11.1.1",
 		"style-loader": "^3.3.1",
 		"tar": "^6.1.11",
