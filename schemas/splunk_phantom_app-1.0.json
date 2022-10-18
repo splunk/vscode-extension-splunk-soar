@@ -146,7 +146,8 @@
                 "type": "object",
                 "properties": {
                     "data_type": {
-                        "type": "string"
+                        "type": "string",
+                        "enum": ["string", "numeric", "boolean", "password", "file"]
                     },
                     "description": {
                         "type": "string"
@@ -222,7 +223,8 @@
                             "type": "object",
                             "properties": {
                                 "data_type": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "enum": ["string", "numeric", "boolean"]
                                 },
                                 "description": {
                                     "type": "string"
@@ -264,7 +266,8 @@
                                     "type": "string"
                                 },
                                 "data_type": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "enum": ["string", "numeric", "boolean", "password", "file"]
                                 },
                                 "contains": {
                                     "type": "array",
