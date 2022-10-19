@@ -7,10 +7,21 @@ export default function PlaybookViewer() {
 
     const [playbook, setPlaybook] = useState({})
 
+    const [playbookRunInfo, setPlaybookRunInfo] = useState({})
+
+
     useEffect(() => {
         window.addEventListener("message", (event) => {
             console.log(event)
-            setPlaybook(event.data)
+
+            switch(event.data.command) {
+                case "playbook":
+                    setPlaybook(event.data.data)
+                    break;
+                case "deliver_playbook_run":
+                    setPlaybookRunInfo(event.data.data)
+                    break;
+            }
         });    
     })
 
@@ -19,7 +30,7 @@ export default function PlaybookViewer() {
     let content = JSON.stringify(playbook)
 
     if (content != "{}") {
-        content = <Flow playbook={playbook}></Flow>
+        content = <Flow playbook={playbook} playbookRunInfo={playbookRunInfo}></Flow>
     }
 
     return (

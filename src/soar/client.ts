@@ -250,6 +250,10 @@ export class SoarClient {
     getContainerOptions = async () => {
         return await this.httpClient.get(`container_options`)
     }
+
+    listPlaybookRunActions = async(playbookRunId: string) => {
+        return await this.httpClient.get<models.SoarCollection<any>>(`playbook_run/${playbookRunId}/actions`, {params: {"pretty": true, "page_size": 100}})
+    }
 }
 
 export async function getClientForActiveEnvironment(context: vscode.ExtensionContext): Promise<SoarClient> {

@@ -22,6 +22,7 @@ import PromptNode from './nodes/PromptNode';
 import DataPanel from './DataPanel';
 
 import { VscJson, VscTypeHierarchy } from "react-icons/vsc";
+import PlaybookRunInput from './PlaybookRunInput';
 
 const initialNodes = [];
 const initialEdges = [];
@@ -126,7 +127,7 @@ const getLayoutedElements = (nodes, edges) => {
   return { nodes, edges };
 }
 
-export function Flow({ playbook }) {
+export function Flow({ playbook, playbookRunInfo }) {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
@@ -176,7 +177,7 @@ export function Flow({ playbook }) {
   const resetLayout = useCallback(() => {
     const layoutedElements = getLayoutedElements(nodes, edges)
 
-    setNodes([... layoutedElements.nodes])
+    setNodes([...layoutedElements.nodes])
     setEdges([...layoutedElements.edges])
   })
 
@@ -190,11 +191,12 @@ export function Flow({ playbook }) {
       onConnect={onConnect}
       onNodeClick={onNodeClick}
     >
+      {showDataView ? <PlaybookRunInput playbookRunInfo={playbookRunInfo}></PlaybookRunInput> : <></>}
       <Controls>
         <ControlButton onClick={toggleDataView}><VscJson></VscJson></ControlButton>
         <ControlButton onClick={resetLayout}><VscTypeHierarchy></VscTypeHierarchy></ControlButton>
       </Controls>
-      {showDataView ? <DataPanel node={selectedNode}></DataPanel>: <></>}
+      {showDataView ? <DataPanel node={selectedNode} playbookRunInfo={playbookRunInfo}></DataPanel> : <></>}
       <Background />
     </ReactFlow>
   );

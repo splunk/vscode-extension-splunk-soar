@@ -1,13 +1,8 @@
-import * as fs from 'fs'
-import * as ejs from 'ejs'
-const fsPromises = fs.promises;
 import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn, commands, ExtensionContext } from "vscode";
-import path = require('path');
-import { randomUUID } from 'crypto';
-import { getClientForActiveEnvironment } from '../soar/client';
+import { getClientForActiveEnvironment, SoarClient } from '../soar/client';
 import { getNonce } from '../utils';
 import { PlaybookItem } from '../views/playbooks';
-import { darkModeStylesheetBehavior } from '@microsoft/fast-foundation';
+
 
 /**
  * This class manages the state and behavior of HelloWorld webview panels.
@@ -21,14 +16,15 @@ import { darkModeStylesheetBehavior } from '@microsoft/fast-foundation';
  */
 
 function getUri(webview: Webview, extensionUri: Uri, pathList: string[]) {
-    return webview.asWebviewUri(Uri.joinPath(extensionUri, ...pathList));
+  return webview.asWebviewUri(Uri.joinPath(extensionUri, ...pathList));
 }
 
-  
+
 export class VisualPlaybookViewerPanel {
   public static currentPanel: VisualPlaybookViewerPanel | undefined;
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
+  private context: ExtensionContext;
 
   /**
    * The HelloWorldPanel class private constructor (called only from the render method).
@@ -38,6 +34,8 @@ export class VisualPlaybookViewerPanel {
    */
   private constructor(panel: WebviewPanel, context: ExtensionContext, playbook: any) {
     this._panel = panel;
+    this.context = context
+
 
     // Set an event listener to listen for when the panel is disposed (i.e. when the user closes
     // the panel or when the panel is closed programmatically)
@@ -76,17 +74,18 @@ export class VisualPlaybookViewerPanel {
         }
       );
 
+      
       const client = await getClientForActiveEnvironment(context)
 
       try {
         const playbook = await client.getPlaybook(String(playbookContext.data.playbook.id))
         const data = await playbook.data
         VisualPlaybookViewerPanel.currentPanel = new VisualPlaybookViewerPanel(panel, context, data);
-        panel.webview.postMessage(data)
-        }
-    catch(err) {
+        panel.webview.postMessage({ "command": "playbook", data })
+      }
+      catch (err) {
         console.error(err)
-    }
+      }
 
 
 
@@ -163,9 +162,69 @@ export class VisualPlaybookViewerPanel {
 
         console.log(message)
 
+        switch (message.command) {
+          case "request_playbook_run":
+            this.playbookRunContext(message.data.playbook_run_id)
+            break;
+        }
+
       },
       undefined,
       this._disposables
     );
+  }
+
+  async playbookRunContext(playbookRunId: string) {
+    console.log(playbookRunId)
+
+    const client = await getClientForActiveEnvironment(this.context)
+
+    const playbookRunActions = await client.listPlaybookRunActions(playbookRunId)
+    const playbookRunActionsData = playbookRunActions.data
+
+    const playbookRun = await client.getPlaybookRun(playbookRunId)
+    const playbookRunData = playbookRun.data
+    
+
+    let playbookRunResults: any = []
+    const appPromises: any = []
+
+    playbookRunActionsData.data.map(async (actionRun) => {
+      if (actionRun._pretty_has_app_runs) {
+        appPromises.push(client.getActionRunAppRuns(actionRun["id"]))
+      }
+    })
+
+    playbookRunResults = await Promise.allSettled(appPromises)
+
+    playbookRunResults = playbookRunResults.map((promise: any) => {
+        return promise.value.data
+    })
+
+
+    const appRunPromises: any = []
+    playbookRunResults.forEach((actionRun: any) => {
+      actionRun.data.forEach((appRun: any) => {
+        appRunPromises.push(client.getAppRun(appRun.id))
+      })
+    })
+
+    let appRunResults = await Promise.allSettled(appRunPromises)
+
+    appRunResults = appRunResults.map((promise: any) => {
+        return promise.value.data
+    })
+
+
+    console.log(playbookRunResults)
+    
+    
+    const payload = {
+      "playbookRunResults": appRunResults,
+      "playbookRunActions": playbookRunActionsData.data,
+      "playbookRun": playbookRunData
+    }
+
+    this._panel.webview.postMessage({ "command": "deliver_playbook_run", data: payload })
   }
 }
