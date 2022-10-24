@@ -5,7 +5,7 @@
 	"icon": "media/soarcloud.png",
 	"publisher": "Splunk",
 	"license": "Apache-2.0",
-	"version": "0.0.24",
+	"version": "0.0.27",
 	"engines": {
 		"vscode": "^1.72.0"
 	},
@@ -1113,6 +1113,10 @@
 					"cwd": {
 						"type": "string",
 						"description": "App Directory"
+					},
+					"appMetadata": {
+						"type": "string",
+						"description": "Metadata File"
 					}
 				}
 			}

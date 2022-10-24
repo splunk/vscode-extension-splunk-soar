@@ -22,7 +22,7 @@ export async function installFromConnector(context: vscode.ExtensionContext, act
 
     let task = new vscode.Task(definition, vscode.TaskScope.Workspace, `connector install`,
     DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
-        return new CustomBuildTaskTerminal(appFolder, '.', context, outputChannel);
+        return new CustomBuildTaskTerminal(appFolder, '.', undefined, context, outputChannel);
     }));
 
     task.problemMatchers = [
@@ -41,7 +41,7 @@ export async function installFromFolder(context: vscode.ExtensionContext, action
 
     let task = new vscode.Task(definition, vscode.TaskScope.Workspace, `folder install`,
     DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
-        return new CustomBuildTaskTerminal(appFolder, '.', context, outputChannel);
+        return new CustomBuildTaskTerminal(appFolder, '.', undefined, context, outputChannel);
     }));
 
     task.problemMatchers = [

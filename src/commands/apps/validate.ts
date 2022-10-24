@@ -1,8 +1,8 @@
 import * as path from 'path'
 import * as fs from 'fs'
 
-export function directoryContainsApp(dirPath: string) {
-    let appValidator = new AppValidator(dirPath)
+export function directoryContainsApp(dirPath: string, appMetadataPath: string | undefined) {
+    let appValidator = new AppValidator(dirPath, appMetadataPath)
     return appValidator.containsApp()
 }
 
@@ -20,11 +20,16 @@ class AppValidator {
     output: string[] = []
     metaFileLocation: string
 
-    constructor(appPath: string) {
+    constructor(appPath: string, appMetadataPath: string | undefined) {
         this.appPath = appPath
         this.appJSONContent = ""
         this.dirName = path.basename(this.appPath)
-        this.metaFileLocation = path.join(this.appPath, `${this.dirName}.json`)
+
+        if (appMetadataPath !== undefined) {
+            this.metaFileLocation = path.join(this.appPath, appMetadataPath)
+        } else {
+            this.metaFileLocation = path.join(this.appPath, `${this.dirName}.json`)
+        }
         if (!fs.existsSync(this.metaFileLocation)) {
             this.appJSON == null
         }
@@ -140,9 +145,8 @@ class AppValidator {
 
 }
 
-export function validateApp(dirPath: string) {
-
-    let appValidator = new AppValidator(dirPath)
+export function validateApp(dirPath: string, appMetadata: string | undefined) {
+    let appValidator = new AppValidator(dirPath, appMetadata)
     if (!appValidator.containsApp()) {
         return false
     }
