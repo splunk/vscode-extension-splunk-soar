@@ -127,42 +127,6 @@ export class AppWizardPanel {
         </head>
         <body id="webview-body">
         <div id="root"></div>
-        <!-- <header>
-          <h1>SOAR App Wizard</h1>
-          </header>
-          <section id="notes-form">
-            <p>Bootstrap a new SOAR App and save it to a local directory.</p>
-
-            <vscode-text-field id="name" placeholder="Required">App Name</vscode-text-field>
-            <vscode-text-area id="description" placeholder="Required" resize="vertical" rows=5>App Description</vscode-text-area>
-
-            <vscode-text-field id="productVendor" placeholder="Required">Product Vendor</vscode-text-field>
-            <vscode-text-field id="productName" placeholder="Required">Product Name</vscode-text-field>
-            <vscode-text-field id="publisher" placeholder="Required">App Publisher</vscode-text-field>
-
-            <div>
-            <label class="label">App Type</label>
-            <vscode-dropdown id="appType" position="below" style="margin-left: 10px">
-              <vscode-option>information</vscode-option>
-              <vscode-option>ticketing</vscode-option>
-              <vscode-option>endpoint</vscode-option>
-            </vscode-dropdown>
-            </div>
-            <div class="tags-container">
-            <div>
-            Light Mode Logo
-            <input class="button" type="file" id="myFile" name="filename">
-            </vscode-button>
-            </div>
-            <div>
-            Dark Mode Logo
-            <input type="file" id="myFile" name="filename">
-            </div>
-            </div>
-
-            <vscode-button id="submit-button">Create</vscode-button>
-          </section> -->
-        
         </body>
       </html>
     `;
