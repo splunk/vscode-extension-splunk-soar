@@ -1,0 +1,17 @@
+{
+    "Soar Action Handler": {
+        "prefix": "soar-action",
+        "body": [
+          "def _handle_$1(self, param):",
+          "    action_result = self.add_action_result(ActionResult(dict(param)))",
+          "    self.save_progress(\"In action handler for: {}\".format(self.get_action_identifier()))",
+          "",
+          "    summary = action_result.update_summary({})",
+          "    return action_result.set_status(phantom.APP_ERROR, \"Not implemented yet.\")",
+          "",
+          "",
+          "     "
+        ],
+        "description": "Soar Action Handler"
+      }
+}

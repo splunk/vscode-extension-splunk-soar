@@ -54,6 +54,12 @@
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
+		"snippets": [
+			{
+			  "language": "python",
+			  "path": "./snippets/soar.json"
+			}
+		  ],	  
 		"customEditors": [
 			{
 				"viewType": "splunkSoar.views.visualPlaybookViewer",

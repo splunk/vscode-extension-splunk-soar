@@ -189,6 +189,7 @@ export function Flow({ playbook, playbookRunInfo }) {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
+      fitView
       onNodeClick={onNodeClick}
     >
       {showDataView ? <PlaybookRunInput playbookRunInfo={playbookRunInfo}></PlaybookRunInput> : <></>}
