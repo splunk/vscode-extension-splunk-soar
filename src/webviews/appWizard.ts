@@ -204,7 +204,7 @@ export class AppWizardPanel {
               message.soarVersion = soarVersionResponse["version"]
 
               message.app.appid = randomUUID()
-              message.app.name_lower = message.app.name.toLowerCase().replaceAll(' ', '')
+              message.app.name_lower = message.app.appName.toLowerCase().replaceAll(' ', '')
 
               let targetFolderPath = targetFolder[0].fsPath
               let outAppFolderPath = path.join(targetFolderPath, message.app.name_lower)
