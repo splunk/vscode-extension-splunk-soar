@@ -7,7 +7,8 @@ import { directoryContainsApp, validateApp } from '../commands/apps/validate';
 
 
 interface CustomBuildTaskDefinition extends vscode.TaskDefinition {
-	cwd?: string
+	cwd?: string,
+	appMetadata?: string
 }
 
 export class DeployTaskProvider implements vscode.TaskProvider {
@@ -50,7 +51,7 @@ export class DeployTaskProvider implements vscode.TaskProvider {
 
 		let task = new vscode.Task(definition, vscode.TaskScope.Workspace, `soarapp`,
             DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
-				return new CustomBuildTaskTerminal(this.workspaceRoot, definition?.cwd ? definition.cwd : '.', this.context, this.outputChannel);
+				return new CustomBuildTaskTerminal(this.workspaceRoot, definition?.cwd ? definition.cwd : '.', definition?.appMetadata, this.context, this.outputChannel);
 			}));
 		
 		task.group =  {"isDefault": false, "id": "build"}
@@ -69,10 +70,12 @@ export class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 	private fileWatcher: vscode.FileSystemWatcher | undefined;
 
 	private cwd: string
+	private appMetadata: string | undefined
 	private outputChannel: vscode.OutputChannel
 
-	constructor(private workspaceRoot: string, cwd: string, private context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel) {
+	constructor(private workspaceRoot: string, cwd: string, appMetadata: string | undefined, private context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel) {
 		this.cwd = cwd
+		this.appMetadata = appMetadata
 		this.context = context
 		this.outputChannel = outputChannel
 	}
@@ -95,9 +98,9 @@ export class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 			this.writeEmitter.fire('Starting build...\r\n');
 
 			let appPath = path.join(this.workspaceRoot, this.cwd)
-			
+
 			try {
-				if (!directoryContainsApp(appPath)) {
+				if (!directoryContainsApp(appPath, this.appMetadata)) {
 					vscode.window.showErrorMessage("Could not find SOAR App for deploy task")
 					return
 				}
@@ -105,7 +108,7 @@ export class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 				vscode.window.showErrorMessage(String(e))
 			}
 
-			let validationResult = validateApp(appPath)
+			let validationResult = validateApp(appPath, this.appMetadata)
 			this.writeEmitter.fire(validationResult + "\r\n")
 
 			let tmpDir = os.tmpdir()

@@ -1085,6 +1085,10 @@
 					"cwd": {
 						"type": "string",
 						"description": "App Directory"
+					},
+					"appMetadata": {
+						"type": "string",
+						"description": "Metadata File"
 					}
 				}
 			}
