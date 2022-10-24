@@ -56,10 +56,10 @@
 	"contributes": {
 		"snippets": [
 			{
-			  "language": "python",
-			  "path": "./snippets/soar.json"
+				"language": "python",
+				"path": "./snippets/soar.json"
 			}
-		  ],	  
+		],
 		"customEditors": [
 			{
 				"viewType": "splunkSoar.views.visualPlaybookViewer",
@@ -1189,6 +1189,7 @@
 		"webpack-cli": "^4.9.2"
 	},
 	"dependencies": {
+		"@babel/core": "^7.19.6",
 		"@vscode/webview-ui-toolkit": "^1.1.0",
 		"axios": "^0.26.1",
 		"babel-loader": "^8.2.5",
