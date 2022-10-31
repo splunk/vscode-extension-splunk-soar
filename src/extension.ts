@@ -7,6 +7,7 @@ import { registerCodeLenses } from './codelens/codelens';
 import { DeployTaskProvider } from './tasks/deployTaskProvider';
 import { ACTIVE_ENV_KEY } from './commands/environments/environments';
 import outputLinkProvider from './providers/outputLinkProvider';
+import { MetadataEditorProvider } from './editors/metadataEditor';
 
 let deployTaskProvider: vscode.Disposable | undefined;
 
@@ -44,6 +45,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Task Provider
 	deployTaskProvider = vscode.tasks.registerTaskProvider(DeployTaskProvider.CustomBuildScriptType, new DeployTaskProvider(rootPath, context, soarLogOutput));
 
+	context.subscriptions.push(MetadataEditorProvider.register(context))
 	
 
 }

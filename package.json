@@ -62,12 +62,12 @@
 		],
 		"customEditors": [
 			{
-				"viewType": "splunkSoar.views.visualPlaybookViewer",
-				"displayName": "Visual Playbook Viewer",
+				"viewType": "splunkSoar.metadataEditor",
+				"displayName": "Metadata Editor",
 				"priority": "option",
 				"selector": [
 					{
-						"filenamePattern": "playbook_*.json"
+						"filenamePattern": "*.json"
 					}
 				]
 			}
@@ -931,12 +931,12 @@
 				},
 				{
 					"command": "splunkSoar.environments.remove",
-					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)",
+					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
 					"group": "actions@2"
 				},
 				{
 					"command": "splunkSoar.environments.remove",
-					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)",
+					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
 					"group": "inline"
 				},
 				{

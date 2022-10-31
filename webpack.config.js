@@ -51,7 +51,8 @@ const extensionConfig = {
 const webViewConfig = {
   entry: {
    appwizard: "./app/src/appWizard/index.js",
-   playbookviewer: "./app/src/playbookViewer/index.js"
+   playbookviewer: "./app/src/playbookViewer/index.js",
+   metadataeditor: "./app/src/metadataEditor/index.js"
   },
   output: {
     path: path.resolve(__dirname, 'app', 'build'),
