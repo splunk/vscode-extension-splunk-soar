@@ -931,12 +931,12 @@
 				},
 				{
 					"command": "splunkSoar.environments.remove",
-					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)",
+					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
 					"group": "actions@2"
 				},
 				{
 					"command": "splunkSoar.environments.remove",
-					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)",
+					"when": "view == soarEnvironments && viewItem =~ /soarenvironment:(active|inactive)/",
 					"group": "inline"
 				},
 				{
