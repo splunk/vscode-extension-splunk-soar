@@ -96,7 +96,7 @@ export class SoarClient {
     }
 
     getAppActions = async (appId: string) => {
-        return await this.httpClient.get<models.SoarCollection<models.SoarAction>>(`app/${appId}/actions`, {params: {"pretty": true, "page_size": "500"}})
+        return await this.httpClient.get<models.SoarCollection<models.SoarAction>>(`app/${appId}/actions`, {params: {"pretty": true, "page_size": 0}})
     }
 
     getAppByAppid = async (appId: string) => {
@@ -188,7 +188,7 @@ export class SoarClient {
     }
 
     getActionRunAppRuns = async (actionRunId: string) => {
-        return await this.httpClient.get<models.SoarCollection<models.SoarAppRun>>(`action_run/${actionRunId}/app_runs?pretty=true`)
+        return await this.httpClient.get<models.SoarCollection<models.SoarAppRun>>(`action_run/${actionRunId}/app_runs?pretty=true&page_size=0`)
     }
 
     getAppRun = async (appRunId: string) => {
@@ -236,7 +236,7 @@ export class SoarClient {
     }
 
     listScm = async () => {
-        return await this.httpClient.get(`scm?pretty=true`)
+        return await this.httpClient.get(`scm?pretty=true&page_size=0`)
     }
 
     syncScm = async (scmId: string, force: boolean = false) => {
@@ -252,7 +252,7 @@ export class SoarClient {
     }
 
     listPlaybookRunActions = async(playbookRunId: string) => {
-        return await this.httpClient.get<models.SoarCollection<any>>(`playbook_run/${playbookRunId}/actions`, {params: {"pretty": true, "page_size": 100}})
+        return await this.httpClient.get<models.SoarCollection<any>>(`playbook_run/${playbookRunId}/actions`, {params: {"pretty": true, "page_size": 0}})
     }
 }
 
