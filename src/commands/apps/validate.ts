@@ -38,7 +38,7 @@ class AppValidator {
     containsApp() {
         
         if (!fs.existsSync(this.metaFileLocation)) {
-            throw new Error(`Could not find App Metadata JSON - Expected location: ${this.metaFileLocation}`)
+            throw new Error(`Could not find App Metadata JSON - Expected location: ${this.metaFileLocation}. \r\n If you're unable to change the file name, review https://splunk.github.io/vscode-extension-splunk-soar/user-guide/tutorial-basics/install-a-local-app/#custom-app-metadata-file-name`)
         }
         try {
             this.appJSONContent = fs.readFileSync(this.metaFileLocation, 'utf-8')

@@ -19,6 +19,14 @@ There are multiple ways to get a local app installed on a configured environment
 Which one works best for you depends on your usual workflow. We recommend the [VS Code Task workflow](#vs-code-task) as it can be 
 used with keybindings and offers the best developer experience after initial setup.
 
+:::caution
+
+By default, it is expected that the directory name of the SOAR App corresponds to the name of the App Metadata file.<br/>
+For example the app with the root folder windowsdefenderatp has a corresponding windowsdefenderatp.json. If that is not the case, **only the VS Code Task is supported as a deployment method**.
+
+:::
+
+
 ## VS Code Task
 
 <ReactPlayer width="100%" height="auto" controls url={configureTaskVideo} />
@@ -45,6 +53,30 @@ The example `.vscode/tasks.json` below configures the `soarapp` build task as de
 	]
 }
 ```
+
+### Custom App Metadata File Name
+
+There can be cases in which the folder name of the app does not correspond to the name of the app metadata file. In this case, provide the name of the metadata file inside the `tasks.json` under the `appMetadata` key.
+
+```
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "soarapp",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"problemMatcher": [],
+			"label": "soarapp: Checkphish",
+			"appMetadata": "my_app.json"
+		}
+	]
+}
+```
+
+
 
 
 ## Editor Bar
