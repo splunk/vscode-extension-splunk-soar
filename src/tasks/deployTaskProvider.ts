@@ -92,7 +92,7 @@ export class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 	}
 
 	private async doBuild(): Promise<void> {
-		return new Promise<void>(async (resolve) => {
+		return new Promise<void>(async (resolve, reject) => {
 
             // tar working directory to temporary directory, get base64 repr, post to api, wait for response.
 			this.writeEmitter.fire('Starting build...\r\n');
@@ -101,15 +101,22 @@ export class CustomBuildTaskTerminal implements vscode.Pseudoterminal {
 
 			try {
 				if (!directoryContainsApp(appPath, this.appMetadata)) {
-					vscode.window.showErrorMessage("Could not find SOAR App for deploy task")
-					return
+					this.writeEmitter.fire('Could not find SOAR App for deploy task\r\n')
+					this.closeEmitter.fire(0);
+					resolve();
+	
 				}
-			} catch (e: any) {
-				vscode.window.showErrorMessage(String(e))
-			}
 
-			let validationResult = validateApp(appPath, this.appMetadata)
-			this.writeEmitter.fire(validationResult + "\r\n")
+				let validationResult = validateApp(appPath, this.appMetadata)
+				this.writeEmitter.fire(validationResult + "\r\n")	
+	
+			} catch (e: any) {
+				this.writeEmitter.fire(String(e) + '\r\n')
+				this.closeEmitter.fire(0);
+				resolve();
+				return
+			}
+			
 
 			let tmpDir = os.tmpdir()
 

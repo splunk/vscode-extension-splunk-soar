@@ -20,7 +20,7 @@ export async function installFromConnector(context: vscode.ExtensionContext, act
     };
 
 
-    let task = new vscode.Task(definition, vscode.TaskScope.Workspace, `connector install`,
+    let task = new vscode.Task(definition, vscode.TaskScope.Workspace, `SOAR App Upload`,
     DeployTaskProvider.CustomBuildScriptType, new vscode.CustomExecution(async (): Promise<vscode.Pseudoterminal> => {
         return new CustomBuildTaskTerminal(appFolder, '.', undefined, context, outputChannel);
     }));
