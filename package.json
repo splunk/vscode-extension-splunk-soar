@@ -1192,7 +1192,7 @@
 		"@babel/core": "^7.19.6",
 		"@vscode/webview-ui-toolkit": "^1.1.0",
 		"axios": "^0.26.1",
-		"babel-loader": "^8.2.5",
+		"babel-loader": "9.1.0",
 		"css-loader": "^6.7.1",
 		"dagre": "^0.8.5",
 		"ejs": "^3.1.7",
