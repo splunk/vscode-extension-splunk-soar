@@ -96,7 +96,7 @@ export class SoarClient {
     }
 
     getAppActions = async (appId: string) => {
-        return await this.httpClient.get<models.SoarCollection<models.SoarAction>>(`app/${appId}/actions`, {params: {"pretty": true}})
+        return await this.httpClient.get<models.SoarCollection<models.SoarAction>>(`app/${appId}/actions`, {params: {"pretty": true, "page_size": "500"}})
     }
 
     getAppByAppid = async (appId: string) => {
