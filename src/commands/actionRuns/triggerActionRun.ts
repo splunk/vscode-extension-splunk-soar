@@ -133,7 +133,11 @@ export async function runActionInput(context: ExtensionContext, outputChannel: v
 			if (enteredParam instanceof MyButton) {
 				enteredParam = undefined
 			} else {
-				enteredParam = enteredParam[0].label
+				if (paramInfo["data_type"] === "numeric"){
+					enteredParam = Number(enteredParam[0].label)
+				} else {
+					enteredParam = enteredParam[0].label
+				}
 			}
 	
 		} else if (paramInfo["data_type"] === "boolean") {
@@ -156,7 +160,25 @@ export async function runActionInput(context: ExtensionContext, outputChannel: v
 			} else {
 				enteredParam = enteredParam[0].label
 			}
-		} else {
+		} else if (paramInfo["data_type"] === "numeric") {
+			enteredParam = await input.showInputBox({
+				title,
+				step: 2 + actionParamIndex,
+				totalSteps: totalSteps,
+				value: paramInfo["default"] || '',
+				prompt: `${paramName}: ${paramInfo["description"]}`,
+				shouldResume: shouldResume,
+				validate: validateIsNumeric,
+				buttons: showSkip ? [skipParamButton] : []
+			});
+
+			if (enteredParam instanceof MyButton) {
+				enteredParam = undefined
+			} else {
+				enteredParam = Number(enteredParam)
+			}
+		} 
+		else {
 
 			enteredParam = await input.showInputBox({
 				title,
@@ -171,7 +193,7 @@ export async function runActionInput(context: ExtensionContext, outputChannel: v
 
 			if (enteredParam instanceof MyButton) {
 				enteredParam = undefined
-			}
+			} 
 		}
 
 		if (enteredParam !== undefined) {
@@ -191,6 +213,11 @@ export async function runActionInput(context: ExtensionContext, outputChannel: v
 
 	async function validateNameIsUnique(name: string) {
 		return name === 'vscode' ? 'Name not unique' : undefined;
+	}
+
+	async function validateIsNumeric(str: string) {
+		return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+			   !isNaN(parseFloat(str)) ? undefined: "Parameter is numeric. Please enter a number." // ...and ensure strings of whitespace fail
 	}
 
 	const state = await collectInputs();
