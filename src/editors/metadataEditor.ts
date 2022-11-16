@@ -63,10 +63,9 @@ export class MetadataEditorProvider implements vscode.CustomTextEditorProvider {
 
 		// Receive message from the webview.
 		webviewPanel.webview.onDidReceiveMessage(e => {
-            console.log(e.data.name)
 			switch (e.type) {
 				case 'update':
-					this.updateDocument(document, e.data);
+					this.updateDocument(document, JSON.parse(e.data));
 					return;
 			}
 		});
