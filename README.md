@@ -1,6 +1,6 @@
 # Splunk SOAR Extension for VS Code
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/splunk/vscode-extension-splunk-soar/CI)
+[![GitHub Workflow Status](https://github.com/splunk/vscode-extension-splunk-soar/actions/workflows/ci.yml/badge.svg)](https://github.com/splunk/vscode-extension-splunk-soar/actions/workflows/ci.yml)
 [![Slack](https://img.shields.io/badge/Slack-soar__app__dev-blue?logo=slack)](https://splunk-usergroups.slack.com/archives/C03FYT64AJZ)
 
 
