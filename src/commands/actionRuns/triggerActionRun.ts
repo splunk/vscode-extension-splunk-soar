@@ -158,7 +158,7 @@ export async function runActionInput(context: ExtensionContext, outputChannel: v
 			if (enteredParam instanceof MyButton) {
 				enteredParam = undefined
 			} else {
-				enteredParam = enteredParam[0].label
+				enteredParam = enteredParam[0].label === "true"
 			}
 		} else if (paramInfo["data_type"] === "numeric") {
 			enteredParam = await input.showInputBox({
