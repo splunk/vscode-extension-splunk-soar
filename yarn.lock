@@ -753,6 +753,11 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-14.18.18.tgz"
   integrity sha512-B9EoJFjhqcQ9OmQrNorItO+OwEOORNn3S31WuiHvZY/dm9ajkB7AKD/8toessEtHHNL+58jofbq7hMMY9v4yig==
 
+"@types/semver@^7.5.0":
+  version "7.5.0"
+  resolved "https://registry.npmjs.org/@types/semver/-/semver-7.5.0.tgz"
+  integrity sha512-G8hZ6XJiHnuhQKR7ZmysCeJWE08o8T0AXtk5darsCaTVsYZhhgUrq53jizaR2FvsoeCwJhlmwTjkXBY5Pn/ZHw==
+
 "@types/tar@^6.1.1":
   version "6.1.1"
   resolved "https://registry.npmjs.org/@types/tar/-/tar-6.1.1.tgz"
