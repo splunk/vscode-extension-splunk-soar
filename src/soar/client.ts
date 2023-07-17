@@ -155,7 +155,7 @@ export class SoarClient {
         let {version} = versionResponse.data
         let minVersionRequired = '6.1.0'
 
-        function getPosition(string, subString, index) {
+        function getPosition(string: any, subString: any, index: any) {
             return string.split(subString, index).join(subString).length;
         }
         const slicedVersion = version.slice(0, getPosition(version, ".", 3))
