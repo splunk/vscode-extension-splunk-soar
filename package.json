@@ -5,7 +5,7 @@
 	"icon": "media/soarcloud.png",
 	"publisher": "Splunk",
 	"license": "Apache-2.0",
-	"version": "0.0.29",
+	"version": "0.0.30",
 	"engines": {
 		"vscode": "^1.72.0"
 	},
@@ -367,6 +367,11 @@
 			{
 				"command": "splunkSoar.appRuns.inspect",
 				"title": "Inspect",
+				"category": "SOAR App Runs"
+			},
+			{
+				"command": "splunkSoar.appRuns.logs",
+				"title": "Logs",
 				"category": "SOAR App Runs"
 			},
 			{
@@ -865,6 +870,10 @@
 					"when": "view == soarActionRuns && viewItem == soarapprun"
 				},
 				{
+					"command": "splunkSoar.appRuns.logs",
+					"when": "view == soarActionRuns && viewItem == soarapprun"
+				},
+				{
 					"command": "splunkSoar.playbookRuns.logs",
 					"when": "view == soarPlaybookRuns && viewItem =~ /soarplaybookrun:*/",
 					"group": "actions@2"
@@ -1190,6 +1199,7 @@
 	},
 	"dependencies": {
 		"@babel/core": "^7.19.6",
+		"@vscode/vsce": "^2.19.0",
 		"@vscode/webview-ui-toolkit": "^1.1.0",
 		"axios": "^0.26.1",
 		"babel-loader": "9.1.0",
@@ -1202,6 +1212,7 @@
 		"react-dom": "^18.2.0",
 		"react-icons": "^4.6.0",
 		"reactflow": "^11.1.1",
+		"semver": "^7.5.4",
 		"style-loader": "^3.3.1",
 		"tar": "^6.1.11",
 		"terser": "5.14.2",

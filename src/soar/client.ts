@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { getActiveEnvironment, getEnvironment } from "../commands/environments/environments";
 import { PlaybookRun } from "../views/playbookRun";
 const axios = require('axios').default;
+import * as semver from 'semver'
 
 import * as models from './models'
 
@@ -146,6 +147,24 @@ export class SoarClient {
 
     getPlaybookRunLog = async (playbookRunId: string) => {
         return await this.httpClient.get(`playbook_run/${playbookRunId}/log?page_size=500`) 
+    }
+
+    getAppRunLog =async (appRunId: string) => {
+
+        let versionResponse = await this.version()
+        let {version} = versionResponse.data
+        let minVersionRequired = '6.1.0'
+
+        function getPosition(string, subString, index) {
+            return string.split(subString, index).join(subString).length;
+        }
+        const slicedVersion = version.slice(0, getPosition(version, ".", 3))
+
+        if (!semver.gte(slicedVersion, minVersionRequired)) {
+            throw new Error(`Minimum SOAR version required: ${minVersionRequired}`)
+        }
+
+        return await this.httpClient.get(`app_run/${appRunId}/log?page_size=500`)  
     }
 
     listUserPlaybooks = async () => {

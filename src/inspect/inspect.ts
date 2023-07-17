@@ -11,6 +11,16 @@ import { SystemSettingsContentProvider } from './systemSettingContentProvider';
 export function registerInspectProviders(context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel) {
 
 	const processJSONContent = (res: AxiosResponse) => { return JSON.stringify(res.data, null, '\t')} 
+	const processLogContent= (res: AxiosResponse) => { 
+		
+		let out = res.data
+		if (res.data.data.length > 0) {
+			out = res.data["data"].map((el: any) => {return JSON.stringify(JSON.parse(el))}).join("\n")
+		} 
+
+		return out
+	
+	} 
 
 	let playbookRunContent: SoarContent = {
 		scheme: "soarplaybookrun", 
@@ -24,6 +34,13 @@ export function registerInspectProviders(context: vscode.ExtensionContext, outpu
 		prefix: "playbook-run-log_", 
 		getContentFunName: "getPlaybookRunLog", 
 		processContent: processJSONContent
+	}
+
+	let appRunLogContent: SoarContent = {
+		scheme: "soarapprunlog", 
+		prefix: "app-run-log_", 
+		getContentFunName: "getAppRunLog", 
+		processContent: processLogContent
 	}
 
 	let assetContent: SoarContent = {
@@ -103,7 +120,7 @@ export function registerInspectProviders(context: vscode.ExtensionContext, outpu
 		processContent: (res) => {return res.data.python},
 	}
 
-	let contents = [appContent, assetContent, playbookRunLogContent, playbookRunContent, containerContent, actionRunContent, appRunContent, playbookContent, vaultFileContent, noteContent, playbookCodeContent, noteMetaContent]
+	let contents = [appContent, assetContent, playbookRunLogContent, playbookRunContent, containerContent, actionRunContent, appRunContent, playbookContent, vaultFileContent, noteContent, playbookCodeContent, noteMetaContent, appRunLogContent]
 
 	for (let content of contents) {
 		context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(content.scheme, new SoarContentProvider(context, content)));
@@ -177,6 +194,22 @@ export function registerInspectProviders(context: vscode.ExtensionContext, outpu
 
 		if (appRunId) {
 			const uri = vscode.Uri.parse(`${appRunContent.scheme}:${appRunContent.prefix}${appRunId}.json`);
+			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
+			await vscode.window.showTextDocument(doc, { preview: false });
+		}
+	}));
+
+	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.appRuns.logs', async (appRunContext) => {
+		let appRunId
+
+		if (appRunContext.hasOwnProperty('data')) {
+			appRunId = appRunContext.data.appRun.id
+		} else {
+			appRunId = String(appRunContext)
+		}
+
+		if (appRunId) {
+			const uri = vscode.Uri.parse(`${appRunLogContent.scheme}:${appRunLogContent.prefix}${appRunId}.json`);
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		}
