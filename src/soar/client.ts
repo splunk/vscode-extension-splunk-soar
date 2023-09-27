@@ -57,11 +57,11 @@ export class SoarClient {
     }
 
     listActionRuns = async() => {
-        return await this.httpClient.get<models.SoarCollection<models.SoarActionRun>>("action_run", {params: {"pretty": true, "page_size": 0, "sort": "create_time", "order": "desc"}})
+        return await this.httpClient.get<models.SoarCollection<models.SoarActionRun>>("action_run", {params: {"pretty": true, "page_size": 100, "sort": "create_time", "order": "desc"}})
     }
 
     listUserActionRuns = async() => {
-        return await this.httpClient.get<models.SoarCollection<models.SoarActionRun>>("action_run", {params: {"pretty": true, "page_size": 0, "sort": "create_time", "order": "desc", "_filter_owner__username": `'${this.username}'`}})
+        return await this.httpClient.get<models.SoarCollection<models.SoarActionRun>>("action_run", {params: {"pretty": true, "page_size": 100, "sort": "create_time", "order": "desc", "_filter_owner__username": `'${this.username}'`}})
     }
 
     getLastUserActionRun = async() => {
