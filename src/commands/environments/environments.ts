@@ -13,8 +13,10 @@ export const ACTIVE_ENV_KEY = "splunkSOAR.activeEnvironment"
 export interface BaseConnectEnvironment {
     url: string,
     sslVerify: boolean,
-    username: string
+    username: string,
+    authType: string
 }
+
 
 export interface ConnectEnvironment extends BaseConnectEnvironment {
     password: string
@@ -37,7 +39,7 @@ export async function addEnvironment(context: vscode.ExtensionContext) {
     }
 
     let envKey = deriveEnvKey(state.url, state.username)
-    let newEnv: ConfiguredConnectEnvironment = {"key": envKey , "url": state.url, "username": state.username, "sslVerify": state.sslVerify}
+    let newEnv: ConfiguredConnectEnvironment = {"key": envKey , "url": state.url, "username": state.username, "sslVerify": state.sslVerify, "authType": state.authType}
 
     let currentEnvironments = listEnvironments(context)
 
@@ -132,6 +134,10 @@ export async function getEnvironment(context: vscode.ExtensionContext, envKey: s
 
     let env = currentEnvironments.find(env => env.key == envKey)!
 
+    // If this environment was created in an older version of the extension, authType
+    // will be undefined.
+    env.authType ??= "local";
+
     return {...env, "password": password}
 }
 
@@ -172,7 +178,7 @@ export async function environmentVersion(context: vscode.ExtensionContext, envir
     }
 
     let environment = await getEnvironment(context, envKey)
-    let client = new SoarClient(environment.url, environment.username, environment.password, environment.sslVerify)
+    let client = new SoarClient(environment.url, environment.authType, environment.username, environment.password, environment.sslVerify)
 
     let response = await client.version().catch((err) => {
         return Promise.reject(err)
@@ -186,7 +192,7 @@ export async function copyPasswordToClipboard(context: vscode.ExtensionContext, 
     let env: ConfiguredConnectEnvironment = environmentContext.data
 
     let environment = await getEnvironment(context, env.key)
-    let client = new SoarClient(environment.url, environment.username, environment.password, environment.sslVerify)
+    let client = new SoarClient(environment.url, environment.authType, environment.username, environment.password, environment.sslVerify)
 
     vscode.env.clipboard.writeText(client.password)
     vscode.window.setStatusBarMessage("Copied password to clipboard", 2000)

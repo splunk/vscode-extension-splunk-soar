@@ -3,7 +3,7 @@ import {MultiStepInput} from '../../wizard/MultiStepInput'
 import { ConnectEnvironment } from './environments';
 
 const wizardTitle = "Add Environment"
-const totalSteps = 4
+const totalSteps = 5
 
 function shouldResume() {
     // Could show a notification with the option to resume.
@@ -44,13 +44,37 @@ async function connectSslVerifyInput(input: MultiStepInput, state: Partial<Conne
         canSelectMany: false
     });
     state.sslVerify = sslPick[0].label === "Yes"
-    return (input: MultiStepInput) => conectUsernameInput(input, state);
+    return (input: MultiStepInput) => authTypeInput(input, state);
 }
 
-async function conectUsernameInput(input: MultiStepInput, state: Partial<ConnectEnvironment>){
-    state.username = await input.showInputBox({
+async function authTypeInput(input: MultiStepInput, state: Partial<ConnectEnvironment>){
+    let authPick = await input.showQuickPick({
         title: wizardTitle,
         step: 3,
+        totalSteps: totalSteps,
+        placeholder: 'Auth type',
+        value: state.authType || '',
+        items: [{"label": "local"}, {"label": "token"}],
+        shouldResume: shouldResume,
+        ignoreFocusOut: true,
+        canSelectMany: false
+    });
+
+    if (authPick[0].label === "local") {
+        state.authType = "local";
+        return (input: MultiStepInput) => connectUsernameInput(input, state);
+    }
+    else {
+        state.authType = "token";
+        return (input: MultiStepInput) => connectTokenNameInput(input, state);
+    }
+
+}
+
+async function connectUsernameInput(input: MultiStepInput, state: Partial<ConnectEnvironment>){
+    state.username = await input.showInputBox({
+        title: wizardTitle,
+        step: 4,
         totalSteps: totalSteps,
         value: state.username || '',
         prompt: `Username`,
@@ -62,10 +86,41 @@ async function conectUsernameInput(input: MultiStepInput, state: Partial<Connect
     return (input: MultiStepInput) => connectPasswordInput(input, state);
 }
 
+async function connectTokenNameInput(input: MultiStepInput, state: Partial<ConnectEnvironment>){
+    state.username = await input.showInputBox({
+        title: wizardTitle,
+        step: 4,
+        totalSteps: totalSteps,
+        value: state.username || '',
+        prompt: `Token name`,
+        shouldResume: shouldResume,
+        validate: validateNameIsUnique,
+        ignoreFocusOut: true
+    });
+
+    return (input: MultiStepInput) => connectTokenInput(input, state);
+}
+
+async function connectTokenInput(input: MultiStepInput, state: Partial<ConnectEnvironment>){
+    state.password = await input.showInputBox({
+        title: wizardTitle,
+        step: 5,
+        totalSteps: totalSteps,
+        value: '',
+        prompt: `Token`,
+        shouldResume: shouldResume,
+        validate: validateNameIsUnique,
+        isPassword: true,
+        ignoreFocusOut: true
+    });
+
+    return;
+}
+
 async function connectPasswordInput(input: MultiStepInput, state: Partial<ConnectEnvironment>){
     state.password = await input.showInputBox({
         title: wizardTitle,
-        step: 4,
+        step: 5,
         totalSteps: totalSteps,
         value: '',
         prompt: `Password`,

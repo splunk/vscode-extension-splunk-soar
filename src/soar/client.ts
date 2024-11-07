@@ -16,7 +16,7 @@ export class SoarClient {
     httpClient: AxiosInstance
     fileClient: AxiosInstance
 
-    constructor(server: string, username: string, password: string, sslVerify: boolean) {
+    constructor(server: string, authType: string, username: string, password: string, sslVerify: boolean) {
         this.server = server
         this.username = username
         this.password = password
@@ -24,7 +24,8 @@ export class SoarClient {
 
         const axiosConfig = {
             baseURL: `${server}/rest/`,
-            auth: {username: username, password: password},
+            ...(authType === "local" && {auth: {username: username, password: password}}),
+            ...(authType === "token" && {headers: {"ph-auth-token": password} })
         }
 
         this.httpClient = axios.create(axiosConfig)
@@ -277,14 +278,14 @@ export class SoarClient {
 
 export async function getClientForActiveEnvironment(context: vscode.ExtensionContext): Promise<SoarClient> {
 
-    let {url, username, sslVerify, password} = await getActiveEnvironment(context)
+    let {url, username, sslVerify, password, authType} = await getActiveEnvironment(context)
 
-    return new SoarClient(url, username, password, sslVerify)
+    return new SoarClient(url, authType, username, password, sslVerify)
 }
 
 export async function getClientForEnvironment(context: vscode.ExtensionContext, envKey: string): Promise<SoarClient> {
 
-    let {url, username, sslVerify, password} = await getEnvironment(context, envKey)
+    let {url, username, sslVerify, password, authType} = await getEnvironment(context, envKey)
 
-    return new SoarClient(url, username, password, sslVerify)
+    return new SoarClient(url, authType, username, password, sslVerify)
 }
