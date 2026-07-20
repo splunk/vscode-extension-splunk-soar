@@ -31,9 +31,15 @@ jobs:
           cache-dependency-path: docs/yarn.lock
       - name: Enable Corepack
         run: corepack enable
+      - name: Verify Yarn lockfile registries
+        run: |
+          if grep 'resolved "https://' yarn.lock docs/yarn.lock | grep -v 'resolved "https://registry.yarnpkg.com/'; then
+            echo "All Yarn dependencies must resolve from registry.yarnpkg.com."
+            exit 1
+          fi
       - name: Install dependencies
         working-directory: docs
-        run: yarn install --frozen-lockfile
+        run: yarn install --frozen-lockfile --registry https://registry.yarnpkg.com
       - name: Build website
         working-directory: docs
         run: yarn build
