@@ -1,5 +1,3 @@
-import { interactiveCalendarGridTemplate } from "@microsoft/fast-foundation"
-
 export interface SoarVersion {
     version: string
 }

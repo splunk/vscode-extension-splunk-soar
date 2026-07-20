@@ -22,7 +22,6 @@ import { createContainer } from './containers/create';
 import { repeatPlaybookRun } from './playbookRuns/repeat';
 import { showAll, showOnlyConfigured } from './apps/show';
 import { activate, deactivate } from './playbooks/activeState';
-import { VisualPlaybookViewerPanel } from '../webviews/visualPlaybookViewer';
 
 export function registerCommands(context: vscode.ExtensionContext, outputChannel: vscode.OutputChannel, logOutputChannel: vscode.OutputChannel) {
 
@@ -140,10 +139,6 @@ export function registerCommands(context: vscode.ExtensionContext, outputChannel
 
     context.subscriptions.push(vscode.commands.registerCommand("splunkSoar.showAppWizard", async () => {
 		AppWizardPanel.render(context);
-    }));
-
-	context.subscriptions.push(vscode.commands.registerCommand("splunkSoar.playbooks.showVisualPlaybookViewer", async (playbookContext) => {
-		await VisualPlaybookViewerPanel.render(context, playbookContext);
     }));
 
 	context.subscriptions.push(vscode.commands.registerCommand('splunkSoar.playbooks.runPlaybook', async (data) => {

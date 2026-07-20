@@ -12,11 +12,12 @@ jobs:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22.18.0
           cache: yarn
+          cache-dependency-path: docs/yarn.lock
       - name: Install dependencies
         working-directory: docs
         run: yarn install --frozen-lockfile
@@ -39,5 +40,3 @@ jobs:
           # You can swap them out with your own user credentials.
           user_name: github-actions[bot]
           user_email: 41898282+github-actions[bot]@users.noreply.github.com
-
-

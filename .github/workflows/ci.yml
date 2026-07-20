@@ -10,15 +10,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22.18.0
+          cache: yarn
       - run: yarn install --frozen-lockfile
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: npx vsce package --out vscode-splunk-soar.vsix
-      - uses: actions/upload-artifact@v3
+      - run: yarn vsce package --out vscode-splunk-soar.vsix
+      - uses: actions/upload-artifact@v4
         with:
           name: vscode-splunk-soar.vsix
           path: "*.vsix"
@@ -28,7 +29,13 @@ jobs:
     needs: build
     if: success() && startsWith( github.ref, 'refs/tags/')
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.18.0
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - uses: actions/download-artifact@v4
         with:
           name: vscode-splunk-soar.vsix
       - uses: ncipollo/release-action@v1
@@ -36,6 +43,6 @@ jobs:
           artifacts: "*.vsix"
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: npx vsce publish --packagePath $(find . -type f -iname '*.vsix')
+      - run: yarn vsce publish --packagePath vscode-splunk-soar.vsix
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}

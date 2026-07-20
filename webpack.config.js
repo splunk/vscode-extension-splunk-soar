@@ -3,7 +3,6 @@
 'use strict';
 
 const path = require('path');
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
@@ -50,8 +49,7 @@ const extensionConfig = {
 
 const webViewConfig = {
   entry: {
-   appwizard: "./app/src/appWizard/index.js",
-   playbookviewer: "./app/src/playbookViewer/index.js"
+   appwizard: "./app/src/appWizard/index.js"
   },
   output: {
     path: path.resolve(__dirname, 'app', 'build'),
@@ -59,14 +57,10 @@ const webViewConfig = {
   },
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
-    extensions: ['.ts', '.js', '.jsx','css']
+    extensions: ['.ts', '.js', '.jsx']
   },
   module: {
     rules: [
-      {
-        test: /\.css$/i,
-        use: ["style-loader", "css-loader"],
-      },
       {
         test: /\.ts$/,
         exclude: /node_modules/,

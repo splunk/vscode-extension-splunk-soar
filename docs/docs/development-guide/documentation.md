@@ -8,7 +8,7 @@ The documentation is hosted in the `docs/` subfolder. All subsequent commands as
 
 ### Run the development server
 ```
-npx docusaurus start
+yarn start
 ```
 
 The development server will start on [http://localhost:3000](http://localhost:3000)

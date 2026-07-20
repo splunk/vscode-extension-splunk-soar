@@ -21,7 +21,7 @@ yarn install
 
 Run the `Run Extension (vscode-extension-splunk-soar)` target in the `Run and Debug` view. This will:
 
-* Start a task `npm: watch` to compile the code
+* Start the `yarn: watch` task to compile the code
 * Run the extension in a new VS Code window
 
 :::note
