@@ -8,7 +8,7 @@
         "out": true, // set this to false to include "out" folder in search results
         "dist": true // set this to false to include "dist" folder in search results
     },
-    // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
+    // Turn off tsc task auto detection since we have the necessary Yarn scripts
     "typescript.tsc.autoDetect": "off",
     "git.mergeEditor": true
 }

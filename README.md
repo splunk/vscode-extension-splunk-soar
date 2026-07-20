@@ -113,6 +113,92 @@ Execution logs can be displayed by:
 * right-clicking on a run listed under the Playbook Runs View
 * clicking on "Logs"
 
+## Development
+
+### Prerequisites
+
+- VS Code 1.101 or newer
+- Node.js 22.18.0 (the repository includes an `.nvmrc`)
+- Yarn 1.22.22
+
+This repository uses Yarn exclusively. Do not use npm to install or update dependencies; the root extension and the documentation site each have their own `yarn.lock`.
+
+### Set up the repository
+
+```bash
+git clone https://github.com/splunk/vscode-extension-splunk-soar.git
+cd vscode-extension-splunk-soar
+nvm use
+yarn install --frozen-lockfile
+code .
+```
+
+If the requested Node.js version is not installed yet, run `nvm install` before `nvm use`.
+
+### Inner development loop
+
+1. Open **Run and Debug** in VS Code and start the **Run Extension** configuration, or press `F5`.
+2. The default `yarn: watch` task starts webpack in watch mode and opens an Extension Development Host window with a temporary VS Code profile.
+3. Exercise the change in the Extension Development Host. Open the Splunk SOAR view or invoke a contributed command to activate the extension.
+4. After changing extension or webview source code, wait for webpack to finish rebuilding, then run **Developer: Reload Window** in the Extension Development Host to load the new bundles.
+5. Set breakpoints in `src/` and inspect extension-host output in the Debug Console. Webview code is bundled from `app/src/` into `app/build/`.
+
+The temporary profile does not inherit environments configured in your regular VS Code profile. If a change requires a SOAR connection, configure a non-production SOAR environment inside the Extension Development Host.
+
+### Local checks
+
+Run these before opening a pull request:
+
+```bash
+# Type-check the extension without emitting JavaScript
+yarn check-types
+
+# Lint extension and webview sources
+yarn lint
+
+# Create development bundles once, without watch mode
+yarn compile
+
+# Create optimized production bundles
+yarn package
+
+# Build the same VSIX artifact produced by CI
+yarn vsce package --out vscode-splunk-soar.vsix
+```
+
+The current lint configuration reports an existing warning backlog but should complete with zero errors. Webpack also reports bundle-size recommendations for the webviews; these warnings do not fail the build.
+
+There is currently no automated extension-host test suite. The required verification is type-checking, linting, production bundling, and exercising the affected workflow in the Extension Development Host.
+
+### Updating dependencies
+
+Run dependency commands from the directory whose manifest is being updated:
+
+```bash
+# Runtime dependency
+yarn add <package>
+
+# Development dependency
+yarn add --dev <package>
+
+# Remove a dependency
+yarn remove <package>
+```
+
+Commit both the affected `package.json` and its `yarn.lock`. Verify the resulting graph with `yarn install --frozen-lockfile` and `yarn audit`.
+
+### Documentation site
+
+The Docusaurus site is an independent Yarn project under `docs/`:
+
+```bash
+cd docs
+yarn install --frozen-lockfile
+yarn start
+```
+
+The development server is available at [http://localhost:3000](http://localhost:3000). Run `yarn build` from `docs/` to verify a production documentation build.
+
 ## Documentation
 
 The documentation is located on https://splunk.github.io/vscode-extension-splunk-soar/ and hosted via Github Pages.

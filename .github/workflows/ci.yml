@@ -1,41 +1,92 @@
 name: CI
+
 on:
   push:
     branches:
       - "**"
     tags:
       - "v*"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
         with:
-          node-version: 18
-      - run: yarn install --frozen-lockfile
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: npx vsce package --out vscode-splunk-soar.vsix
-      - uses: actions/upload-artifact@v3
+          node-version-file: .nvmrc
+          cache: yarn
+          cache-dependency-path: yarn.lock
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Verify Yarn lockfile registries
+        run: |
+          if grep 'resolved "https://' yarn.lock docs/yarn.lock | grep -v 'resolved "https://registry.yarnpkg.com/'; then
+            echo "All Yarn dependencies must resolve from registry.yarnpkg.com."
+            exit 1
+          fi
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --registry https://registry.yarnpkg.com
+      - name: Lint
+        run: yarn lint
+      - name: Audit dependencies
+        run: yarn audit --registry https://registry.yarnpkg.com
+      - name: Build VSIX
+        run: yarn vsce package --out vscode-splunk-soar.vsix
+      - name: Upload VSIX
+        uses: actions/upload-artifact@v7
         with:
-          name: vscode-splunk-soar.vsix
-          path: "*.vsix"
+          name: vscode-splunk-soar-vsix
+          path: vscode-splunk-soar.vsix
+          if-no-files-found: error
+          retention-days: 7
 
   publish:
     runs-on: ubuntu-latest
     needs: build
-    if: success() && startsWith( github.ref, 'refs/tags/')
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
     steps:
-      - uses: actions/download-artifact@v3
+      - name: Check out repository
+        uses: actions/checkout@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
         with:
-          name: vscode-splunk-soar.vsix
-      - uses: ncipollo/release-action@v1
+          node-version-file: .nvmrc
+          cache: yarn
+          cache-dependency-path: yarn.lock
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Verify Yarn lockfile registries
+        run: |
+          if grep 'resolved "https://' yarn.lock docs/yarn.lock | grep -v 'resolved "https://registry.yarnpkg.com/'; then
+            echo "All Yarn dependencies must resolve from registry.yarnpkg.com."
+            exit 1
+          fi
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --registry https://registry.yarnpkg.com
+      - name: Download VSIX
+        uses: actions/download-artifact@v8
         with:
-          artifacts: "*.vsix"
+          name: vscode-splunk-soar-vsix
+      - name: Create GitHub release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: vscode-splunk-soar.vsix
           token: ${{ secrets.GITHUB_TOKEN }}
-
-      - run: npx vsce publish --packagePath $(find . -type f -iname '*.vsix')
+      - name: Publish to Visual Studio Marketplace
+        run: yarn vsce publish --packagePath vscode-splunk-soar.vsix
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}

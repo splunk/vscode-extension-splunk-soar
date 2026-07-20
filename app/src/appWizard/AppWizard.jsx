@@ -1,5 +1,5 @@
-import React, { useContext, useReducer, useState } from 'react'
-import { VSCodeBadge, VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodePanels, VSCodePanelTab, VSCodePanelView, VSCodeTextArea, VSCodeTextField } from '@vscode/webview-ui-toolkit/react'
+import React, { useContext, useReducer } from 'react'
+import { VscodeBadge, VscodeButton, VscodeOption, VscodeSingleSelect, VscodeTabHeader, VscodeTabPanel, VscodeTabs, VscodeTextarea, VscodeTextfield } from '@vscode-elements/react-elements'
 import { ExtensionContext } from './context'
 
 export default function AppWizard() {
@@ -27,45 +27,51 @@ export default function AppWizard() {
         setAppValues({ [name]: value})
     }
 
-    const submitApp = function(event) {
+    const submitApp = function() {
         console.log(appValues)
         vscode.postMessage({"command": "createApp", "app": appValues})
     }
 
     return (
         <header>
-            <h1>SOAR App Wizard <VSCodeBadge>experimental</VSCodeBadge></h1>
+            <h1>SOAR App Wizard <VscodeBadge>experimental</VscodeBadge></h1>
             <p>Bootstrap a new SOAR App and save it to a local directory.</p>
 
-            <VSCodePanels>
+            <VscodeTabs>
 
-                <VSCodePanelTab id='view-1'>Basic Information</VSCodePanelTab>
+                <VscodeTabHeader slot='header'>Basic Information</VscodeTabHeader>
 
-                <VSCodePanelView id='view-1'>
+                <VscodeTabPanel>
                     <section style={{"display": "flex", "flexDirection": "column", "width": "80%", "gap": "10px"}}>
-                        <VSCodeTextField onChange={handleChange} name='appName' value={appName}>App Name (Display Name)</VSCodeTextField>
-                        <VSCodeTextField onChange={handleChange} name='appShortName' value={appShortName}>App Shortname (File Prefix)</VSCodeTextField>
+                        <label htmlFor='appName'>App Name (Display Name)</label>
+                        <VscodeTextfield id='appName' onChange={handleChange} name='appName' value={appName}></VscodeTextfield>
+                        <label htmlFor='appShortName'>App Shortname (File Prefix)</label>
+                        <VscodeTextfield id='appShortName' onChange={handleChange} name='appShortName' value={appShortName}></VscodeTextfield>
 
-                        <VSCodeTextArea onChange={handleChange} name='appDescription' value={appDescription}>App Description</VSCodeTextArea>
-                        <VSCodeTextField onChange={handleChange} name='appPublisher' value={appPublisher} placeholder='Splunk Community'>App Publisher</VSCodeTextField>
+                        <label htmlFor='appDescription'>App Description</label>
+                        <VscodeTextarea id='appDescription' onChange={handleChange} name='appDescription' value={appDescription}></VscodeTextarea>
+                        <label htmlFor='appPublisher'>App Publisher</label>
+                        <VscodeTextfield id='appPublisher' onChange={handleChange} name='appPublisher' value={appPublisher} placeholder='Splunk Community'></VscodeTextfield>
 
-                        <VSCodeTextField onChange={handleChange} name='productName' value={productName}>Product Name</VSCodeTextField>
-                        <VSCodeTextField onChange={handleChange} name='productVendor' value={productVendor}>Product Vendor</VSCodeTextField>
-                        <label for='appType'>App Type</label>
-                        <VSCodeDropdown position='below' value={appType} onChange={handleChange} name='appType'>
-                            <VSCodeOption>
+                        <label htmlFor='productName'>Product Name</label>
+                        <VscodeTextfield id='productName' onChange={handleChange} name='productName' value={productName}></VscodeTextfield>
+                        <label htmlFor='productVendor'>Product Vendor</label>
+                        <VscodeTextfield id='productVendor' onChange={handleChange} name='productVendor' value={productVendor}></VscodeTextfield>
+                        <label htmlFor='appType'>App Type</label>
+                        <VscodeSingleSelect id='appType' value={appType} onChange={handleChange} name='appType'>
+                            <VscodeOption value='information'>
                                 information
-                            </VSCodeOption>
-                            <VSCodeOption>
+                            </VscodeOption>
+                            <VscodeOption value='ticketing'>
                                 ticketing
-                            </VSCodeOption>
-                        </VSCodeDropdown>
+                            </VscodeOption>
+                        </VscodeSingleSelect>
                     </section>
 
-                </VSCodePanelView>
+                </VscodeTabPanel>
 
-            </VSCodePanels>
-            <VSCodeButton onClick={submitApp}>Create</VSCodeButton>
+            </VscodeTabs>
+            <VscodeButton onClick={submitApp}>Create</VscodeButton>
         </header>
     )
 }

@@ -1,5 +1,4 @@
 import { AxiosResponse } from 'axios';
-import { OutputQuoteStyle } from 'terser';
 import * as vscode from 'vscode'
 import { getClientForActiveEnvironment } from '../soar/client';
 import { PlaybookRun } from '../views/playbookRun';
