@@ -4,6 +4,12 @@ This website is built using [Docusaurus 3](https://docusaurus.io/).
 
 Use the Node.js version in the repository's `.nvmrc` and Yarn 1.22.22. Follow the root README to install the pinned Corepack version.
 
+### Dependency updates
+
+Keep the `@docusaurus/*` packages on the same stable version. Run `yarn audit` and `yarn build` after updating this project's independent lockfile.
+
+The scoped Tinypool resolution fixes [the worker-options vulnerability](https://github.com/advisories/GHSA-5gmw-xhrv-c9v3) and [the run-options vulnerability](https://github.com/advisories/GHSA-85c8-ppgw-ccpr). Docusaurus 3.10.2 requires Tinypool 1.x, whose release line has no patched version. Remove the resolution when Docusaurus supports a patched Tinypool release. Validate changes to it with SSG worker threads enabled and at least two workers; the default build disables that path.
+
 ### Installation
 
 ```
