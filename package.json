@@ -1170,7 +1170,6 @@
 	},
 	"resolutions": {
 		"diff": "^8.0.3",
-		"serialize-javascript": "^7.0.5",
 		"**/baseline-browser-mapping": "^2.11.0",
 		"**/browserslist": "^4.28.7",
 		"eslint/**/brace-expansion": "^1.1.18",
