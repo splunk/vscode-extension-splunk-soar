@@ -118,7 +118,7 @@ Execution logs can be displayed by:
 ### Prerequisites
 
 - VS Code 1.101 or newer
-- Node.js 22.18.0 (the repository includes an `.nvmrc`)
+- Node.js 22.23.5 (the repository includes an `.nvmrc`)
 - Yarn 1.22.22
 
 This repository uses Yarn exclusively. Do not use npm to install or update dependencies; the root extension and the documentation site each have their own `yarn.lock`.

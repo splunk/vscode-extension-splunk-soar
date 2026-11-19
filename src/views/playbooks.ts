@@ -40,13 +40,9 @@ export class SoarPlaybookTreeProvider implements vscode.TreeDataProvider<Playboo
 		})
 
 		if (!element) {
-            let playbooksFunc = client.listPlaybooks
+			const playbooks = ownOnly ? client.listUserPlaybooks() : client.listPlaybooks()
 
-			if (ownOnly) {
-				playbooksFunc = client.listUserPlaybooks
-            }
-
-			return playbooksFunc().then(function (res) {
+			return playbooks.then(function (res) {
 				let playbookEntries = res.data["data"]
 				interface PlaybookRepoMap {
 					[key: string]: any[]
