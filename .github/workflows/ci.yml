@@ -18,18 +18,18 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: .nvmrc
-          cache: yarn
-          cache-dependency-path: yarn.lock
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Install Corepack
+        run: |
+          npm install --global --force corepack@0.36.0 --registry https://registry.npmjs.org
+          corepack enable
       - name: Verify Yarn lockfile registries
         run: |
           if grep 'resolved "https://' yarn.lock docs/yarn.lock | grep -v 'resolved "https://registry.yarnpkg.com/'; then
@@ -45,7 +45,7 @@ jobs:
       - name: Build VSIX
         run: yarn vsce package --out vscode-splunk-soar.vsix
       - name: Upload VSIX
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: vscode-splunk-soar-vsix
           path: vscode-splunk-soar.vsix
@@ -53,22 +53,22 @@ jobs:
           retention-days: 7
 
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: build
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: write
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: .nvmrc
-          cache: yarn
-          cache-dependency-path: yarn.lock
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Install Corepack
+        run: |
+          npm install --global --force corepack@0.36.0 --registry https://registry.npmjs.org
+          corepack enable
       - name: Verify Yarn lockfile registries
         run: |
           if grep 'resolved "https://' yarn.lock docs/yarn.lock | grep -v 'resolved "https://registry.yarnpkg.com/'; then
@@ -78,11 +78,11 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile --registry https://registry.yarnpkg.com
       - name: Download VSIX
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: vscode-splunk-soar-vsix
       - name: Create GitHub release
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@339a81892b84b4eeb0f6e744e4574d79d0d9b8dd # v1
         with:
           artifacts: vscode-splunk-soar.vsix
           token: ${{ secrets.GITHUB_TOKEN }}

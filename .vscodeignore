@@ -9,6 +9,7 @@ webpack.config.js
 vsc-extension-quickstart.md
 **/tsconfig.json
 **/.eslintrc.json
+eslint.config.cjs
 **/*.map
 **/*.ts
 docs/**

@@ -1,13 +1,12 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import AppWizard from './AppWizard';
 import { ExtensionContext } from './context';
 
 const vscode = acquireVsCodeApi();
 
-ReactDOM.render(
+createRoot(document.getElementById('root')).render(
   <ExtensionContext.Provider value={vscode}>
   <AppWizard/>
-  </ExtensionContext.Provider>,
-  document.getElementById('root')
+  </ExtensionContext.Provider>
 );

@@ -19,18 +19,18 @@ concurrency:
 jobs:
   deploy:
     name: Deploy to GitHub Pages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: .nvmrc
-          cache: yarn
-          cache-dependency-path: docs/yarn.lock
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Install Corepack
+        run: |
+          npm install --global --force corepack@0.36.0 --registry https://registry.npmjs.org
+          corepack enable
       - name: Verify Yarn lockfile registries
         run: |
           if grep 'resolved "https://' yarn.lock docs/yarn.lock | grep -v 'resolved "https://registry.yarnpkg.com/'; then
@@ -45,7 +45,7 @@ jobs:
         run: yarn build
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/build

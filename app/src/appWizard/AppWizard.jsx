@@ -1,10 +1,10 @@
-import React, { useContext, useReducer } from 'react'
-import { VscodeBadge, VscodeButton, VscodeOption, VscodeSingleSelect, VscodeTabHeader, VscodeTabPanel, VscodeTabs, VscodeTextarea, VscodeTextfield } from '@vscode-elements/react-elements'
-import { ExtensionContext } from './context'
+import React, { useContext, useReducer } from 'react';
+import { VscodeBadge, VscodeButton, VscodeOption, VscodeSingleSelect, VscodeTabHeader, VscodeTabPanel, VscodeTabs, VscodeTextarea, VscodeTextfield } from '@vscode-elements/react-elements';
+import { ExtensionContext } from './context';
 
 export default function AppWizard() {
 
-    const vscode = useContext(ExtensionContext)
+    const vscode = useContext(ExtensionContext);
 
     const initialValues = {
         appName: '',
@@ -14,23 +14,23 @@ export default function AppWizard() {
         productName: '',
         appPublisher: '',
         appType: ''
-    }
+    };
 
     const [appValues, setAppValues] = useReducer(
         (currentValues, newValues) => ({...currentValues, ...newValues}), initialValues
-    )
+    );
 
-    const {appName, appShortName, appDescription, appType, appPublisher, productName, productVendor} = appValues
+    const {appName, appShortName, appDescription, appType, appPublisher, productName, productVendor} = appValues;
 
     const handleChange = function(event) {
-        const {name, value} = event.target
-        setAppValues({ [name]: value})
-    }
+        const {name, value} = event.target;
+        setAppValues({ [name]: value});
+    };
 
     const submitApp = function() {
-        console.log(appValues)
-        vscode.postMessage({"command": "createApp", "app": appValues})
-    }
+        console.log(appValues);
+        vscode.postMessage({"command": "createApp", "app": appValues});
+    };
 
     return (
         <header>
@@ -73,5 +73,5 @@ export default function AppWizard() {
             </VscodeTabs>
             <VscodeButton onClick={submitApp}>Create</VscodeButton>
         </header>
-    )
+    );
 }

@@ -11,10 +11,10 @@ import repeatActionRun from '@site/static/video/repeat_action_run.webm';
 The VS Code Extension for SOAR allows to trigger action runs from within the editor. This is a key feature that significantly speeds up development and testing.
 The action is triggered on the active instance and we 
 
-<ReactPlayer width="100%" height="auto" controls url={runAction} />
+<ReactPlayer width="100%" height="auto" controls src={runAction} />
 
 ## Reviewing the Results
-<ReactPlayer width="100%" height="auto" controls url={reviewRunResults} />
+<ReactPlayer width="100%" height="auto" controls src={reviewRunResults} />
 
 ## Repeating an Action Run
-<ReactPlayer width="100%" height="auto" controls url={repeatActionRun} />
+<ReactPlayer width="100%" height="auto" controls src={repeatActionRun} />
