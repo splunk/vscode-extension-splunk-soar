@@ -1,6 +1,8 @@
 # Website
 
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+This website is built using [Docusaurus 3](https://docusaurus.io/).
+
+Use the Node.js version in the repository's `.nvmrc` and Yarn 1.22.22. Follow the root README to install the pinned Corepack version.
 
 ### Installation
 

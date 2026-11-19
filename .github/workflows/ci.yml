@@ -26,10 +26,10 @@ jobs:
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: .nvmrc
-          cache: yarn
-          cache-dependency-path: yarn.lock
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Install Corepack
+        run: |
+          npm install --global --force corepack@0.36.0 --registry https://registry.npmjs.org
+          corepack enable
       - name: Verify Yarn lockfile registries
         run: |
           if grep 'resolved "https://' yarn.lock docs/yarn.lock | grep -v 'resolved "https://registry.yarnpkg.com/'; then
@@ -65,10 +65,10 @@ jobs:
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version-file: .nvmrc
-          cache: yarn
-          cache-dependency-path: yarn.lock
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Install Corepack
+        run: |
+          npm install --global --force corepack@0.36.0 --registry https://registry.npmjs.org
+          corepack enable
       - name: Verify Yarn lockfile registries
         run: |
           if grep 'resolved "https://' yarn.lock docs/yarn.lock | grep -v 'resolved "https://registry.yarnpkg.com/'; then

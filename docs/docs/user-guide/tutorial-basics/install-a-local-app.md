@@ -29,7 +29,7 @@ For example the app with the root folder windowsdefenderatp has a corresponding 
 
 ## VS Code Task
 
-<ReactPlayer width="100%" height="auto" controls url={configureTaskVideo} />
+<ReactPlayer width="100%" height="auto" controls src={configureTaskVideo} />
 
 The extension provides a custom SOAR App Build Task that allows to install a local app to the configured SOAR instance via REST API. This procedure works for both on-prem and cloud SOAR. The task will transparently create a tar bundle of the app code and upload it to the instance.
 
@@ -81,11 +81,11 @@ There can be cases in which the folder name of the app does not correspond to th
 
 ## Editor Bar
 
-<ReactPlayer width="100%" height="auto" controls url={installEditorBarVideo} />
+<ReactPlayer width="100%" height="auto" controls src={installEditorBarVideo} />
 
 ## File Explorer Context Menu
 
-<ReactPlayer width="100%" height="auto" controls url={installAppFolderVideo} />
+<ReactPlayer width="100%" height="auto" controls src={installAppFolderVideo} />
 
 ## Apps View Upload
 
@@ -95,4 +95,4 @@ This works only if you already have your SOAR app packaged as a tar.gz file
 
 :::
 
-<ReactPlayer width="100%" height="auto" controls url={installUploadPackageVideo} />
+<ReactPlayer width="100%" height="auto" controls src={installUploadPackageVideo} />

@@ -3,7 +3,7 @@ import * as vscode from 'vscode'
 import * as os from 'os'
 import * as tar from 'tar'
 import * as fs from 'fs'
-import ignore from 'ignore'
+import ignore = require('ignore')
 import { getClientForActiveEnvironment } from '../../soar/client'
 import { directoryContainsApp, validateApp } from './validate'
 import axios, { AxiosError, AxiosResponse } from 'axios'

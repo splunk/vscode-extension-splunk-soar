@@ -12,4 +12,4 @@ A corresponding command is available for playbooks!
 
 :::
 
-<ReactPlayer width="100%" height="auto" controls url={downloadAppVideo} />
+<ReactPlayer width="100%" height="auto" controls src={downloadAppVideo} />

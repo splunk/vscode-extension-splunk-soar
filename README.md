@@ -118,8 +118,10 @@ Execution logs can be displayed by:
 ### Prerequisites
 
 - VS Code 1.101 or newer
-- Node.js 22.23.5 (the repository includes an `.nvmrc`)
+- Node.js 26.13.1 (the repository includes an `.nvmrc`)
 - Yarn 1.22.22
+
+Node.js 26 requires installing Corepack separately; the command below installs the pinned version used by CI.
 
 This repository uses Yarn exclusively. Do not use npm to install or update dependencies; the root extension and the documentation site each have their own `yarn.lock`.
 
@@ -129,6 +131,8 @@ This repository uses Yarn exclusively. Do not use npm to install or update depen
 git clone https://github.com/splunk/vscode-extension-splunk-soar.git
 cd vscode-extension-splunk-soar
 nvm use
+npm install --global corepack@0.36.0
+corepack enable
 yarn install --frozen-lockfile
 code .
 ```
